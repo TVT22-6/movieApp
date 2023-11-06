@@ -41,6 +41,7 @@ Dataintegraation kerros:
 
 Virheenkäsittely:
     Pohditaan, miten toimitaan, jos rajapinta ei ole saatavilla tai synkronointi epäonnistuu. Miten ristiriitaisia tietoja käsitellään?
+    Jos esimerkiksi käyttäjä vaihtaa salasanaaa niin ilmoitetaan että salasana vaihdettu, jos tekee käyttäjää joka on jo olemassa niin ilmoittaa siitä että tämä käyttäjä on jo olemassa.
     Jos tulee error, niin voitaisiin ehdottaa saman kategorian elokuvaa.
 
 Tietoturva:
