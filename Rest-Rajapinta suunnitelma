@@ -1,0 +1,109 @@
+REST rajapinnan suunnittelua.
+Voisi näyttää jotakuinkin tältä.
+
+Komennot 1:
+
+    Käyttäjät
+        GET /users: Listaa kaikki käyttäjät.
+        POST /users: Luo uusi käyttäjä.
+        GET /users/{userId}: Hae tietyn käyttäjän tiedot.
+        PUT /users/{userId}: Päivitä tietyn käyttäjän tiedot.
+        DELETE /users/{userId}: Poista tietty käyttäjä.
+
+    Elokuvat, 
+          vaikka elokuvat haetaankin rajapinnan kautta niin ihan hyvin voisi tallentaa databaseen suosituimmat/ääniä saaneet.
+        GET /movies: Listaa kaikki elokuvat.
+        POST /movies: Lisää uusi elokuva.
+        GET /movies/{movieId}: Hae tietyn elokuvan tiedot.
+        PUT /movies/{movieId}: Päivitä tietyn elokuvan tiedot.
+        DELETE /movies/{movieId}: Poista tietty elokuva.
+
+    Arvostelut
+        GET /reviews: Listaa kaikki arvostelut.
+        POST /reviews: Lisää uusi arvostelu.
+        GET /reviews/{reviewId}: Hae tietyn arvostelun tiedot.
+        PUT /reviews/{reviewId}: Päivitä tietyn arvostelun tiedot.
+        DELETE /reviews/{reviewId}: Poista tietty arvostelu.
+
+----------------------------------------------------------------------------------------------------
+
+Syventyminen 2:
+
+Tiedon synkronointi:
+    Ajoitettu synkronointi: Ajastetaan synkronointi ulkoisen rajapinnan ja paikallisen tietokannan välillä, esimerkiksi yölliset päivitykset.
+    Reaaliaikainen synkronointi: Synkronoidaan tiedot heti, kun ne päivittyvät. Tämä vaatii enemmän resursseja.
+
+Välimuistitus:
+    Käytetään välimuistia vähentämään tarpeetonta tiedon noutoa rajapinnasta. Tai tallennetaan tieto tietokantaan tietyin väliajoin.
+
+Dataintegraation kerros:
+    Luodaan erillinen kerros, joka käsittelee tiedonvaihdon. Tämä kerros huolehtii synkronoinnista, virheenkäsittelystä yms.
+
+Virheenkäsittely:
+    Pohditaan, miten toimitaan, jos rajapinta ei ole saatavilla tai synkronointi epäonnistuu. Miten ristiriitaisia tietoja käsitellään?
+    Jos esimerkiksi käyttäjä vaihtaa salasanaaa niin ilmoitetaan että salasana vaihdettu, jos tekee käyttäjää joka on jo olemassa niin ilmoittaa siitä että tämä käyttäjä on jo olemassa.
+    Jos tulee error, niin voitaisiin ehdottaa saman kategorian elokuvaa.
+
+Tietoturva:
+    Tarkistetaan, että tieto rajapinnasta on turvallista. Käytetään SSL/TLS-salausta ja suojataan tietokanta salauksilla ja varmuuskopioinneilla. Käytetään autentikointia kirjautumiseen.
+
+Optimointi:
+    Haetaan vain tarvittava tai muuttunut tieto rajapinnasta.
+
+Tietomallin joustavuus:
+    Tietomalli pitää olla joustava, koska käytössä on sekä paikallinen tietokanta että ulkoinen rajapinta.
+    Resurssien määrittely: Pohditaan, mitkä ovat keskeiset resurssit ja miten ne kuvataan URL-osoitteissa.
+    Jokaisella resurssilla tulisi olla selkeästi määritelty URL, esim. /users/{userId}, /movies/{movieId}.
+
+Versiohallinta:
+    Jos rajapinta muuttuu, miten varmistetaan yhteensopivuus vanhempien sovellusten kanssa?
+Meidän tulisi käyttää versiointia rajapinnassa, jotta muutokset eivät riko vanhoja sovelluksia. 
+Esimerkiksi URL:ssa voi olla versio, kuten /v1/users/{userId}. Kun teemme merkittäviä muutoksia, lisäämme uuden version, kuten /v2/users/{userId}.
+
+Dokumentaatio:
+    Miten dokumentoidaan rajapinta selkeästi?
+    Dokumentaatio sisältää tiedot siitä, mitä metodeja rajapinnassa on, mitä parametreja ne ottavat vastaan, minkälaista tietoa ne palauttavat ja mahdolliset virhetilanteet.
+
+Tietomalli:
+    Tieto kannattaa mallintaa siten, että se on joustavaa ja helposti laajennettavissa.
+    JSON on yleisin valinta, koska se on kevyt ja helppolukuinen. Esim. palautettaessa useita elokuvia voisi rakenne olla: [{"id":1, "title":"Elokuva 1"}, {"id":2, "title":"Elokuva 2"}].
+
+Käytettävyys:
+    Suunnitellaan rajapinta loogiseksi ja helppokäyttöiseksi.
+    Vältetään monimutkaisia toimintoja ja pitäydytään yksinkertaisissa ja selkeissä pyynnöissä.
+
+Rajapinnan tila:
+    Päätetään, onko rajapinta tilaton vai tilallinen.
+    Yleisesti RESTful rajapinnat ovat tilattomia eli jokainen pyyntö sisältää kaiken tarvittavan tiedon. Tämä yksinkertaistaa rajapintaa ja tekee siitä skaalautuvan.
+    Joissain tapauksissa tilallisuus voi olla hyödyllistä, mutta se tekee järjestelmästä monimutkaisemman.
+
+Kutsurajoitukset:
+    Jos rajapinta on julkisesti saatavilla, meidän pitäisi asettaa rajoituksia sen käyttöön estääksemme väärinkäytökset.
+    Käytetään esimerkiksi rate limiting -työkaluja, jotka rajoittavat kuinka monta kutsua yksi IP-osoite tai käyttäjä voi tehdä tietyssä ajassa.
+
+Testaus:
+    Rajapinnan testauksessa keskitytään yksikkötesteihin (tiettyjen funktioiden testaaminen), integraatiotesteihin (kuinka eri osat toimivat yhdessä) ja kuormitustesteihin (kuinka rajapinta käyttäytyy suuren kuorman alla).
+    Käytetään testaustyökaluna, Postmania
+-----------------------------------------------------------------------------------------------------
+
+Lisäksi 3:
+Autentikointi ja Autorisointi:
+    Miten käyttäjät todentavat itsensä rajapinnassa? Voisit harkita JWT-tokeneja tai OAuthia.
+    Miten varmistetaan, että käyttäjällä on oikeus tehdä tiettyjä toimintoja? Esimerkiksi vain tietyillä käyttäjillä voi olla oikeus poistaa tietoja.
+
+Paginointi:
+    Jos rajapinta palauttaa suuren määrän tietoa, miten tämä tieto jaetaan useampaan osaan? Paginoinnilla voi helpottaa datan käsittelyä.
+
+Loki ja seuranta:
+    Loggauksen avulla voidaan seurata rajapinnan käyttöä, tunnistaa mahdollisia ongelmia ja helpottaa virheiden jäljittämistä.
+    Voisit harkita ratkaisuja kuten ELK Stack (Elasticsearch, Logstash, Kibana) tai muuta vastaavaa.
+
+Tietojen validoiminen ja sanitaatio:
+    Miten varmistetaan, että lähetetty data on oikeassa muodossa ja turvallista? Datan validoiminen estää virheellisen datan tallennuksen ja sanitaatio auttaa estämään esimerkiksi SQL-injektiot.
+
+Rajapinnan mukautettavuus:
+    Voisit harkita tarjoavasi mahdollisuuden mukauttaa tietojen palautusta, esim. valita, mitä tietoja palautetaan tai minkälaista tietoa rajapinnasta haetaan.
+
+Käyttäjäpalaute ja tuki:
+    Tarjotaan mahdollisuus antaa palautetta rajapinnasta ja sen toimivuudesta. Myös ohjeet tai tukiportaali, josta kehittäjät saavat apua ongelmatilanteissa, on hyödyllinen.
+
