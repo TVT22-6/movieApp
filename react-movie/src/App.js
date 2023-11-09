@@ -1,49 +1,21 @@
-import React, { useState } from 'react';
-import { MovieList } from './functions';
-import { useEffect } from 'react';
+import { useContext, useEffect, useState } from "react";
+import { MovieList } from './functions'; // Import from functions.js
 import './App.css'
+import { Login } from "./components/Auth";
+import axios from "axios";
 import SearchIcon from './search.svg'
 import MovieCard from './MovieCard';
-
-// Import from functions.js
 
 // ReadMe - React1 video käy läpi tämän ja muiden tiedostojen sisällön
 
 /*
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleLogin = () => {
-    // Implement your login logic here, e.g., check user credentials, set tokens, etc.
-    setIsLoggedIn(true); // Update the state when logged in
-  };
-
-  const handleLogout = () => {
-    // Implement your logout logic here, e.g., clear tokens, reset user data, etc.
-    setIsLoggedIn(false); // Update the state when logged out
-  };
-
-return (
-  <div>
-    <header>
-      {isLoggedIn ? (
-        <button onClick={handleLogout}>Logout</button>
-      ) : (
-        <button onClick={handleLogin}>Login</button>
-      )}
-    </header>
-
-    {isLoggedIn ? (
-      <div>
-        <h1>Welcome to the Movie App</h1>
-        <MovieList />
-        <MovieList />
-        <MovieList />
-      </div>
-    ) : (
-      <p>Please log in to view the movies...  -Edit this code in: src/app.js</p>
-    )}
-  </div>
+  return (
+    <div>
+      <h4>Otsikko</h4>
+      <Login/>
+    </div>
 );
 }*/
 
@@ -103,8 +75,94 @@ const App = () => {
           </div>
         )};
     </div>
+    );
+}
+
+
+function PersonList() {
+
+  const items = persons.map((p, i) => <li key={i}>{p.fname}</li>);
+
+  return (
+    <ul>
+      {items}
+    </ul>
+  )
+}
+
+
+function PostExample() {
+
+  useEffect(() => {
+
+    const user = {
+      username: 'repe',
+      pw: 'asdfafs'
+    }
+
+    axios.postForm('http://localhost:3001/user', user )
+      .then(resp => console.log('onnistui'))
+      .catch(error => console.log(error.message))
+
+  }, []);
+
+
+  return (
+    <div>
+
+    </div>
   );
 }
 
+
+function GetExample() {
+
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    axios.get('https://random-data-api.com/api/v2/users?size=10')
+      .then(resp => {
+        const uusi = resp.data.map(u => ({ email: u.email, avatar: u.avatar }));
+        setUsers(uusi);
+      })
+      .catch(error => console.log(error.message))
+  }, []);
+
+
+  return (
+    <div>
+      {
+        users.map(u => <UserInfo email={u.email} avatar={u.avatar} />)
+      }
+    </div>
+  );
+}
+
+function UserInfo({ email, avatar }) {
+  return (
+    <div>
+      <h4>{email}</h4>
+      <img src={avatar} height={80} />
+    </div>
+  );
+}
+
+
+function DataExample(){
+
+  const [text, setText] = useState('');
+  const [texts, setTexts] = useState([]);
+
+  return(
+    <div>
+      <input value={text} onChange={e => setText(e.target.value)}/>
+      <button onClick={()=> setTexts( [...texts, text] )} >Add text</button>
+      <ul>
+        {texts.map(t => <li>{t}</li>)}
+      </ul>
+    </div>
+  )
+
+}
 
 export default App;

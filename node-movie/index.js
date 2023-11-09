@@ -1,77 +1,50 @@
 require('dotenv').config();
 const express = require('express');
-
-//Tää pitää ehkä poistaa kun pilvi palveluun siirretään, tiedon vastaanottoa
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const userRoute = require('./routes/user');
+const cors = require('cors');
 
 const app = express();
 
-
-// const userRoute = require('./routes/user');
-// const cors = require('cors');
-
 //Setting middleware
 app.use(express.urlencoded({extended: true}));
-//app.use(express.json());
-//app.use(cors());
-//app.use(express.static('public'));
+app.use(express.json());
+app.use(cors());
+app.use(express.static('public'));
 
 //Setting routes
-//app.use('/user', userRoute );
+app.use('/user', userRoute );
 
-
-
-//start server
+//Start server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, function(){
-        console.log('Server is running on Port:' + PORT);
-});
-
-//app.get('/', function(req, res){
-//        res.send('Home page');
-//});
-
-//Same thing, but using arrow functions
-//app.get('/', (req, res) => {
-//   res.send('Hello World');
-//});
+    console.log('Server running on port ' + PORT);
+} );
 
 /**
  * Root mapping.
  */
-
 app.get('/', (req, res) => {
-   
+
     const persons = [
-        { fname: 'tupu', lname: 'ankka', age: 23},
-        { fname: 'hupu', lname: 'ankka'},
-        { fname: 'lupu', lname: 'ankka'},
+        { fname: 'Reima', lname: 'Riihimäki', age: 23},
+        { fname: 'Liisa', lname: 'Ihmemaa'},
+        { fname: 'John', lname: 'Doe'},
     ];
 
     res.json(persons);
 });
 
-app.get('/user', function(req, res){
+/**
+ * Post mapping test.
+ */
+app.post('/info' ,(req,res) => {
 
-    const id = req.query.id;
-    const userName = req.query.userName;
+    req.body.forEach(element => {
+        console.log(element);
+        console.log('-----');
+    });
+    // console.log(req.body.username);
+    // console.log(req.body.pw);
 
-    console.log(id)
-    console.log(userName)
-
-    res.send('Toni');
-});
-
-
-app.post('/home', function(req, res){
-    res.send('POST request to the homepage');
-});
-
-
-app.post('/user', upload.none() ,(req, res) => {
-    console.log(req.body.username);
-    console.log(req.body.pw)
-
-    res.send('POST working password');
+    res.send('Post working');
 });
