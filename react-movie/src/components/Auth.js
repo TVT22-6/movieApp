@@ -3,7 +3,12 @@ import { LoginContext } from "./Contexts";
 import { jwtToken, userData } from "./Signals";
 import axios from "axios";
 
-function Login() {
+function Login({ onLoginToggle }) {
+
+  function logout() {
+    jwtToken.value = '';
+    onLoginToggle(false); // Hide login form upon logout
+  }
 
     return (
       <div>
@@ -23,7 +28,7 @@ function Login() {
     )
   }
 
-  function LoginForm(){
+  function LoginForm({ onLoginToggle }){
 
     const [uname, setUname] = useState('');
     const [pw, setPw] = useState('');
