@@ -227,3 +227,53 @@ h1 {
     margin: 1rem;
   }
 }
+
+/*this part controls the styling of the different themes*/
+body.dark {
+  background-color: #121212;
+}
+
+.app.dark {
+  color: #ffffff;
+  background-color: #121212;
+}
+
+.search.dark {
+  background: #282828;
+  -webkit-box-shadow: 5px 5px 7px #1c1d1f, -5px -5px 7px #222527;
+  box-shadow: 5px 5px 7px #1c1d1f, -5px -5px 7px #222527;
+}
+
+.search.dark input {
+  color: #ffffff;
+  background: #282828;
+}
+
+.empty.dark {
+  color: #ffffff;
+}
+
+.container.dark {
+  background-color: #121212;
+}
+
+.movie.dark {
+  background-color: #282828;
+  box-shadow: 0px 13px 10px -7px rgba(255, 255, 255, 0.1);
+}
+
+.movie.dark div:nth-of-type(1) {
+  color: #ffffff;
+}
+
+.movie.dark div:nth-of-type(3) {
+  background-color: #121212;
+}
+
+.movie.dark div:nth-of-type(3) span {
+  color: #616161;
+}
+
+.movie.dark div:nth-of-type(3) h3 {
+  color: #ffffff;
+}
