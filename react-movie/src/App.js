@@ -11,6 +11,7 @@ const App = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("home"); // Aktiivisen välilehden tila
+  const [theme, setTheme] = useState('light'); 
 
   const searchMovies = async (title) => {
     const response = await fetch(`${API_URL}&s=${title}`);
@@ -28,9 +29,18 @@ const App = () => {
     setActiveTab("home"); // Palaa etusivulle uloskirjautumisen jälkeen
   };
 
+  const handleToggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
   return (
-    <div className="app">
+    <div className={`app ${theme}`}>
       <h1>NWADB</h1>
+
+      <button onClick={handleToggleTheme}>Toggle Theme</button>
+
+
+  
 
       {/* Nappulat välilehtien vaihtamiseen */}
       <div>
