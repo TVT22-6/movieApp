@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Movie from "./Movie";
-import { jwtToken, userData } from "./components/Signals";
 
 //const API_URL = 'http://www.omdbapi.com?apikey=d4f64de4';
 

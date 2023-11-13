@@ -61,18 +61,12 @@ router.post("/addReview", upload.none(), async (req, res) => {
     const content = req.body.content;
     const genre = req.body.genre;
 
-    // Assuming you have a database model named YourDatabaseModel
-    const review = new addReview({
-      moviename: mname,
-      uservotescore: userVS,
-      dateposted: date,
-      content: content,
-      genre: genre,
-      // Include other fields if needed
-    });
+    if (!mname) {
+      return res.status(400).json({ error: "Movie name (mname) is required." });
+    }
 
     // Save the review to the database
-    await review.save();
+    await addReview(mname, genre, date, content, userVS);
 
     // Respond with a success message
     res
@@ -88,10 +82,24 @@ router.post("/addReview", upload.none(), async (req, res) => {
 router.get("/getReview", async (req, res) => {
   try {
     // Assuming YourDatabaseModel.find() returns all reviews
-    const reviews = await getReview.find();
+    const reviews = await getReview();
 
     // Respond with the retrieved reviews
     res.status(200).json({ reviews });
+  } catch (error) {
+    // Handle errors
+    console.error("Error fetching reviews from the database:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/getReview/:mname", async (req, res) => {
+  try {
+    // Assuming YourDatabaseModel.find() returns all reviews
+    const reviewsBymName = await getReviewBymName({ mname: req.params.mname });
+
+    // Respond with the retrieved reviews
+    res.status(200).json({ reviewsBymName });
   } catch (error) {
     // Handle errors
     console.error("Error fetching reviews from the database:", error);
