@@ -4,6 +4,7 @@ import SearchIcon from "./search.svg";
 import MovieCard from "./MovieCard";
 import { Login } from "./components/Auth";
 import { jwtToken, userData } from "./components/Signals";
+import Navbar from "./components/Navbar";
 
 const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 
@@ -11,7 +12,7 @@ const App = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("home"); // Aktiivisen välilehden tila
-  const [theme, setTheme] = useState('light'); 
+  const [theme, setTheme] = useState('light');
 
   const searchMovies = async (title) => {
     const response = await fetch(`${API_URL}&s=${title}`);
@@ -34,13 +35,19 @@ const App = () => {
   };
 
   return (
+
+
     <div className={`app ${theme}`}>
+
+      <div classname="navbar">
+        <Navbar />
+      </div>
       <h1>NWADB</h1>
 
       <button onClick={handleToggleTheme}>Toggle Theme</button>
 
 
-  
+
 
       {/* Nappulat välilehtien vaihtamiseen */}
       <div>
