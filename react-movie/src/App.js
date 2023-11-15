@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./styles/App.css";
 import SearchIcon from "./search.svg";
+import Navbar from "./components/Navbar";
+import RegistrationForm from './SignIn';
+import DeleteUser from './DeleteUser';
 import MovieCard from "./MovieCard";
 import { Login } from "./components/Auth";
 import { jwtToken, userData } from "./components/Signals";
-import Navbar from "./components/Navbar";
 
 const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 
@@ -12,7 +14,7 @@ const App = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("home"); // Aktiivisen välilehden tila
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('light'); 
 
   const searchMovies = async (title) => {
     const response = await fetch(`${API_URL}&s=${title}`);
@@ -23,6 +25,7 @@ const App = () => {
   useEffect(() => {
     searchMovies("Spiderman");
   }, []);
+
 
   const handleLogout = () => {
     jwtToken.value = ""; // Kirjaudu ulos
@@ -53,12 +56,10 @@ const App = () => {
       <div>
         <button onClick={() => setActiveTab("Review")}>Review</button>
         <button onClick={() => setActiveTab("home")}>Home</button>
-        {jwtToken.value.length === 0 && (
-          <button onClick={() => setActiveTab("auth")}>Log In</button>
-        )}
-        {jwtToken.value.length > 0 && (
-          <button onClick={handleLogout}>Log Out</button>
-        )}
+        <button onClick={() => setActiveTab('actors')}>Actors</button>
+        <button onClick={() => setActiveTab('auth')}>
+          {jwtToken.value.length === 0 ? 'Log In' : 'Log Out'}
+        </button>
       </div>
 
       {/* Ehdollinen sisältö aktiivisen välilehden perusteella */}
@@ -91,9 +92,31 @@ const App = () => {
           )}
         </div>
       )}
+      
 
-      {/* Kirjautumisvälilehden sisältö */}
-      {activeTab === "auth" && <Login />}
+{activeTab === 'actors' && (
+        <div>
+          <h2>Actors</h2>
+          {/* Add content related to actors here */}
+        </div>
+      )}
+
+      {activeTab === 'auth' && (
+        <>
+          {jwtToken.value.length === 0 ? (
+            <>
+              <Login />            
+              <h2>Don't have an account? Sign in:</h2>
+              <RegistrationForm />
+            </>
+          ) : (
+            <>
+            <button onClick={handleLogout}>Log Out</button>
+            <DeleteUser />
+            </>
+          )}
+        </>
+      )}
 
       {/* Kirjautumisvälilehden sisältö */}
       {activeTab === "Review"}
