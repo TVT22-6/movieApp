@@ -4,7 +4,6 @@ import SearchIcon from "./search.svg";
 import MovieCard from "./MovieCard";
 import { Login } from "./components/Auth";
 import { jwtToken, userData } from "./components/Signals";
-import Navbar from "./components/Navbar";
 
 const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 
@@ -12,7 +11,7 @@ const App = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("home"); // Aktiivisen välilehden tila
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('light'); 
 
   const searchMovies = async (title) => {
     const response = await fetch(`${API_URL}&s=${title}`);
@@ -23,6 +22,7 @@ const App = () => {
   useEffect(() => {
     searchMovies("Spiderman");
   }, []);
+
 
   const handleLogout = () => {
     jwtToken.value = ""; // Kirjaudu ulos
@@ -53,6 +53,7 @@ const App = () => {
       <div>
         <button onClick={() => setActiveTab("Review")}>Review</button>
         <button onClick={() => setActiveTab("home")}>Home</button>
+        <button onClick={() => setActiveTab('actors')}>Actors</button>
         {jwtToken.value.length === 0 && (
           <button onClick={() => setActiveTab("auth")}>Log In</button>
         )}
@@ -89,6 +90,14 @@ const App = () => {
               <h2>No movies found</h2>
             </div>
           )}
+        </div>
+      )}
+      
+
+{activeTab === 'actors' && (
+        <div>
+          <h2>Actors</h2>
+          {/* Add content related to actors here */}
         </div>
       )}
 
