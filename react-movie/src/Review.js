@@ -7,9 +7,14 @@ const Review = () => {
   useEffect(() => {
     const fetchReviewedMovies = async () => {
       try {
-        const response = await fetch("http://localhost:3001/getAll"); // Adjust the API endpoint
-        const data = await response.json();
-        setMovies(data.reviewsAll); // Assuming the response structure has a 'reviewsAll' field
+        const response = await fetch("http://localhost:3001/user/getAll");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const dataText = await response.text(); // Get raw text response
+        console.log("Raw API Response:", dataText);
+        const data = JSON.parse(dataText); // Try parsing the response
+        setMovies(data.reviewsAll);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -56,6 +61,7 @@ const Review = () => {
               <p>Genre: {movie.genre}</p>
               <p>User Vote Score: {movie.uservotescore}</p>
               <p>Review: {movie.content}</p>
+              <p>Date: {movie.dateposted}</p>
             </div>
           </li>
         ))}

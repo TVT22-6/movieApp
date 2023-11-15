@@ -87,6 +87,8 @@ const App = () => {
         </div>
       )}
 
+      {activeTab === "Review" && <Review />}
+
       {activeTab === "actors" && (
         <div>
           <h2>Actors</h2>
@@ -112,11 +114,6 @@ const App = () => {
       )}
 
       {/* Kirjautumisvälilehden sisältö */}
-      {activeTab === "Review"}
-      <div>
-        <Review />
-        {/* Add content related to actors here */}
-      </div>
     </div>
   );
 };
