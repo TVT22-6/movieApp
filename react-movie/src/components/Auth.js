@@ -1,14 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { LoginContext } from "./Contexts";
+
 import { jwtToken, userData } from "./Signals";
 import axios from "axios";
 
-function Login({ onLoginToggle }) {
-
-  function logout() {
-    jwtToken.value = '';
-    onLoginToggle(false); // Hide login form upon logout
-  }
+function Login() {
 
     return (
       <div>
@@ -28,7 +23,7 @@ function Login({ onLoginToggle }) {
     )
   }
 
-  function LoginForm({ onLoginToggle }){
+  function LoginForm(){
 
     const [uname, setUname] = useState('');
     const [pw, setPw] = useState('');
@@ -42,7 +37,7 @@ function Login({ onLoginToggle }) {
     return(
       <div>
         <input value={uname} onChange={e => setUname(e.target.value)}/>
-        <input value={pw} onChange={e => setPw(e.target.value)}/>
+        <input type="password" value={pw} onChange={e => setPw(e.target.value)}/><br/>
         <button onClick={login}>Login</button>
       </div>
     );

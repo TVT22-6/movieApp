@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const { addReview, getReview } = require("../postgre/Review");
-const { addUser, getUsers, checkUser } = require("../postgre/user");
+const { addUser, getUsers, checkUser, delUser } = require("../postgre/user");
 
 /**
  * User root get mapping
@@ -50,6 +50,21 @@ router.post("/login", upload.none(), async (req, res) => {
     }
   } else {
     res.status(401).json({ error: "Customer not found" });
+  }
+});
+
+//Delete muokkaukset myös user.js kansiossa
+router.delete('/delete', async (req, res) => {
+  const uname = req.user.uname; // Assuming 'req.user' contains the authenticated user's details
+
+  console.log("Deleting user:", uname); // Log for debugging
+
+  try {
+      await deleteUser(uname);
+      res.send("User deleted successfully");
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({error: error.message});
   }
 });
 
@@ -118,5 +133,32 @@ router.get("/private", async (req, res) => {
     res.status(403).json({ error: "Access forbidden" });
   }
 });
+
+
+
+const handleSubmit = async (event) => {
+  event.preventDefault();
+
+  try {
+      const response = await fetch('http://localhost:3001/user/register', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+              uname: username,
+              pw: pw
+          })
+      });
+
+      const data = await response.json();
+      console.log(data);
+      // Handle response here
+  } catch (error) {
+      console.error('Error:', error);
+      // Handle error here
+  }
+};
+
 
 module.exports = router;

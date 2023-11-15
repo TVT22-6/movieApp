@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./styles/App.css";
 import SearchIcon from "./search.svg";
+import Navbar from "./components/Navbar";
+import RegistrationForm from './SignIn';
+import DeleteUser from './DeleteUser';
 import MovieCard from "./MovieCard";
 import { Login } from "./components/Auth";
 import { jwtToken, userData } from "./components/Signals";
@@ -54,12 +57,9 @@ const App = () => {
         <button onClick={() => setActiveTab("Review")}>Review</button>
         <button onClick={() => setActiveTab("home")}>Home</button>
         <button onClick={() => setActiveTab('actors')}>Actors</button>
-        {jwtToken.value.length === 0 && (
-          <button onClick={() => setActiveTab("auth")}>Log In</button>
-        )}
-        {jwtToken.value.length > 0 && (
-          <button onClick={handleLogout}>Log Out</button>
-        )}
+        <button onClick={() => setActiveTab('auth')}>
+          {jwtToken.value.length === 0 ? 'Log In' : 'Log Out'}
+        </button>
       </div>
 
       {/* Ehdollinen sisältö aktiivisen välilehden perusteella */}
@@ -101,8 +101,22 @@ const App = () => {
         </div>
       )}
 
-      {/* Kirjautumisvälilehden sisältö */}
-      {activeTab === "auth" && <Login />}
+      {activeTab === 'auth' && (
+        <>
+          {jwtToken.value.length === 0 ? (
+            <>
+              <Login />            
+              <h2>Don't have an account? Sign in:</h2>
+              <RegistrationForm />
+            </>
+          ) : (
+            <>
+            <button onClick={handleLogout}>Log Out</button>
+            <DeleteUser />
+            </>
+          )}
+        </>
+      )}
 
       {/* Kirjautumisvälilehden sisältö */}
       {activeTab === "Review"}
