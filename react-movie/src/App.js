@@ -8,6 +8,7 @@ import MovieCard from "./MovieCard";
 import { Login } from "./components/Auth";
 import { jwtToken, userData } from "./components/Signals";
 import Review from "./Review";
+import Group from "./group";
 
 const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 
@@ -49,6 +50,7 @@ const App = () => {
       {/* Nappulat välilehtien vaihtamiseen */}
       <div>
         <button onClick={() => setActiveTab("Review")}>Review</button>
+        <button onClick={() => setActiveTab("Group")}>Groups</button>
         <button onClick={() => setActiveTab("home")}>Home</button>
         <button onClick={() => setActiveTab("actors")}>Actors</button>
         <button onClick={() => setActiveTab("auth")}>
@@ -114,6 +116,13 @@ const App = () => {
       )}
 
       {/* Kirjautumisvälilehden sisältö */}
+      {activeTab === "Group" && (
+  <div>
+    <h2>Groups</h2>
+    {/* Add content related to groups here */}
+    <Group />
+  </div>
+)}
     </div>
   );
 };
