@@ -10,6 +10,10 @@
 :root {
   --font-roboto: "Roboto Slab", serif;
   --font-raleway: "Raleway", sans-serif;
+  --mainColor: black;
+  --mainColor: rgb(25, 25, 25);
+  --secondaryColor: rgb(255, 230, 0);
+  --textColor: #eee;
 }
 
 body {
@@ -19,33 +23,17 @@ body {
 
 .app {
   padding: 4rem;
-
   display: flex;
   justify-content: center;
-  align-items: center;
   flex-direction: column;
-}
-
-h1 {
-  font-size: 3rem;
-  letter-spacing: 0.9px;
-  background: linear-gradient(90deg,
-      rgba(249, 211, 180, 1) 0%,
-      rgba(249, 211, 180, 0) 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  width: fit-content;
 }
 
 .search {
   width: 71%;
   margin: 4rem 0 2rem;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 1.5rem 1.75rem;
   border-radius: 3rem;
   background: #1f2123;
@@ -70,6 +58,7 @@ h1 {
   width: 35px;
   height: 35px;
   cursor: pointer;
+  justify-content: center;
 }
 
 /* .search button {
@@ -105,7 +94,6 @@ h1 {
 .container {
   width: 100%;
   margin-top: 3rem;
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -220,6 +208,7 @@ h1 {
 
   .container {
     margin-top: 2rem;
+    z-index: 1;
   }
 
   .movie {
@@ -276,4 +265,82 @@ body.dark {
 
 .movie.dark div:nth-of-type(3) h3 {
   color: #ffffff;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  padding: 0 2rem;
+  background-color: var(--mainColor);
+  color: var(--textColor);
+  z-index: 2;
+}
+
+nav a {
+  margin: 0 1rem;
+  color: var(--textColor);
+  text-decoration: none;
+}
+
+nav a:hover {
+  color: var(--secondaryColor);
+}
+
+header .nav-btn {
+  padding: 5px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--textColor);
+  visibility: hidden;
+  opacity: 0;
+  font-size: 1.8rem;
+}
+
+header div,
+nav {
+  display: flex;
+  align-items: center;
+}
+
+@media only screen and (max-width: 1024px) {
+  header .nav-btn {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  header nav {
+    position: fixed;
+    top: -100vh;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    background-color: var(--mainColor);
+    transition: 1s;
+    z-index: 3;
+
+  }
+
+  header .responsive_nav {
+
+    transform: translateY(100vh);
+  }
+
+  nav .nav-close-btn {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+  }
+
+  nav a {
+    font-size: 1.5rem;
+  }
 }
