@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import "./styles/App.css";
 import SearchIcon from "./search.svg";
 import Navbar from "./components/Navbar";
-import RegistrationForm from './SignIn';
-import DeleteUser from './DeleteUser';
+import RegistrationForm from "./SignIn";
+import DeleteUser from "./DeleteUser";
 import MovieCard from "./MovieCard";
 import { Login } from "./components/Auth";
 import { jwtToken, userData } from "./components/Signals";
+import Review from "./Review";
 
 const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 
@@ -14,7 +15,7 @@ const App = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("home"); // Aktiivisen välilehden tila
-  const [theme, setTheme] = useState('light'); 
+  const [theme, setTheme] = useState("light");
 
   const searchMovies = async (title) => {
     const response = await fetch(`${API_URL}&s=${title}`);
@@ -26,7 +27,6 @@ const App = () => {
     searchMovies("Spiderman");
   }, []);
 
-
   const handleLogout = () => {
     jwtToken.value = ""; // Kirjaudu ulos
     userData.value = null;
@@ -34,14 +34,11 @@ const App = () => {
   };
 
   const handleToggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   return (
-
-
     <div className={`app ${theme}`}>
-
       <div classname="navbar">
         <Navbar />
       </div>
@@ -49,16 +46,13 @@ const App = () => {
 
       <button onClick={handleToggleTheme}>Toggle Theme</button>
 
-
-
-
       {/* Nappulat välilehtien vaihtamiseen */}
       <div>
         <button onClick={() => setActiveTab("Review")}>Review</button>
         <button onClick={() => setActiveTab("home")}>Home</button>
-        <button onClick={() => setActiveTab('actors')}>Actors</button>
-        <button onClick={() => setActiveTab('auth')}>
-          {jwtToken.value.length === 0 ? 'Log In' : 'Log Out'}
+        <button onClick={() => setActiveTab("actors")}>Actors</button>
+        <button onClick={() => setActiveTab("auth")}>
+          {jwtToken.value.length === 0 ? "Log In" : "Log Out"}
         </button>
       </div>
 
@@ -92,27 +86,26 @@ const App = () => {
           )}
         </div>
       )}
-      
 
-{activeTab === 'actors' && (
+      {activeTab === "actors" && (
         <div>
           <h2>Actors</h2>
           {/* Add content related to actors here */}
         </div>
       )}
 
-      {activeTab === 'auth' && (
+      {activeTab === "auth" && (
         <>
           {jwtToken.value.length === 0 ? (
             <>
-              <Login />            
+              <Login />
               <h2>Don't have an account? Sign in:</h2>
               <RegistrationForm />
             </>
           ) : (
             <>
-            <button onClick={handleLogout}>Log Out</button>
-            <DeleteUser />
+              <button onClick={handleLogout}>Log Out</button>
+              <DeleteUser />
             </>
           )}
         </>
@@ -120,6 +113,10 @@ const App = () => {
 
       {/* Kirjautumisvälilehden sisältö */}
       {activeTab === "Review"}
+      <div>
+        <Review />
+        {/* Add content related to actors here */}
+      </div>
     </div>
   );
 };

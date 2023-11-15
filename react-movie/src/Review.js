@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from "react";
 
-//const API_URL = 'http://www.omdbapi.com?apikey=d4f64de4';
-
 const Review = () => {
   const [movies, setMovies] = useState([]);
   const [sortBy, setSortBy] = useState("alphabetical");
 
   useEffect(() => {
-    // Fetch reviewed movies from your database and set them in the 'movies' state.
-    // Replace the following placeholder code with your actual data fetching logic.
     const fetchReviewedMovies = async () => {
       try {
-        // Replace with your API call to fetch reviewed movies from your database
-        const response = await fetch("http://localhost:3000");
+        const response = await fetch("http://localhost:3001/getAll"); // Adjust the API endpoint
         const data = await response.json();
-        setMovies(data);
+        setMovies(data.reviewsAll); // Assuming the response structure has a 'reviewsAll' field
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -27,13 +22,19 @@ const Review = () => {
     setSortBy(event.target.value);
   };
 
-  const sortedMovies = [...movies];
+  const getSortedMovies = () => {
+    const sortedMovies = [...movies];
 
-  if (sortBy === "alphabetical") {
-    sortedMovies.sort((a, b) => a.title.localeCompare(b.title));
-  } else if (sortBy === "top-rated") {
-    sortedMovies.sort((a, b) => b.rating - a.rating);
-  }
+    if (sortBy === "alphabetical") {
+      sortedMovies.sort((a, b) => a.moviename.localeCompare(b.moviename));
+    } else if (sortBy === "genre") {
+      sortedMovies.sort((a, b) => a.genre.localeCompare(b.genre));
+    } else if (sortBy === "uservotescore") {
+      sortedMovies.sort((a, b) => b.uservotescore - a.uservotescore);
+    }
+
+    return sortedMovies;
+  };
 
   return (
     <div>
@@ -42,17 +43,19 @@ const Review = () => {
         Sort by:
         <select value={sortBy} onChange={handleSortChange}>
           <option value="alphabetical">Alphabetical</option>
-          <option value="top-rated">Top Rated</option>
+          <option value="genre">Genre</option>
+          <option value="uservotescore">User Vote Score</option>
         </select>
       </label>
 
       <ul>
-        {sortedMovies.map((movie) => (
+        {getSortedMovies().map((movie) => (
           <li key={movie.id}>
             <div>
-              <h3>{movie.title}</h3>
-              <p>Rating: {movie.rating}</p>
-              <p>Review: {movie.review}</p>
+              <h3>{movie.moviename}</h3>
+              <p>Genre: {movie.genre}</p>
+              <p>User Vote Score: {movie.uservotescore}</p>
+              <p>Review: {movie.content}</p>
             </div>
           </li>
         ))}
