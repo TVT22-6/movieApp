@@ -4,7 +4,12 @@ const upload = multer({ dest: "upload/" });
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const { addReview, getReview } = require("../postgre/Review");
+const {
+  addReview,
+  getReview,
+  getAllByMovie,
+  getAll,
+} = require("../postgre/Review");
 const { addUser, getUsers, checkUser, delUser } = require("../postgre/user");
 
 /**
