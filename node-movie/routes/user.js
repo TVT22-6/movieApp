@@ -4,7 +4,12 @@ const upload = multer({ dest: "upload/" });
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const { addReview, getReview } = require("../postgre/Review");
+const {
+  addReview,
+  getReview,
+  getAll,
+  getAllByMovie,
+} = require("../postgre/Review");
 const { addUser, getUsers, checkUser } = require("../postgre/user");
 
 /**
@@ -93,13 +98,36 @@ router.get("/getReview", async (req, res) => {
   }
 });
 
-router.get("/getReview/:mname", async (req, res) => {
+router.get("/getAllByMovie", async (req, res) => {
   try {
-    // Assuming YourDatabaseModel.find() returns all reviews
-    const reviewsBymName = await getReviewBymName({ mname: req.params.mname });
+    const moviename = req.query.moviename;
+
+    console.log("Received request with query parameters:", req.query); // Log all query parameters
+    console.log("Extracted moviename:", moviename); // Log the extracted moviename
+
+    if (!moviename) {
+      return res
+        .status(400)
+        .json({ error: "Movie name (moviename) is required." });
+    }
+
+    const reviewsByMovie = await getAllByMovie(moviename);
 
     // Respond with the retrieved reviews
-    res.status(200).json({ reviewsBymName });
+    res.status(200).json({ reviewsByMovie });
+  } catch (error) {
+    // Handle errors
+    console.error("Error fetching reviews from the database:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/getAll", async (req, res) => {
+  try {
+    // Assuming YourDatabaseModel.find() returns all reviews
+    const reviewsAll = await getAll();
+
+    res.status(200).json({ reviewsAll });
   } catch (error) {
     // Handle errors
     console.error("Error fetching reviews from the database:", error);
