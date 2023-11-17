@@ -4,11 +4,11 @@ Voisi näyttää jotakuinkin tältä.
 Komennot 1:
 
     Käyttäjät
-        GET /users: Listaa kaikki käyttäjät.
-        POST /users: Luo uusi käyttäjä.
-        GET /users/{userId}: Hae tietyn käyttäjän tiedot.
-        PUT /users/{userId}: Päivitä tietyn käyttäjän tiedot.
-        DELETE /users/{userId}: Poista tietty käyttäjä.
+        GET /user: Listaa kaikki käyttäjät.
+        POST /user/register/uname+pw: Luo uusi käyttäjä.
+        GET /user/{userId}: Hae tietyn käyttäjän tiedot.
+        PUT /user/update/pw: Päivitä tietyn käyttäjän salasana.
+        DELETE /user/delete/uname: Poista tietty käyttäjä.
 
     Elokuvat, 
           vaikka elokuvat haetaankin rajapinnan kautta niin ihan hyvin voisi tallentaa databaseen suosituimmat/ääniä saaneet.
@@ -19,10 +19,10 @@ Komennot 1:
         DELETE /movies/{movieId}: Poista tietty elokuva.
 
     Arvostelut
-        GET /reviews: Listaa kaikki arvostelut.
-        POST /reviews: Lisää uusi arvostelu.
-        GET /reviews/{reviewId}: Hae tietyn arvostelun tiedot.
-        PUT /reviews/{reviewId}: Päivitä tietyn arvostelun tiedot.
+        GET /review/getAll: Listaa kaikki arvostelut.
+        POST /review/addReview: Lisää uusi arvostelu.
+        GET /reviews/getReview: Hae tietyn arvostelun tiedot.
+        PUT /review/addReview: Päivitä tietyn arvostelun tiedot.
         DELETE /reviews/{reviewId}: Poista tietty arvostelu.
 
 ----------------------------------------------------------------------------------------------------
