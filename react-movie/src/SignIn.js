@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
+import './styles/Settings.css';
 
 const RegistrationForm = () => {
     const [uname, setUname] = useState('');
@@ -31,30 +32,32 @@ const RegistrationForm = () => {
 
     return (
         <div>
+            <div className="status-message"><h2>Dont have an account? Sign in:</h2></div>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="username">Username:</label>
+                <div className="box signin-box">
+                <h2>Sign In</h2>
+                    <label htmlFor="username-reg">Username: </label>
                     <input
                         type="text"
-                        id="username"
+                        id="username-reg"
                         value={uname}
                         onChange={(e) => setUname(e.target.value)}
                     />
-                </div>
-                <div>
-                    <label htmlFor="password">Password:</label>
+
+                    <label htmlFor="password-reg">Password: </label>
                     <input
                         type="password"
-                        id="password"
+                        id="password-reg"
                         value={pw}
                         onChange={(e) => setPw(e.target.value)}
                     />
+
+                    <button type="submit" className="submit-button">Register</button>
                 </div>
-                <button type="submit">Register</button>
             </form>
-            {registrationStatus && <p>{registrationStatus}</p>}
+            {registrationStatus && <div className="status-message"><p>{registrationStatus}</p></div>}
         </div>
     );
-};
+}
 
 export default RegistrationForm;

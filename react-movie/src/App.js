@@ -15,7 +15,7 @@ const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 const App = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState("home"); // Aktiivisen välilehden tila
+  const [activeTab, setActiveTab] = useState("home"); //Active tab is used to determine which tab is currently active
   const [theme, setTheme] = useState("light");
 
   const searchMovies = async (title) => {
@@ -87,24 +87,25 @@ const App = () => {
           </div>
         )}
 
+
+        {/* Login window, which contains the SignIn and DeleteUser functions */}
         {activeTab === "auth" && (
           <div>
             {jwtToken.value.length === 0 ? (
               <div>
-                <Login />
-                <h2>Don't have an account? Sign in:</h2>
+                <Login />  {/* Rendered when no user is logged in */}
                 <RegistrationForm />
               </div>
             ) : (
               <div>
-                <button onClick={handleLogout}>Log Out</button>
+                <button onClick={handleLogout} className="red-button" >Log Out</button> {/* Rendered when a user is logged in */}
                 <DeleteUser />
               </div>
             )}
           </div>
         )}
 
-        {/* Kirjautumisvälilehden sisältö */}
+
         {activeTab === "Group" && (
           <div>
             <h2>Groups</h2>

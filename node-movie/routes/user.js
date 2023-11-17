@@ -60,16 +60,23 @@ router.post("/login", upload.none(), async (req, res) => {
 
 //Delete muokkaukset myös user.js kansiossa
 router.delete("/delete", async (req, res) => {
-  const uname = req.user.uname; // Assuming 'req.user' contains the authenticated user's details
+  const token = req.headers.authorization?.split(" ")[1];
+  console.log("Received token in backend:", token);
 
-  console.log("Deleting user:", uname); // Log for debugging
+  if (!token) {
+    return res.status(401).send("Access denied on backend. No token provided.");
+}
 
   try {
-    await deleteUser(uname);
-    res.send("User deleted successfully");
+      // Verify the token and extract the username
+      const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+      const uname = decoded.username; // Assuming the username is part of the token payload
+
+      await delUser(uname);
+      res.send("User deleted successfully");
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: error.message });
+      console.log(error);
+      res.status(500).json({error: error.message});
   }
 });
 

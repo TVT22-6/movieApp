@@ -1,36 +1,55 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './styles/Settings.css';
+import { jwtToken, userData } from "./components/Signals";
+
 
 const DeleteUser = () => {
-
-    const [DeleteStatus, setDeleteStatus] = useState('');
-
+    const [deleteStatus, setDeleteStatus] = useState('');
+   
     const handleDelete = () => {
-        axios.delete('http://localhost:3001/user/delete')
-            .then(response => {
-                console.log(response.data);
-                setDeleteStatus('Delete successful. Information deleted.');
-                // Handle the post-deletion process, e.g., log the user out, clear local state, redirect, etc.
-            })
-            .catch(error => {
-                if (error.response) {
-                    // Handle specific error response if any
-                    console.log(error.response.data);
-                    setDeleteStatus('Delete user failed: ' + error.response.data);
-                } else {
-                    // Handle general network errors
-                    console.log("Error: ", error.message);
-                    setDeleteStatus('Delete user failed: ' + error.message);
-                }
-            });
+
+        const token = localStorage.getItem('jwtToken'); // Retrieve the JWT token from local storage
+        console.log('Token being sent:', token); // Debugging: Log the token
+    
+
+        if (!token) {
+            setDeleteStatus('No authentication token found. Please log in.');
+            return;
+        }
+
+        axios.delete('http://localhost:3001/user/delete', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            console.log(response.data);
+            setDeleteStatus('Account successfully deleted.');
+            
+             // Reset the signals
+            jwtToken.value = '';
+            userData.value = null;
+
+            // Clear the token from local storage
+            localStorage.removeItem('jwtToken');
+
+            // Redirect user to the home page
+            // window.location.reload();
+        })
+        .catch(error => {
+            const errorMessage = error.response?.data || error.message;
+            console.error("Error during user deletion:", errorMessage);
+            setDeleteStatus('Failed to delete account: ' + errorMessage);
+        });
     };
 
     return (
         <div>
-             <h2>Delete Your Account</h2>
+            <h2>Delete Your Account</h2>
             <p>This action is irreversible. Please proceed with caution.</p>
-            <button onClick={handleDelete}>Delete My Account</button>
-            {DeleteStatus && <p>{DeleteStatus}</p>}
+            <button onClick={handleDelete} className="red-button">Delete My Account</button>
+            {deleteStatus && <p>{deleteStatus}</p>}
         </div>
     );
 };

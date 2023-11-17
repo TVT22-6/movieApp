@@ -11,8 +11,8 @@ async function addUser(uname, pw) {
   await pgPool.query(sql.INSERT_USER, [uname, pw]);
 }
 
-async function delUser(uname, pw) {
-  await pgPool.query(sql.DELETE_USER, [uname, pw]);
+async function delUser(uname) {
+  await pgPool.query(sql.DELETE_USER, [uname]);
 }
 
 async function getUsers() {

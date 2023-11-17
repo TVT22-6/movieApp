@@ -1,0 +1,76 @@
+/* settings.css */
+
+/* This Message CSS will control, LogIn-, SignIn- and registaration text */
+.status-message {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Common styles for boxes */
+.box {
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px auto;
+    max-width: 300px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+}
+
+.box:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+/* Styles for headings inside the box */
+.box h2 {
+    text-align: center;
+}
+
+/* Styles for labels and inputs inside the box */
+.box label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.box input[type="text"], .box input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0 20px 0;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Styles for buttons */
+.box button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    margin: 5px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 4px;
+}
+
+.box button:hover {
+    opacity: 0.8;
+}
+
+/* Red button styles */
+.red-button {
+    background-color: red;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.red-button:hover {
+    background-color: darkred;
+}
