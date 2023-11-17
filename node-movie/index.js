@@ -27,9 +27,9 @@ app.listen(PORT, function () {
 app.get('/', (req, res) => {
 
     const persons = [
-        { fname: 'Reima', lname: 'Riihimäki', age: 23 },
-        { fname: 'Liisa', lname: 'Ihmemaa' },
-        { fname: 'John', lname: 'Doe' },
+        { fname: 'tupu', lname: 'ankka', age: 8 },
+        { fname: 'hupu', lname: 'ankka' },
+        { fname: 'lupu', lname: 'ankka' },
     ];
 
     res.json(persons);
