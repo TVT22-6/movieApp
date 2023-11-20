@@ -9,6 +9,7 @@ import { Login } from "./components/Auth";
 import { jwtToken, userData } from "./components/Signals";
 import Review from "./Review";
 import Group from "./group";
+import Actor from "./actor";
 import MovieSearch from "./components/MovieSearch";
 import ReviewMovies from "./Review";
 
@@ -17,7 +18,7 @@ const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 const App = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState("home"); //Active tab is used to determine which tab is currently active
+  const [activeTab, setActiveTab] = useState("home"); // Aktiivisen välilehden tila
   const [theme, setTheme] = useState("light");
 
   const searchMovies = async (title) => {
@@ -47,9 +48,13 @@ const App = () => {
   return (
     <div>
       <div className="navbar">
-        <Navbar setActiveTab={setActiveTab} handleLogout={handleLogout} />
+        <Navbar
+          setActiveTab={setActiveTab}
+          handleLogout={handleLogout}
+        />
       </div>
       <div className={`app ${theme}`}>
+
         <button onClick={handleToggleTheme}>Toggle Theme</button>
 
         {/* Nappulat välilehtien vaihtamiseen */}
@@ -83,15 +88,14 @@ const App = () => {
         {activeTab === "actors" && (
           <div>
             <h2>Actors</h2>
-            {/* Add content related to actors here */}
+            <Actor />
           </div>
         )}
-
+        {/*Open reviw tab */}
         {activeTab === "Review" && (
           <div>
-            <ReviewMovies />
-          </div>
-        )}
+            <Review />
+          </div>)};
 
         {/* Login window, which contains the SignIn and DeleteUser functions */}
         {activeTab === "auth" && (
@@ -112,6 +116,7 @@ const App = () => {
             )}
           </div>
         )}
+
 
         {activeTab === "Group" && (
           <div>
