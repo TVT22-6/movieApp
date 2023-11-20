@@ -1,5 +1,6 @@
-// App.js
 import React, { useState, useEffect } from "react";
+import "./styles/App.css";
+import SearchIcon from "./search.svg";
 import Navbar from "./components/Navbar";
 import RegistrationForm from "./SignIn";
 import DeleteUser from "./DeleteUser";
@@ -9,6 +10,7 @@ import { jwtToken, userData } from "./components/Signals";
 import Review from "./Review";
 import Group from "./group";
 import MovieSearch from "./components/MovieSearch";
+import ReviewMovies from "./Review";
 
 const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 
@@ -25,13 +27,13 @@ const App = () => {
   };
 
   useEffect(() => {
-    searchMovies("Megan Fox");
+    searchMovies("Spiderman");
   }, []);
 
   const handleLogout = () => {
-    jwtToken.value = "";
+    jwtToken.value = ""; // Kirjaudu ulos
     userData.value = null;
-    setActiveTab("home");
+    setActiveTab("home"); // Palaa etusivulle uloskirjautumisen jälkeen
   };
 
   const handleToggleTheme = () => {
@@ -45,25 +47,22 @@ const App = () => {
   return (
     <div>
       <div className="navbar">
-        <Navbar
-          setActiveTab={setActiveTab}
-          handleLogout={handleLogout}
-        />
+        <Navbar setActiveTab={setActiveTab} handleLogout={handleLogout} />
       </div>
       <div className={`app ${theme}`}>
-
         <button onClick={handleToggleTheme}>Toggle Theme</button>
 
         {/* Nappulat välilehtien vaihtamiseen */}
         <div>
           <button onClick={() => setActiveTab("Review")}>Review</button>
           <button onClick={() => setActiveTab("home")}>Home</button>
-          <button onClick={() => setActiveTab('actors')}>Actors</button>
+          <button onClick={() => setActiveTab("actors")}>Actors</button>
           <button onClick={() => setActiveTab("auth")}>
             {jwtToken.value.length === 0 ? "Log In" : "Log Out"}
           </button>
         </div>
 
+        {/* Ehdollinen sisältö aktiivisen välilehden perusteella */}
         {activeTab === "home" && (
           <div>
             <MovieSearch onSearch={handleSearchMovies} />
@@ -80,31 +79,39 @@ const App = () => {
             )}
           </div>
         )}
-        {activeTab === 'actors' && (
+
+        {activeTab === "actors" && (
           <div>
             <h2>Actors</h2>
             {/* Add content related to actors here */}
           </div>
         )}
 
+        {activeTab === "Review" && (
+          <div>
+            <ReviewMovies />
+          </div>
+        )}
 
         {/* Login window, which contains the SignIn and DeleteUser functions */}
         {activeTab === "auth" && (
           <div>
             {jwtToken.value.length === 0 ? (
               <div>
-                <Login />  {/* Rendered when no user is logged in */}
+                <Login /> {/* Rendered when no user is logged in */}
                 <RegistrationForm />
               </div>
             ) : (
               <div>
-                <button onClick={handleLogout} className="red-button" >Log Out</button> {/* Rendered when a user is logged in */}
+                <button onClick={handleLogout} className="red-button">
+                  Log Out
+                </button>{" "}
+                {/* Rendered when a user is logged in */}
                 <DeleteUser />
               </div>
             )}
           </div>
         )}
-
 
         {activeTab === "Group" && (
           <div>
@@ -116,7 +123,6 @@ const App = () => {
       </div>
     </div>
   );
-
 };
 
 export default App;

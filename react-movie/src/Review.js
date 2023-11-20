@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-const Review = () => {
-  const [movies, setMovies] = useState([]);
+const ReviewMovies = () => {
+  const [movies, setMovies] = useState("");
   const [sortBy, setSortBy] = useState("alphabetical");
 
   useEffect(() => {
@@ -54,20 +54,24 @@ const Review = () => {
       </label>
 
       <ul>
-        {getSortedMovies().map((movie) => (
-          <li key={movie.id}>
-            <div>
-              <h3>{movie.moviename}</h3>
-              <p>Genre: {movie.genre}</p>
-              <p>User Vote Score: {movie.uservotescore}</p>
-              <p>Review: {movie.content}</p>
-              <p>Date: {movie.dateposted}</p>
-            </div>
-          </li>
-        ))}
+        {movies.length > 0 ? (
+          getSortedMovies().map((movie) => (
+            <li key={movie.id}>
+              <div>
+                <h3>{movie.moviename}</h3>
+                <p>Genre: {movie.genre}</p>
+                <p>User Vote Score: {movie.uservotescore}</p>
+                <p>Review: {movie.content}</p>
+                <p>Date: {movie.dateposted}</p>
+              </div>
+            </li>
+          ))
+        ) : (
+          <p>No movies found</p>
+        )}
       </ul>
     </div>
   );
 };
 
-export default Review;
+export default ReviewMovies;
