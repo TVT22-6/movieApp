@@ -86,7 +86,11 @@ const App = () => {
             {/* Add content related to actors here */}
           </div>
         )}
-
+        {/*Open reviw tab */}
+        {activeTab === "Review" && (
+          <div>
+            <Review />
+          </div>)};
 
         {/* Login window, which contains the SignIn and DeleteUser functions */}
         {activeTab === "auth" && (
