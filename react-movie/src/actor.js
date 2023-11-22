@@ -1,74 +1,95 @@
 import React, { useState, useEffect } from "react";
+import MovieCard from "./MovieCard";
 
 const Actor = () => {
+  const [movies, setMovies] = useState([]);
   const [actors, setActors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   const API_URL = "https://www.omdbapi.com?apikey=d4f64de4";
 
-  const searchActors = async (title) => {
+  const searchMovies = async (title) => {
     try {
-      // Search for movies based on the title
       const response = await fetch(`${API_URL}&s=${title}`);
       const data = await response.json();
-  
+
       console.log("API Response:", data);
-  
+
       if (data.Response === "True" && data.Search && data.Search.length > 0) {
-        // Assuming the first movie in the search results
-        const firstMovie = data.Search[0];
-        
-        // Fetch detailed information about the first movie using its IMDb ID
-        const movieResponse = await fetch(`${API_URL}&i=${firstMovie.imdbID}`);
-        const movieData = await movieResponse.json();
-  
-        console.log("Movie Details:", movieData);
-  
-        // Extract actor information from the movie details
-        const actors = movieData.Actors ? movieData.Actors.split(", ") : [];
-  
-        setActors(actors);
-        console.log("Actors:", actors);
+        setMovies(data.Search);
+        setActors([]); // Clear previous actors when searching for new movies
+        setSelectedMovie(null); // Clear selected movie when searching
       } else {
-        console.log("No movies found");
+        setMovies([]);
         setActors([]);
+        setSelectedMovie(null);
+        console.log("No movies found");
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  useEffect(() => {
-    searchActors("Robert Downey Jr.");
-  }, []);
+  const searchActors = async (imdbID) => {
+    try {
+      const movieResponse = await fetch(`${API_URL}&i=${imdbID}`);
+      const movieData = await movieResponse.json();
 
-  const handleSearchActors = async (name) => {
-    searchActors(name);
+      console.log("Movie Details:", movieData);
+
+      const movieActors = movieData.Actors ? movieData.Actors.split(", ") : [];
+
+      setActors(movieActors);
+      console.log("Actors:", movieActors);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleSearchMovies = async () => {
+    searchMovies(searchTerm);
+  };
+
+  const handleMovieClick = (imdbID) => {
+    setSelectedMovie(imdbID);
+    searchActors(imdbID);
   };
 
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Search actors"
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      <button onClick={() => handleSearchActors(searchTerm)}>Search</button>
-
-      {actors && actors.length > 0 ? (
-  <div className="container">
-    {actors.map((actor, index) => (
-      <div key={index}>
-        <h3>{actor}</h3>
+      <div className="actor">
+        <input
+          type="text"
+          placeholder="Search movies"
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button onClick={handleSearchMovies}>Search</button>
       </div>
-    ))}
-  </div>
-) : (
-  <div className="empty">
-    <h2>{actors.length === 0 ? "No actors found" : "Loading..."}</h2>
-  </div>
-)}
 
+      {selectedMovie ? (
+        <div className="actor">
+          {actors.map((actor, index) => (
+            <div key={index} className="actor-card">
+              <h3>{actor}</h3>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div>
+          <h2>Search for movies to see actors</h2>
+          {/* Display movie search results */}
+          <div className="container">
+            {movies.map((movie, index) => (
+              <MovieCard
+                key={index}
+                movie={movie}
+                onMovieClick={() => handleMovieClick(movie.imdbID)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

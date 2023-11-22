@@ -84,7 +84,7 @@ const App = () => {
             )}
           </div>
         )}
-
+        {/*Open actros tab*/}
         {activeTab === "actors" && (
           <div>
             <h2>Actors</h2>
