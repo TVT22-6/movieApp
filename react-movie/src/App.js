@@ -7,11 +7,11 @@ import DeleteUser from "./DeleteUser";
 import MovieCard from "./MovieCard";
 import { Login } from "./components/Auth";
 import { jwtToken, userData } from "./components/Signals";
-import Review from "./Review";
+import Review from "./components/Review";
 import Group from "./group";
 import Actor from "./actor";
 import MovieSearch from "./components/MovieSearch";
-import ReviewMovies from "./Review";
+
 
 const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 
@@ -95,7 +95,7 @@ const App = () => {
         {activeTab === "Review" && (
           <div>
             <Review />
-          </div>)};
+          </div>)}
 
         {/* Login window, which contains the SignIn and DeleteUser functions */}
         {activeTab === "auth" && (
