@@ -6,12 +6,13 @@ import RegistrationForm from "./SignIn";
 import DeleteUser from "./DeleteUser";
 import MovieCard from "./MovieCard";
 import { Login } from "./components/Auth";
+import { PasswordChangeForm } from "./components/passW";
 import { jwtToken, userData } from "./components/Signals";
 import Review from "./components/Review";
 import Group from "./group";
 import Actor from "./actor";
 import MovieSearch from "./components/MovieSearch";
-
+//import ReviewMovies from "./Review";
 
 const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 
@@ -111,6 +112,7 @@ const App = () => {
                   Log Out
                 </button>{" "}
                 {/* Rendered when a user is logged in */}
+                <PasswordChangeForm />
                 <DeleteUser />
               </div>
             )}

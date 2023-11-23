@@ -10,7 +10,7 @@ const {
   getAllByMovie,
   getAll,
 } = require("../postgre/Review");
-const { addUser, getUsers, checkUser, delUser } = require("../postgre/user");
+const { addUser, getUsers, checkUser, delUser, updateUserPassword } = require("../postgre/user");
 
 /**
  * User root get mapping
@@ -58,8 +58,51 @@ router.post("/login", upload.none(), async (req, res) => {
   }
 });
 
+
+//Middlewaree, joka tarkistaa tokenin oikeellisuuden. Käytetään esim. delete ja change-password metodissa
+function authenticateToken(req, res, next) {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+      return res.status(401).send("Access denied. No token provided.");
+  }
+
+  try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+      req.user = decoded; // Add the decoded user to the request
+      next(); // Proceed to the next middleware or route handler
+  } catch (error) {
+      res.status(403).send("Invalid token.");
+  }
+}
+
+router.put("/change-password", authenticateToken, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const uname = req.user.username; 
+
+  console.log("Request Body:", req.body);
+  console.log("Current Password:", currentPassword); // Log current password
+    console.log("Username from token:", uname); // Log username extracted from token
+
+  try {
+      const pwHash = await checkUser(uname);
+      console.log("Current Password:", currentPassword);  // Log current password
+      console.log("Password Hash from DB:", pwHash);      // Log password hash from DB
+
+      if (pwHash && await bcrypt.compare(currentPassword, pwHash)) {
+          const newPwHash = await bcrypt.hash(newPassword, 10);
+          await updateUserPassword(uname, newPwHash);
+          res.json({ message: "Password changed successfully" });
+      } else {
+          res.status(401).json({ error: "Invalid current password" });
+      }
+  } catch (error) {
+      console.error('Error in changing password:', error);
+      res.status(500).json({ error: "Internal Server Error", details: error.message });
+  }
+});
+
 //Delete muokkaukset myös user.js kansiossa
-router.delete("/delete", async (req, res) => {
+router.delete("/delete", authenticateToken, async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   console.log("Received token in backend:", token);
 

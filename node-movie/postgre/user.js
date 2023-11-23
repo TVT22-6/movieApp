@@ -5,6 +5,7 @@ const sql = {
   GET_USERS: "SELECT username FROM customer",
   GET_PW: "SELECT pw FROM customer WHERE username=$1",
   DELETE_USER: "DELETE FROM customer WHERE username=$1",
+  UPDATE_PW: "UPDATE customer SET pw=$2 WHERE username=$1",
 };
 
 async function addUser(uname, pw) {
@@ -31,4 +32,13 @@ async function checkUser(username) {
   }
 }
 
-module.exports = { addUser, getUsers, checkUser, delUser };
+async function updateUserPassword(uname, newPw) {
+  try {
+    await pgPool.query(sql.UPDATE_PW, [uname, newPw]);
+  } catch (error) {
+    console.error('Error updating user password:', error);
+    throw error;
+  }
+}
+
+module.exports = { addUser, getUsers, checkUser, delUser, updateUserPassword };
