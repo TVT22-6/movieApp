@@ -10,7 +10,7 @@ const DeleteUser = () => {
     const handleDelete = () => {
 
         const token = localStorage.getItem('jwtToken'); // Retrieve the JWT token from local storage
-        console.log('Token being sent:', token); // Debugging: Log the token
+       // console.log('Token being sent:', token); // Debugging: Log the token
     
 
         if (!token) {

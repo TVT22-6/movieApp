@@ -19,15 +19,18 @@ const RegistrationForm = () => {
             })
             .catch(error => {
                 if (error.response) {
-                    // Handle specific error response if any
-                    console.log(error.response.data);
-                    setRegistrationStatus('Registration failed: ' + error.response.data);
+                  // If the username already exists
+                  if (error.response.status === 409) {
+                    setRegistrationStatus('Username already exists. Please choose a different one.');
+                  } else {
+                    // Handle other specific error responses
+                    setRegistrationStatus('Registration failed: ' + error.response.data.error);
+                  }
                 } else {
-                    // Handle general network errors
-                    console.log("Error: ", error.message);
-                    setRegistrationStatus('Registration failed: ' + error.message);
+                  // Handle general network errors
+                  setRegistrationStatus('Registration failed: ' + error.message);
                 }
-            });
+              });
     };
 
     return (

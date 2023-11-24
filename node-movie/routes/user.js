@@ -4,6 +4,7 @@ const upload = multer({ dest: "upload/" });
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const { addPersonalLink, getPersonalLinksByUser } = require("../postgre/personalPage");
 const {
   addReview,
   getReview,
@@ -11,6 +12,7 @@ const {
   getAll,
 } = require("../postgre/Review");
 const { addUser, getUsers, checkUser, delUser, updateUserPassword } = require("../postgre/user");
+
 
 /**
  * User root get mapping
@@ -23,19 +25,35 @@ router.get("/", async (req, res) => {
   }
 });
 
+//
+//Userin liittyvää koodia alapuolella
+//
+//
+
 //User root post mapping. Supports urlencoded and multer
 router.post("/register", upload.none(), async (req, res) => {
   const uname = req.body.uname;
-  let pw = req.body.pw;
-
-  pw = await bcrypt.hash(pw, 10);
+  const pw = req.body.pw;
 
   try {
-    await addUser(uname, pw);
-    res.end();
+    // Check if the username already exists
+    const userExists = await checkUser(uname);
+    if (userExists) {
+      // If the username is taken, send a 409 Conflict response
+      return res.status(409).json({ error: "Username already exists" });
+    }
+
+    // If the username is not taken, hash the password
+    const hashedPw = await bcrypt.hash(pw, 10);
+
+    // Add the new user to the database
+    await addUser(uname, hashedPw);
+    // Send a 201 Created response
+    res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    console.log(error);
-    res.json({ error: error.message }).status(500);
+    // Log the error and send a 500 Internal Server Error response
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -123,6 +141,81 @@ router.delete("/delete", authenticateToken, async (req, res) => {
   }
 });
 
+router.get("/private", async (req, res) => {
+  //Authorization: Bearer token
+  const token = req.headers.authorization?.split(" ")[1];
+
+  try {
+    const username = jwt.verify(token, process.env.JWT_SECRET_KEY).username;
+    res.status(200).json({ private: "This is private for " + username });
+  } catch (error) {
+    res.status(403).json({ error: "Access forbidden" });
+  }
+});
+
+
+//Remember to check this
+const handleSubmit = async (event) => {
+  event.preventDefault();
+
+  try {
+    const response = await fetch("http://localhost:3001/user/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        uname: username,
+        pw: pw,
+      }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+    // Handle response here
+  } catch (error) {
+    console.error("Error:", error);
+    // Handle error here
+  }
+};
+
+//
+//personal page liittyvää koodia alapuolella
+//
+
+// Route to add a personal link
+router.post("/addLink", authenticateToken, async (req, res) => {
+  console.log("addLink route hit"); // Check if this logs when you make the request
+  const { linkName, personalLink, shareable } = req.body;
+  console.log("Received data:", req.body); // Log to check the received data
+
+  const username = req.user.username; // Use authenticated user's username from the token
+
+  try {
+    const newLink = await addPersonalLink(username, linkName, personalLink, shareable === 'true');
+    res.status(201).json(newLink);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
+  }
+});
+
+// Route to get all personal links for the authenticated user
+router.get("/getLinks", authenticateToken, async (req, res) => {
+  const userid = req.user.id; // Use authenticated user's id from the token
+
+  try {
+    const links = await getPersonalLinksByUser(userid);
+    res.status(200).json(links);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
+  }
+});
+
+
+//
+//Review pageen liittyvät metodit alapuolella
+//
+//
 router.post("/addReview", upload.none(), async (req, res) => {
   try {
     const userVS = req.body.userVS;
@@ -200,40 +293,6 @@ router.get("/getAll", async (req, res) => {
   }
 });
 
-router.get("/private", async (req, res) => {
-  //Authorization: Bearer token
-  const token = req.headers.authorization?.split(" ")[1];
 
-  try {
-    const username = jwt.verify(token, process.env.JWT_SECRET_KEY).username;
-    res.status(200).json({ private: "This is private for " + username });
-  } catch (error) {
-    res.status(403).json({ error: "Access forbidden" });
-  }
-});
-
-const handleSubmit = async (event) => {
-  event.preventDefault();
-
-  try {
-    const response = await fetch("http://localhost:3001/user/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        uname: username,
-        pw: pw,
-      }),
-    });
-
-    const data = await response.json();
-    console.log(data);
-    // Handle response here
-  } catch (error) {
-    console.error("Error:", error);
-    // Handle error here
-  }
-};
 
 module.exports = router;
