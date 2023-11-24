@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReviewCard from "./ReviewCard";
 
 const Review = () => {
   const [reviews, setReviews] = useState([]);
@@ -32,25 +33,26 @@ const Review = () => {
   }
 };*/
 
-    const sortedReviews  = () => {
-        const sortedReviewsAll = [...reviews];
-        if(orderBy === "alphabetical"){
-        sortedReviewsAll.sort((a, b) => a.moviename.localeCompare(b.moviename));
-    } else if (orderBy === "genre") { 
-        sortedReviewsAll.sort((a, b) => a.genre.localeCompare(b.genre));
+  const sortedReviews = () => {
+    const sortedReviewsAll = [...reviews];
+    if (orderBy === "alphabetical") {
+      sortedReviewsAll.sort((a, b) => a.moviename.localeCompare(b.moviename));
+    } else if (orderBy === "genre") {
+      sortedReviewsAll.sort((a, b) => a.genre.localeCompare(b.genre));
     } else if (orderBy === "uservotescore") {
-        sortedReviewsAll.sort((a, b) => b.uservotescore - a.uservotescore);
+      sortedReviewsAll.sort((a, b) => b.uservotescore - a.uservotescore);
     }
-    return sortedReviewsAll};
+    return sortedReviewsAll
+  };
 
   const handleOrderByChange = (event) => {
     // Update the order and fetch reviews again
     setOrderBy(event.target.value);
   };
 
-  console.log("11",reviews); // Log the reviews to inspect its structure
+  console.log("11", reviews); // Log the reviews to inspect its structure
 
-  
+
 
   return (
     <div>
@@ -66,35 +68,26 @@ const Review = () => {
 
       {reviews.length > 0 ? (
         <table>
-          <thead>
-            <tr>
-              <th>Movie Name</th>
-              <th>Genre</th>
-              <th>Date Posted</th>
-              <th>Content</th>
-              <th>User Vote Score</th>
-            </tr>
-          </thead>
           <tbody>
-  {sortedReviews().map((review) => (
-    <tr key={review.reviewid}>
-      <td>{review.moviename || "N/A"}</td>
-      <td>{review.genre || "N/A"}</td>
-      <td>{review.dateposted || "N/A"}</td>
-      <td>{review.content || "N/A"}</td>
-      <td>{review.uservotescore || "N/A"}</td>
-      <td>{review.userid || "N/A"}</td>
-      {console.log("14", review)}
-    </tr>
-  ))}
-</tbody>
+            {sortedReviews().map((review) => (
+              <ReviewCard key={review.reviewid} review={review}>
+                <td>{review.moviename || "N/A"}</td>
+                <td>{review.genre || "N/A"}</td>
+                <td>{review.dateposted || "N/A"}</td>
+                <td>{review.content || "N/A"}</td>
+                <td>{review.uservotescore || "N/A"}</td>
+                <td>{review.userid || "N/A"}</td>
+                {console.log("14", review)}
+              </ReviewCard>
+            ))}
+          </tbody>
         </table>
       ) : (
         <p>
-            {console.log("13",reviews)}
-            No reviews found.</p>
+          {console.log("13", reviews)}
+          No reviews found.</p>
       )}
-      {console.log("12",reviews)}
+      {console.log("12", reviews)}
     </div>
   )
 }
