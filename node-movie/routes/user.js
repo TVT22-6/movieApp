@@ -79,14 +79,14 @@ router.put("/change-password", authenticateToken, async (req, res) => {
   const { currentPassword, newPassword } = req.body;
   const uname = req.user.username; 
 
-  console.log("Request Body:", req.body);
-  console.log("Current Password:", currentPassword); // Log current password
-    console.log("Username from token:", uname); // Log username extracted from token
+  //console.log("Request Body:", req.body);
+  //console.log("Current Password:", currentPassword); // Log current password
+  //  console.log("Username from token:", uname); // Log username extracted from token
 
   try {
       const pwHash = await checkUser(uname);
-      console.log("Current Password:", currentPassword);  // Log current password
-      console.log("Password Hash from DB:", pwHash);      // Log password hash from DB
+     // console.log("Current Password:", currentPassword);  // Log current password
+    //  console.log("Password Hash from DB:", pwHash);      // Log password hash from DB
 
       if (pwHash && await bcrypt.compare(currentPassword, pwHash)) {
           const newPwHash = await bcrypt.hash(newPassword, 10);
@@ -104,7 +104,7 @@ router.put("/change-password", authenticateToken, async (req, res) => {
 //Delete muokkaukset myös user.js kansiossa
 router.delete("/delete", authenticateToken, async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
-  console.log("Received token in backend:", token);
+ // console.log("Received token in backend:", token);
 
   if (!token) {
     return res.status(401).send("Access denied on backend. No token provided.");
