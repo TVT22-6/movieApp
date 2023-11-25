@@ -1,0 +1,30 @@
+.link-box {
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.link-box h2 {
+    margin-top: 0;
+}
+
+.link-box ul {
+    list-style: none;
+    padding: 0;
+}
+
+.link-box li {
+    margin-bottom: 10px;
+}
+
+.link-box a {
+    text-decoration: none;
+    color: #0077cc;
+}
+
+.link-box span {
+    font-size: 0.9em;
+    color: #666;
+}

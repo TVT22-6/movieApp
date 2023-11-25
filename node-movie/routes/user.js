@@ -186,25 +186,27 @@ const handleSubmit = async (event) => {
 // Route to add a personal link
 router.post("/addLink", authenticateToken, async (req, res) => {
   console.log("addLink route hit"); // Check if this logs when you make the request
-  const { linkName, personalLink, shareable } = req.body;
+  const { linkName, personalLink} = req.body;
   console.log("Received data:", req.body); // Log to check the received data
 
   const username = req.user.username; // Use authenticated user's username from the token
 
   try {
-    const newLink = await addPersonalLink(username, linkName, personalLink, shareable === 'true');
+    const newLink = await addPersonalLink(username, linkName, personalLink);
     res.status(201).json(newLink);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 });
 
+
 // Route to get all personal links for the authenticated user
 router.get("/getLinks", authenticateToken, async (req, res) => {
-  const userid = req.user.id; // Use authenticated user's id from the token
+  const username = req.user.username; // Use authenticated user's username from the token
 
   try {
-    const links = await getPersonalLinksByUser(userid);
+    const links = await getPersonalLinksByUser(username);
+    console.log(links); // Log to check the retrieved links
     res.status(200).json(links);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error", details: error.message });

@@ -5,7 +5,7 @@ import Navbar from "./components/Navbar";
 import RegistrationForm from "./SignIn";
 import DeleteUser from "./DeleteUser";
 import MovieCard from "./MovieCard";
-import AddLinkForm from "./components/addLinks";
+import { AddLinkForm, LinkBox }  from "./components/addLinks";
 import { Login } from "./components/Auth";
 import { PasswordChangeForm } from "./components/passW";
 import { jwtToken, userData } from "./components/Signals";
@@ -115,6 +115,7 @@ const App = () => {
                 {/* Rendered when a user is logged in */}
                 <PasswordChangeForm />
                 <AddLinkForm />
+                <LinkBox />
                 <DeleteUser />
               </div>
             )}
