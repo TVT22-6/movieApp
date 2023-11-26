@@ -4,7 +4,7 @@ const upload = multer({ dest: "upload/" });
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const { addPersonalLink, getPersonalLinksByUser } = require("../postgre/personalPage");
+const { addPersonalLink, getPersonalLinksByUser, deletePersonalLink } = require("../postgre/personalPage");
 const {
   addReview,
   getReview,
@@ -212,6 +212,20 @@ router.get("/getLinks", authenticateToken, async (req, res) => {
     res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 });
+
+router.delete('/deleteLink/:personalpageid', authenticateToken, async (req, res) => {
+  console.log("Delete route hit. Params:", req.params); // Log to check the parameters
+  const { personalpageid } = req.params;
+  const username = req.user.username; // Extracted from the JWT token
+
+  try {
+    await deletePersonalLink(username, personalpageid);
+    res.status(200).json({ message: "Link deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
+  }
+});
+
 
 
 //

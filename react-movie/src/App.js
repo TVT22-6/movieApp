@@ -5,7 +5,7 @@ import Navbar from "./components/Navbar";
 import RegistrationForm from "./SignIn";
 import DeleteUser from "./DeleteUser";
 import MovieCard from "./MovieCard";
-import { AddLinkForm, LinkBox }  from "./components/addLinks";
+import UserPage from "./components/UserPage"; // Import the UserPage component
 import { Login } from "./components/Auth";
 import { PasswordChangeForm } from "./components/passW";
 import { jwtToken, userData } from "./components/Signals";
@@ -64,6 +64,7 @@ const App = () => {
           <button onClick={() => setActiveTab("Review")}>Review</button>
           <button onClick={() => setActiveTab("home")}>Home</button>
           <button onClick={() => setActiveTab("actors")}>Actors</button>
+          <button onClick={() => setActiveTab("user")}>User</button>
           <button onClick={() => setActiveTab("auth")}>
             {jwtToken.value.length === 0 ? "Log In" : "Log Out"}
           </button>
@@ -99,6 +100,9 @@ const App = () => {
             <Review />
           </div>)}
 
+          {activeTab === "user" && <UserPage />} {/* Render the UserPage when the 'User' tab is active */}
+
+
         {/* Login window, which contains the SignIn and DeleteUser functions */}
         {activeTab === "auth" && (
           <div>
@@ -114,8 +118,7 @@ const App = () => {
                 </button>{" "}
                 {/* Rendered when a user is logged in */}
                 <PasswordChangeForm />
-                <AddLinkForm />
-                <LinkBox />
+               
                 <DeleteUser />
               </div>
             )}

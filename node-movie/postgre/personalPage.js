@@ -6,7 +6,8 @@ const sql = {
       VALUES ($1, $2, $3)
       RETURNING *
     `,
-    GET_PERSONAL_LINKS_BY_USER: 'SELECT linkname, personallink, dateadded FROM personalPage WHERE username = $1',
+    GET_PERSONAL_LINKS_BY_USER: 'SELECT personalpageid, linkname, personallink, dateadded FROM personalPage WHERE username = $1',
+    DELETE_PERSONAL_LINK_BY_USER: 'DELETE FROM personalpage WHERE username = $1 AND personalpageid = $2',
     
   // Add more SQL commands as needed for other operations
 };
@@ -25,5 +26,12 @@ async function addPersonalLink(username, linkName, personalLink) {
     return result.rows;
   }
 
-module.exports = { addPersonalLink, getPersonalLinksByUser };
+  
+ // Function to delete a link
+async function deletePersonalLink(username, personalpageid) {
+  const result = await pgPool.query(sql.DELETE_PERSONAL_LINK_BY_USER, [username, personalpageid]);
+  return result.rowCount;
+}
+
+module.exports = { addPersonalLink, getPersonalLinksByUser, deletePersonalLink };
   
