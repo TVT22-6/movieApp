@@ -65,6 +65,7 @@ const App = () => {
           <button onClick={() => setActiveTab("home")}>Home</button>
           <button onClick={() => setActiveTab("actors")}>Actors</button>
           <button onClick={() => setActiveTab("user")}>User</button>
+          <button onClick={() => setActiveTab('Group')}>Groups</button>
           <button onClick={() => setActiveTab("auth")}>
             {jwtToken.value.length === 0 ? "Log In" : "Log Out"}
           </button>

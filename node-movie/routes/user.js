@@ -12,6 +12,7 @@ const {
   getAll,
 } = require("../postgre/Review");
 const { addUser, getUsers, checkUser, delUser, updateUserPassword } = require("../postgre/user");
+const { addGroup, deleteGroup, getAllGroups } = require("../postgre/group");
 
 
 /**
@@ -309,6 +310,86 @@ router.get("/getAll", async (req, res) => {
   }
 });
 
+// Create Group //user.js
+router.post("/postGroup", upload.none(), async (req, res) => {
+  const gname = req.body.gname;
+
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+
+
+    const groupResult = await addGroup(gname);
+
+    console.log("Group added:", groupResult);
+    const { message } = groupResult;
+    console.log(message);
+
+    res.status(201).json({ message: "Group successfully created" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
+// Delete Group
+router.delete("/deleteGroup/:groupid", async (req, res) => {
+  const groupid = req.params.groupid;
+
+  try {
+    // Assuming you have a function to delete a group in your database
+    await deleteGroup(groupid);
+
+    res.status(200).json({ message: "Group successfully deleted" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/groups", async (req, res) => {
+  try {
+    const groups = await getAllGroups();
+    res.status(200).json({ data: groups });
+  } catch (error) {
+    console.error("Error fetching groups from the database:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.post("/joinGroup/:groupid", async (req, res) => {
+  const groupid = req.params.groupid;
+
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    // Perform checks here to ensure the user is not already a member of the group
+
+    // Add logic to join the group in your database
+    // Example: await addUserToGroup(userid, groupid);
+
+    res.status(200).json({ message: "Successfully joined the group" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Get Group Details
+router.get("/group/:groupid", async (req, res) => {
+  const groupid = req.params.groupid;
+
+  try {
+    // Fetch group details from the database, including group members
+    const groupDetails = await getGroupDetails(groupid);
+
+    res.status(200).json({ groupDetails });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 
 module.exports = router;
