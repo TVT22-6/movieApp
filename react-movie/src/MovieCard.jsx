@@ -1,13 +1,15 @@
 import React from 'react';
 
+
+
 const MovieCard = ({ movie, onMovieClick }) => {
-  const handleClick = (event) => {
-    // Call the onMovieClick function with the movie's IMDb ID and the event
-    onMovieClick(event, movie.imdbID);
+
+  const onClickHandler = (event) => {
+    onMovieClick(movie);
   };
 
   return (
-    <div className="movie" onClick={handleClick}>
+    <div className="movie" onClick={onClickHandler}>
       <div>
         <p>{movie.Year}</p>
       </div>

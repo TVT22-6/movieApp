@@ -1,11 +1,10 @@
 import React from 'react';
 import MovieCard from '../MovieCard';
-import { formToJSON } from 'axios';
 import PosterImg from '../styles/review.png'
 
 
 const ReviewCard = ({ review, onMovieClick }) => {
-    // Assuming the review data structure is similar to the movie data structure
+
     return (
         <MovieCard
             movie={{

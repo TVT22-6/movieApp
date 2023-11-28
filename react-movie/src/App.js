@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./styles/App.css";
-import SearchIcon from "./search.svg";
 import Navbar from "./components/Navbar";
 import RegistrationForm from "./SignIn";
 import DeleteUser from "./DeleteUser";
 import MovieCard from "./MovieCard";
-import UserPage from "./components/UserPage"; // Import the UserPage component
 import { Login } from "./components/Auth";
 import { PasswordChangeForm } from "./components/passW";
 import { jwtToken, userData } from "./components/Signals";
@@ -13,15 +11,17 @@ import Review from "./components/Review";
 import Group from "./group";
 import Actor from "./actor";
 import MovieSearch from "./components/MovieSearch";
-//import ReviewMovies from "./Review";
+import ReviewForm from "./components/ReviewForm";
+
+
 
 const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 
 const App = () => {
   const [movies, setMovies] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("home"); // Aktiivisen välilehden tila
   const [theme, setTheme] = useState("light");
+  const [showReviewForm, setShowReviewForm] = useState(false);
 
   const searchMovies = async (title) => {
     const response = await fetch(`${API_URL}&s=${title}`);
@@ -45,6 +45,14 @@ const App = () => {
 
   const handleSearchMovies = async (title) => {
     searchMovies(title);
+  };
+
+  const handleMovieClick = (selectedMovie) => {
+    // Do any additional logic you need with the selected movie
+    // Set the state to show the ReviewForm
+    setShowReviewForm(true);
+    setActiveTab("ReviewForm");
+    console.log("setShowReviewForm");
   };
 
   return (
@@ -74,12 +82,14 @@ const App = () => {
         {/* Ehdollinen sisältö aktiivisen välilehden perusteella */}
         {activeTab === "home" && (
           <div>
+
             <MovieSearch onSearch={handleSearchMovies} />
             {movies.length > 0 ? (
               <div className="container">
                 {movies.map((movie, index) => (
-                  <MovieCard key={index} movie={movie} />
+                  <MovieCard key={index} movie={movie} onMovieClick={handleMovieClick} />
                 ))}
+
               </div>
             ) : (
               <div className="empty">
@@ -94,15 +104,17 @@ const App = () => {
             <h2>Actors</h2>
             <Actor />
           </div>
+        )} {/*Open actros tab*/}
+        {activeTab === "ReviewForm" && (
+          <div>
+            {showReviewForm && <ReviewForm />}
+          </div>
         )}
         {/*Open reviw tab */}
         {activeTab === "Review" && (
           <div>
             <Review />
           </div>)}
-
-          {activeTab === "user" && <UserPage />} {/* Render the UserPage when the 'User' tab is active */}
-
 
         {/* Login window, which contains the SignIn and DeleteUser functions */}
         {activeTab === "auth" && (
@@ -119,7 +131,6 @@ const App = () => {
                 </button>{" "}
                 {/* Rendered when a user is logged in */}
                 <PasswordChangeForm />
-               
                 <DeleteUser />
               </div>
             )}
@@ -135,7 +146,7 @@ const App = () => {
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 

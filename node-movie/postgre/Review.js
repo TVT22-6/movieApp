@@ -2,13 +2,13 @@ const pgPool = require("./connection");
 
 const sql = {
   INSERT_REVIEW:
-    'INSERT INTO "Review" (moviename,genre,dateposted,content, uservotescore) VALUES ($1, $2, $3, $4, $5)',
+    'INSERT INTO "Review" (moviename,genre,dateposted,content, uservotescore, username) VALUES ($1, $2, $3, $4, $5, $6)',
   GET_REVIEW: 'SELECT moviename FROM "Review" WHERE moviename = $1',
   GET_ALL_BY_MOVIE: 'SELECT * FROM "Review" WHERE moviename=$1',
   GET_ALL: 'SELECT * FROM "Review"',
 };
 
-async function addReview(moviename, genre, dateposted, content, uservotescore) {
+async function addReview(moviename, genre, dateposted, content, uservotescore, username) {
   try {
     await pgPool.query(sql.INSERT_REVIEW, [
       moviename,
@@ -16,8 +16,9 @@ async function addReview(moviename, genre, dateposted, content, uservotescore) {
       dateposted,
       content,
       uservotescore,
+      username,
     ]);
-    console.log("Review inserted successfully.");
+    console.log("Review inserted successfully in review.js backend.");
   } catch (error) {
     console.error("Error inserting review into the database:", error);
   }
