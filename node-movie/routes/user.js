@@ -4,16 +4,32 @@ const upload = multer({ dest: "upload/" });
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const { addPersonalLink, getPersonalLinksByUser, deletePersonalLink } = require("../postgre/personalPage");
+const {
+  addPersonalLink,
+  getPersonalLinksByUser,
+  deletePersonalLink,
+} = require("../postgre/personalPage");
 const {
   addReview,
   getReview,
   getAllByMovie,
   getAll,
 } = require("../postgre/Review");
-const { addUser, getUsers, checkUser, delUser, updateUserPassword } = require("../postgre/user");
-const { addGroup, deleteGroup, getAllGroups } = require("../postgre/group");
-
+const {
+  addUser,
+  getUsers,
+  checkUser,
+  delUser,
+  updateUserPassword,
+} = require("../postgre/user");
+const {
+  addGroup,
+  deleteGroup,
+  getAllGroups,
+  joinGroup,
+  getGroup,
+} = require("../postgre/group");
+const { response } = require("express");
 
 /**
  * User root get mapping
@@ -77,20 +93,43 @@ router.post("/login", upload.none(), async (req, res) => {
   }
 });
 
-
 //Middlewaree, joka tarkistaa tokenin oikeellisuuden. Käytetään esim. delete ja change-password metodissa
+/*function authenticateToken(req, res, next) {
+  const token = req.headers.authorization?.split(" ")[1];
+  console.log("onko token:", token);
+  if (!token) {
+    return res.status(401).send("Access denied. No token provided.");
+  }
+  console.log("onko token ennen decodea:", token);
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    req.user = decoded; // Add the decoded user to the request
+    console.log("onko decoded:", decoded);
+    next(); // Proceed to the next middleware or route handler
+  } catch (error) {
+    res.status(403).send("Invalid token.");
+    console.log("onko token täällä:", token);
+  }
+}*/
 function authenticateToken(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
+  console.log("Request Headers:", req.headers);
+  console.log("onko token:", token);
+
   if (!token) {
     return res.status(401).send("Access denied. No token provided.");
   }
 
+  console.log("onko token ennen decodea:", token);
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.user = decoded; // Add the decoded user to the request
+    console.log("onko decoded:", decoded);
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
     res.status(403).send("Invalid token.");
+    console.log("onko token täällä:", token);
   }
 }
 
@@ -107,7 +146,7 @@ router.put("/change-password", authenticateToken, async (req, res) => {
     // console.log("Current Password:", currentPassword);  // Log current password
     //  console.log("Password Hash from DB:", pwHash);      // Log password hash from DB
 
-    if (pwHash && await bcrypt.compare(currentPassword, pwHash)) {
+    if (pwHash && (await bcrypt.compare(currentPassword, pwHash))) {
       const newPwHash = await bcrypt.hash(newPassword, 10);
       await updateUserPassword(uname, newPwHash);
       res.json({ message: "Password changed successfully" });
@@ -115,8 +154,10 @@ router.put("/change-password", authenticateToken, async (req, res) => {
       res.status(401).json({ error: "Invalid current password" });
     }
   } catch (error) {
-    console.error('Error in changing password:', error);
-    res.status(500).json({ error: "Internal Server Error", details: error.message });
+    console.error("Error in changing password:", error);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", details: error.message });
   }
 });
 
@@ -153,7 +194,6 @@ router.get("/private", async (req, res) => {
     res.status(403).json({ error: "Access forbidden" });
   }
 });
-
 
 //Remember to check this
 const handleSubmit = async (event) => {
@@ -196,10 +236,11 @@ router.post("/addLink", authenticateToken, async (req, res) => {
     const newLink = await addPersonalLink(username, linkName, personalLink);
     res.status(201).json(newLink);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", details: error.message });
   }
 });
-
 
 // Route to get all personal links for the authenticated user
 router.get("/getLinks", authenticateToken, async (req, res) => {
@@ -210,29 +251,36 @@ router.get("/getLinks", authenticateToken, async (req, res) => {
     console.log(links); // Log to check the retrieved links
     res.status(200).json(links);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", details: error.message });
   }
 });
 
-router.delete('/deleteLink/:personalpageid', authenticateToken, async (req, res) => {
-  console.log("Delete route hit. Params:", req.params); // Log to check the parameters
-  const { personalpageid } = req.params;
-  const username = req.user.username; // Extracted from the JWT token
+router.delete(
+  "/deleteLink/:personalpageid",
+  authenticateToken,
+  async (req, res) => {
+    console.log("Delete route hit. Params:", req.params); // Log to check the parameters
+    const { personalpageid } = req.params;
+    const username = req.user.username; // Extracted from the JWT token
 
-  try {
-    await deletePersonalLink(username, personalpageid);
-    res.status(200).json({ message: "Link deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error", details: error.message });
+    try {
+      await deletePersonalLink(username, personalpageid);
+      res.status(200).json({ message: "Link deleted successfully" });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ error: "Internal Server Error", details: error.message });
+    }
   }
-});
-
-
+);
 
 //
 //Review pageen liittyvät metodit alapuolella
 //
 //
+
 router.post("/addReview", upload.none(), async (req, res) => {
   try {
     console.log("req.body", req.body);
@@ -252,9 +300,9 @@ router.post("/addReview", upload.none(), async (req, res) => {
     await addReview(mname, genre, date, content, userVS, username);
 
     // Respond with a success message
-    res
-      .status(201)
-      .json({ message: "Review successfully posted to the database in user routes" });
+    res.status(201).json({
+      message: "Review successfully posted to the database in user routes",
+    });
   } catch (error) {
     // Handle errors
     console.error("Error posting review to the database:", error);
@@ -320,7 +368,6 @@ router.post("/postGroup", upload.none(), async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
 
-
     const groupResult = await addGroup(gname);
 
     console.log("Group added:", groupResult);
@@ -334,12 +381,10 @@ router.post("/postGroup", upload.none(), async (req, res) => {
   }
 });
 
-
-
 // Delete Group
 router.delete("/deleteGroup/:groupid", async (req, res) => {
   const groupid = req.params.groupid;
-
+  console.log("mormoroo", groupid);
   try {
     // Assuming you have a function to delete a group in your database
     await deleteGroup(groupid);
@@ -361,24 +406,6 @@ router.get("/groups", async (req, res) => {
   }
 });
 
-router.post("/joinGroup/:groupid", async (req, res) => {
-  const groupid = req.params.groupid;
-
-  try {
-    const token = req.headers.authorization?.split(" ")[1];
-
-    // Perform checks here to ensure the user is not already a member of the group
-
-    // Add logic to join the group in your database
-    // Example: await addUserToGroup(userid, groupid);
-
-    res.status(200).json({ message: "Successfully joined the group" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
 // Get Group Details
 router.get("/group/:groupid", async (req, res) => {
   const groupid = req.params.groupid;
@@ -394,5 +421,33 @@ router.get("/group/:groupid", async (req, res) => {
   }
 });
 
+// Join Group
+router.post("/joinGroup/:groupid", authenticateToken, async (req, res) => {
+  const groupid = req.params.groupid;
+
+  try {
+    const username = req.user.username;
+    await joinGroup(username, groupid);
+    res.status(200).json({ message: "Successfully joined the group" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Get Specific Group Data
+router.get("/getGroup/:groupid", async (req, res) => {
+  const groupid = req.params.groupid;
+
+  try {
+    // Fetch group details from the database, including group members
+    const groupDetails = await getGroup(groupid);
+
+    res.status(200).json({ groupDetails });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 module.exports = router;

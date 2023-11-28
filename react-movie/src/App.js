@@ -14,8 +14,6 @@ import MovieSearch from "./components/MovieSearch";
 import ReviewForm from "./components/ReviewForm";
 import UserPage from "./components/UserPage";
 
-
-
 const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 
 const App = () => {
@@ -59,38 +57,34 @@ const App = () => {
   return (
     <div>
       <div className="navbar">
-        <Navbar
-          setActiveTab={setActiveTab}
-          handleLogout={handleLogout}
-        />
+        <Navbar setActiveTab={setActiveTab} handleLogout={handleLogout} />
       </div>
       <div className={`app ${theme}`}>
-
         <button onClick={handleToggleTheme}>Toggle Theme</button>
-
         {/* Nappulat välilehtien vaihtamiseen */}
         <div>
           <button onClick={() => setActiveTab("Review")}>Review</button>
           <button onClick={() => setActiveTab("home")}>Home</button>
           <button onClick={() => setActiveTab("actors")}>Actors</button>
           <button onClick={() => setActiveTab("user")}>User</button>
-          <button onClick={() => setActiveTab('Group')}>Groups</button>
+          <button onClick={() => setActiveTab("Group")}>Groups</button>
           <button onClick={() => setActiveTab("auth")}>
             {jwtToken.value.length === 0 ? "Log In" : "Log Out"}
           </button>
         </div>
-
         {/* Ehdollinen sisältö aktiivisen välilehden perusteella */}
         {activeTab === "home" && (
           <div>
-
             <MovieSearch onSearch={handleSearchMovies} />
             {movies.length > 0 ? (
               <div className="container">
                 {movies.map((movie, index) => (
-                  <MovieCard key={index} movie={movie} onMovieClick={handleMovieClick} />
+                  <MovieCard
+                    key={index}
+                    movie={movie}
+                    onMovieClick={handleMovieClick}
+                  />
                 ))}
-
               </div>
             ) : (
               <div className="empty">
@@ -105,24 +99,23 @@ const App = () => {
             <h2>Actors</h2>
             <Actor />
           </div>
-        )} {/*Open actros tab*/}
+        )}{" "}
+        {/*Open actros tab*/}
         {activeTab === "ReviewForm" && (
-          <div>
-            {showReviewForm && <ReviewForm />}
-          </div>
+          <div>{showReviewForm && <ReviewForm />}</div>
         )}
         {/*Open reviw tab */}
         {activeTab === "Review" && (
           <div>
             <Review />
-          </div>)}
-
+          </div>
+        )}
         {/*Open userPage tab */}
         {activeTab === "user" && (
           <div>
             <UserPage />
-          </div>)}
-
+          </div>
+        )}
         {/* Login window, which contains the SignIn and DeleteUser functions */}
         {activeTab === "auth" && (
           <div>
@@ -143,8 +136,6 @@ const App = () => {
             )}
           </div>
         )}
-
-
         {activeTab === "Group" && (
           <div>
             <h2>Groups</h2>
@@ -153,7 +144,7 @@ const App = () => {
           </div>
         )}
       </div>
-    </div >
+    </div>
   );
 };
 
