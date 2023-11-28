@@ -12,6 +12,7 @@ import Group from "./group";
 import Actor from "./actor";
 import MovieSearch from "./components/MovieSearch";
 import ReviewForm from "./components/ReviewForm";
+import UserPage from "./components/UserPage";
 
 
 
@@ -114,6 +115,12 @@ const App = () => {
         {activeTab === "Review" && (
           <div>
             <Review />
+          </div>)}
+
+        {/*Open userPage tab */}
+        {activeTab === "user" && (
+          <div>
+            <UserPage />
           </div>)}
 
         {/* Login window, which contains the SignIn and DeleteUser functions */}
