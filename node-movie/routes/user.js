@@ -28,6 +28,7 @@ const {
   getAllGroups,
   joinGroup,
   getGroup,
+  getCreatedGroup,
 } = require("../postgre/group");
 const { response } = require("express");
 
@@ -362,17 +363,16 @@ router.get("/getAll", async (req, res) => {
 });
 
 // Create Group //user.js
-router.post("/postGroup", upload.none(), async (req, res) => {
+router.post("/postGroup", authenticateToken, async (req, res) => {
   const gname = req.body.gname;
 
   try {
-    const token = req.headers.authorization?.split(" ")[1];
+    const username = req.user.username;
 
-    const groupResult = await addGroup(gname);
+    // Updated the function call to pass both gname and username
+    await addGroup(gname, username);
 
-    console.log("Group added:", groupResult);
-    const { message } = groupResult;
-    console.log(message);
+    console.log("Group added:", gname, username);
 
     res.status(201).json({ message: "Group successfully created" });
   } catch (error) {
@@ -381,13 +381,17 @@ router.post("/postGroup", upload.none(), async (req, res) => {
   }
 });
 
-// Delete Group
-router.delete("/deleteGroup/:groupid", async (req, res) => {
+router.delete("/deleteGroup/:groupid/:admin", async (req, res) => {
   const groupid = req.params.groupid;
-  console.log("mormoroo", groupid);
+  const admin = req.params.admin;
+
+  console.log("Received request with params:", req.params);
+  console.log("Extracted groupid:", groupid);
+  console.log("Extracted admin:", admin);
+
   try {
     // Assuming you have a function to delete a group in your database
-    await deleteGroup(groupid);
+    await deleteGroup(groupid, admin);
 
     res.status(200).json({ message: "Group successfully deleted" });
   } catch (error) {
@@ -446,6 +450,22 @@ router.get("/getGroup/:groupid", async (req, res) => {
     res.status(200).json({ groupDetails });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/getCreatedGroup/:gname", async (req, res) => {
+  const gname = req.params.gname;
+
+  try {
+    // Fetch group details from the database, including group members
+    const groupDetails = await getCreatedGroup(gname);
+
+    console.log("Group details fetched successfully:", groupDetails);
+
+    res.status(200).json(groupDetails);
+  } catch (error) {
+    console.error("Error fetching group details:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

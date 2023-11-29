@@ -43,20 +43,37 @@ const Group = () => {
 
   const handleCreateGroup = async () => {
     try {
+      // Step 1: Create the group
       const response = await axios.post(
         "http://localhost:3001/user/postGroup",
-        { gname }
+        { gname },
+        { headers }
       );
 
-      console.log(response.data);
+      console.log("Group created successfully:", response.data);
       setCreationMessage("Group created successfully");
+
+      // Step 2: Fetch the group details, including groupid, from the server
+      const createdGroupResponse = await axios.get(
+        `http://localhost:3001/user/getCreatedGroup/${gname}`
+      );
+
+      // Access the group details, including groupid
+      const createdGroup = createdGroupResponse.data[0]; // Modify this line
+
+      console.log("Created group details:", createdGroup);
 
       // After creating a group, fetch the updated list of groups
       const groupsResponse = await axios.get(
         "http://localhost:3001/user/groups"
       );
       setGroups(groupsResponse.data.data);
+
+      // Step 3: Now call handleJoinGroup with the groupid
+      await handleJoinGroup(createdGroup.groupid);
+      console.log("handleJoinGroup called", createdGroup.groupid);
     } catch (error) {
+      console.error("Create Group Error:", error);
       console.error(error.response?.data || error.message);
     }
   };
@@ -64,8 +81,12 @@ const Group = () => {
   const handleDeleteGroup = async (groupid) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3001/user/deleteGroup/${groupid}`
+        `http://localhost:3001/user/deleteGroup/${groupid}`,
+        {},
+        { headers }
       );
+
+      console.log("Response data1111:", groupid, headers, response.data);
 
       console.log(response.data);
       setDeleteMessage("Group deleted successfully");
@@ -74,6 +95,7 @@ const Group = () => {
       const groupsResponse = await axios.get(
         "http://localhost:3001/user/groups"
       );
+
       setGroups(groupsResponse.data.data);
     } catch (error) {
       console.error(error.response?.data || error.message);
