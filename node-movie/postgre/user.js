@@ -13,7 +13,31 @@ async function addUser(uname, pw) {
 }
 
 async function delUser(uname) {
-  await pgPool.query(sql.DELETE_USER, [uname]);
+  // Start a transaction
+  const client = await pgPool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Delete personal links
+    const delPersonalLinksQuery = 'DELETE FROM personalpage WHERE username = $1';
+    await client.query(delPersonalLinksQuery, [uname]);
+
+    // Remove user from groups
+    const delUserGroupsQuery = 'DELETE FROM groupusers WHERE username = $1';
+    await client.query(delUserGroupsQuery, [uname]);
+
+    // Delete user
+    await client.query(sql.DELETE_USER, [uname]);
+
+    // Commit the transaction
+    await client.query('COMMIT');
+  } catch (error) {
+    // Rollback in case of error
+    await client.query('ROLLBACK');
+    throw error; // Re-throw the error to be handled by the caller
+  } finally {
+    client.release();
+  }
 }
 
 async function getUsers() {
