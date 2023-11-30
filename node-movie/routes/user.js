@@ -29,6 +29,7 @@ const {
   joinGroup,
   getGroup,
   getCreatedGroup,
+  getDeletedGroup,
 } = require("../postgre/group");
 const { response } = require("express");
 
@@ -295,23 +296,23 @@ router.post("/addReview", authenticateToken, upload.none(), async (req, res) => 
 
     console.log(username + "add review backendissä")
 
-    if (!mname) {
-      return res.status(400).json({ error: "Movie name (mname) is required." });
+      if (!mname) {
+        return res.status(400).json({ error: "Movie name (mname) is required." });
+      }
+
+      // Save the review to the database
+      await addReview(mname, genre, date, content, userVS, username);
+
+      // Respond with a success message
+      res.status(201).json({
+        message: "Review successfully posted to the database in user routes",
+      });
+    } catch (error) {
+      // Handle errors
+      console.error("Error posting review to the database:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-
-    // Save the review to the database
-    await addReview(mname, genre, date, content, userVS, username);
-
-    // Respond with a success message
-    res.status(201).json({
-      message: "Review successfully posted to the database in user routes",
-    });
-  } catch (error) {
-    // Handle errors
-    console.error("Error posting review to the database:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+  });
 
 router.get("/getReview", async (req, res) => {
   try {
@@ -383,21 +384,30 @@ router.post("/postGroup", authenticateToken, async (req, res) => {
   }
 });
 
-router.delete("/deleteGroup/:groupid/:admin", async (req, res) => {
+router.delete("/getDeletedGroup/:groupid", async (req, res) => {
   const groupid = req.params.groupid;
-  const admin = req.params.admin;
-
-  console.log("Received request with params:", req.params);
-  console.log("Extracted groupid:", groupid);
-  console.log("Extracted admin:", admin);
 
   try {
-    // Assuming you have a function to delete a group in your database
-    await deleteGroup(groupid, admin);
+    await getDeletedGroup(groupid);
 
     res.status(200).json({ message: "Group successfully deleted" });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.post("/deleteGroup/:groupid", authenticateToken, async (req, res) => {
+  const groupid = req.params.groupid;
+  const username = req.user.username;
+
+  try {
+    // Assuming you have a function to delete a group in your database
+    await deleteGroup(groupid, username);
+
+    res.status(200).json({ message: "Group successfully deleted" });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -471,5 +481,7 @@ router.get("/getCreatedGroup/:gname", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+router;
 
 module.exports = router;

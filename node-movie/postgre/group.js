@@ -10,7 +10,7 @@ const sql = {
   JOIN_GROUP:
     "INSERT INTO groupusers (username, groupid_usergroups) VALUES ($1, $2)",
   SPECIFIC_GROUP:
-    "SELECT groupusers.username, groups.gname FROM groups INNER JOIN groupid_usergroups ON groups.groupid = groupid_usergroups.groupid INNER JOIN groupusers ON groupid_usergroups.groupusers = groupusers.groupusers",
+    "SELECT groupusers.username, groups.gname FROM groups INNER JOIN groupusers ON groups.groupid = groupusers.groupid_usergroups",
 };
 
 // Add the `admin` parameter to the addGroup function
@@ -29,8 +29,41 @@ async function addGroup(gname, username) {
   }
 }
 
+// postgre/group.js
+
+// postgre/group.js
+
 async function deleteGroup(groupid, admin) {
-  await pgPool.query(sql.DELETE_GROUP, [groupid, admin]);
+  try {
+    // Now check if the admin matches the requesting user
+    const isAdminMatch = await checkAdminMatch(groupid, admin);
+    if (!isAdminMatch) {
+      throw new Error("User does not have permission to delete this group");
+    }
+
+    // First, delete rows from the groupusers table
+    await pgPool.query(sql.DELETE_ROWS, [groupid]);
+
+    // Then, delete the group from the groups table
+    await pgPool.query(sql.DELETE_GROUP, [groupid, admin]);
+  } catch (error) {
+    console.error("Error deleting group:", error);
+    throw error;
+  }
+}
+
+// Function to check if the requesting user matches the group admin
+async function checkAdminMatch(groupid, admin) {
+  const result = await pgPool.query(
+    "SELECT * FROM groups WHERE groupid = $1 AND admin = $2",
+    [groupid, admin]
+  );
+
+  return result.rows.length > 0;
+}
+
+async function getDeletedGroup(groupid) {
+  await pgPool.query(sql.DELETE_ROWS, [groupid]);
 }
 
 async function getAllGroups() {
@@ -38,10 +71,34 @@ async function getAllGroups() {
   return result.rows;
 }
 
+// postgre/group.js
+
 async function joinGroup(username, groupid_usergroups) {
-  console.log("mitä täsä tullee44444", username, groupid_usergroups);
-  await pgPool.query(sql.JOIN_GROUP, [username, groupid_usergroups]);
-  return { message: "Successfully joined the group" };
+  try {
+    // Check if the user is already a member of the group
+    const isAlreadyMember = await checkMembership(username, groupid_usergroups);
+    if (isAlreadyMember) {
+      throw new Error("User is already a member of this group");
+    }
+
+    // If not a member, insert the user into the groupusers table
+    await pgPool.query(sql.JOIN_GROUP, [username, groupid_usergroups]);
+
+    return { message: "Successfully joined the group" };
+  } catch (error) {
+    console.error("Error joining group:", error);
+    throw error;
+  }
+}
+
+// Function to check if the user is already a member of the group
+async function checkMembership(username, groupid_usergroups) {
+  const result = await pgPool.query(
+    "SELECT * FROM groupusers WHERE username = $1 AND groupid_usergroups = $2",
+    [username, groupid_usergroups]
+  );
+
+  return result.rows.length > 0;
 }
 
 async function getGroup() {
@@ -68,6 +125,7 @@ async function getCreatedGroup(gname) {
 module.exports = {
   addGroup,
   deleteGroup,
+  getDeletedGroup,
   getAllGroups,
   joinGroup,
   getGroup,

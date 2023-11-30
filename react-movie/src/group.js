@@ -18,6 +18,12 @@ const Group = () => {
     Authorization: `Bearer ${token}`,
   };
 
+  const handleHideMessageTimer = (setterFunction) => {
+    setTimeout(() => {
+      setterFunction(""); // Clear the message after a certain time
+    }, 5000); // Adjust the time (in milliseconds) as needed
+  };
+
   useEffect(() => {
     // Fetch groups when the component mounts
     const fetchGroups = async () => {
@@ -52,6 +58,7 @@ const Group = () => {
 
       console.log("Group created successfully:", response.data);
       setCreationMessage("Group created successfully");
+      handleHideMessageTimer(setCreationMessage);
 
       // Step 2: Fetch the group details, including groupid, from the server
       const createdGroupResponse = await axios.get(
@@ -79,36 +86,11 @@ const Group = () => {
   };
 
   const handleDeleteGroup = async (groupid) => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:3001/user/deleteGroup/${groupid}`,
-        {},
-        { headers }
-      );
-
-      console.log("Response data1111:", groupid, headers, response.data);
-
-      console.log(response.data);
-      setDeleteMessage("Group deleted successfully");
-
-      // After deleting a group, fetch the updated list of groups
-      const groupsResponse = await axios.get(
-        "http://localhost:3001/user/groups"
-      );
-
-      setGroups(groupsResponse.data.data);
-    } catch (error) {
-      console.error(error.response?.data || error.message);
-      setDeleteMessage("Error deleting group");
-    }
-  };
-
-  const handleJoinGroup = async (groupid) => {
-    setJoinMessage("täällä ollaan menossa1111");
-    const token = jwtToken.value; // Obtain the token here
+    const token = jwtToken.value;
 
     if (!token) {
-      setJoinMessage("Please log in to join a group.");
+      setDeleteMessage("Please log in to delete a group.");
+      handleHideMessageTimer(setDeleteMessage);
       return;
     }
 
@@ -118,6 +100,76 @@ const Group = () => {
     };
 
     try {
+      // Step 1: Check if the user is the owner of the group
+      const response = await axios.post(
+        `http://localhost:3001/user/deleteGroup/${groupid}`,
+        {},
+        { headers }
+      );
+
+      console.log("Response data:", groupid, headers, response.data);
+
+      // Step 2: If the user is the owner, update the state and show success message
+      setDeleteMessage("Group deleted successfully");
+      handleHideMessageTimer(setDeleteMessage);
+
+      // Step 3: After deleting a group, fetch the updated list of groups
+      const groupsResponse = await axios.get(
+        "http://localhost:3001/user/groups",
+        { headers }
+      );
+      setGroups(groupsResponse.data.data);
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      setDeleteMessage("Error deleting group");
+      handleHideMessageTimer(setDeleteMessage);
+      console.log(
+        "Error deleting group:",
+        groupid,
+        headers,
+        error.response?.data
+      );
+    }
+  };
+
+  const handleJoinGroup = async (groupid) => {
+    const token = jwtToken.value;
+
+    if (!token) {
+      setJoinMessage("Please log in to join a group.");
+      handleHideMessageTimer(setJoinMessage);
+      return;
+    }
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+
+    console.log("handleJoinGroup called", token, "tässä tämä", headers);
+
+    try {
+      console.log("jwtToken:", jwtToken);
+
+      // Check if the user is already a member of the group
+      const checkMembershipResponse = await axios.get(
+        `http://localhost:3001/user/getGroup/${groupid}`,
+        { headers }
+      );
+
+      /*const isMember = checkMembershipResponse.data.groupDetails.some(
+        (member) => member.username === jwtToken.value.username
+      );
+      console.log("isMember:", isMember);
+
+      if (isMember) {
+        setJoinMessage("You are already a member of this group.");
+        handleHideMessageTimer(setJoinMessage);
+        return;
+      }
+      console.log("isMember:", isMember);*/
+
+      // Continue with joining the group
       const response = await axios.post(
         `http://localhost:3001/user/joinGroup/${groupid}`,
         {},
@@ -126,15 +178,11 @@ const Group = () => {
 
       console.log("Response data:", response.data);
       setJoinMessage("Group joined successfully");
-
-      // Fetch the updated list of groups after joining
-      const groupsResponse = await axios.get(
-        "http://localhost:3001/user/groups"
-      );
-      setGroups(groupsResponse.data.data);
+      handleHideMessageTimer(setJoinMessage);
     } catch (error) {
       console.error(error.response?.data || error.message);
       setJoinMessage("Error joining group");
+      handleHideMessageTimer(setJoinMessage);
     }
   };
 
