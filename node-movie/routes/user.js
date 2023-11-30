@@ -282,7 +282,7 @@ router.delete(
 //
 //
 
-router.post("/addReview", upload.none(), async (req, res) => {
+router.post("/addReview", authenticateToken, upload.none(), async (req, res) => {
   try {
     console.log("req.body", req.body);
 
@@ -291,7 +291,9 @@ router.post("/addReview", upload.none(), async (req, res) => {
     const date = req.body.date;
     const content = req.body.content;
     const genre = req.body.genre;
-    const username = req.body.username;
+    const username = req.user.username;
+
+    console.log(username + "add review backendissä")
 
     if (!mname) {
       return res.status(400).json({ error: "Movie name (mname) is required." });

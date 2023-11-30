@@ -21,11 +21,54 @@ const App = () => {
   const [activeTab, setActiveTab] = useState("home"); // Aktiivisen välilehden tila
   const [theme, setTheme] = useState("light");
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [genre, setGenre] = useState([]);
 
   const searchMovies = async (title) => {
-    const response = await fetch(`${API_URL}&s=${title}`);
-    const data = await response.json();
-    setMovies(data.Search);
+    try {
+      const response = await fetch(`${API_URL}&s=${title}`);
+      const data = await response.json();
+      console.log("API Response:", data);
+      let imdbID = data.Search[0].imdbID;
+      console.log("imdbID ekassa:", imdbID);
+
+      if (data.Response === "True" && data.Search && data.Search.length > 0) {
+        setMovies(data.Search);
+        setGenre([]); // Clear previous genre when searching for new movies
+        setSelectedMovie(null); // Clear selected movie when searching
+      } else {
+        setMovies([]);
+        setGenre([]);
+        setSelectedMovie(null);
+        console.log("No movies found");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const searchGenre = async ({ imdbID, movieName }) => {
+    try {
+      console.log("imdbID searchGenressä:", imdbID);
+      const movieResponse = await fetch(`${API_URL}&i=${imdbID}`);
+      const movieData = await movieResponse.json();
+
+      console.log("Movie Details:", movieData);
+
+      const movieGenre = movieData.Genre ? movieData.Genre.split(", ") : [];
+      const fetchedMovieName = movieData.Title ? movieData.Title : [];
+      console.log("Movie name imdb:", fetchedMovieName);
+
+      setGenre(movieGenre);
+      console.log("Genre:", movieGenre);
+
+      const genreString = movieGenre.join(", ");
+
+      return genreString; // Return the genres
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return ''; // Return an empty array in case of an error
+    }
   };
 
   useEffect(() => {
@@ -46,12 +89,19 @@ const App = () => {
     searchMovies(title);
   };
 
-  const handleMovieClick = (selectedMovie) => {
-    // Do any additional logic you need with the selected movie
-    // Set the state to show the ReviewForm
+  const handleMovieClick = async (movieInfo) => {
+    // Call searchGenre and get the genres
+    const genres = await searchGenre(movieInfo);
+
+    setSelectedMovie({
+      ...movieInfo,
+      genres: genres,
+    });
+    console.log("genre handleMovieClickissä:", genres);
+
+
     setShowReviewForm(true);
     setActiveTab("ReviewForm");
-    console.log("setShowReviewForm");
   };
 
   return (
@@ -102,7 +152,7 @@ const App = () => {
         )}{" "}
         {/*Open actros tab*/}
         {activeTab === "ReviewForm" && (
-          <div>{showReviewForm && <ReviewForm />}</div>
+          <div>{showReviewForm && <ReviewForm selectedMovie={selectedMovie} />}</div>
         )}
         {/*Open reviw tab */}
         {activeTab === "Review" && (

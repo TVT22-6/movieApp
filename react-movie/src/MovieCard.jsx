@@ -5,7 +5,11 @@ import React from 'react';
 const MovieCard = ({ movie, onMovieClick }) => {
 
   const onClickHandler = (event) => {
-    onMovieClick(movie);
+    console.log("on click handlerissa" + movie.imdbID);
+    onMovieClick({
+      imdbID: movie.imdbID,
+      movieName: movie.Title,
+    });
   };
 
   return (
