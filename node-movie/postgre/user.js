@@ -6,6 +6,8 @@ const sql = {
   GET_PW: "SELECT pw FROM customer WHERE username=$1",
   DELETE_USER: "DELETE FROM customer WHERE username=$1",
   UPDATE_PW: "UPDATE customer SET pw=$2 WHERE username=$1",
+  GET_SPECIFIC_USERS: "SELECT username FROM customer WHERE username ILIKE '%' || $1 || '%'"
+
 };
 
 async function addUser(uname, pw) {
@@ -65,4 +67,16 @@ async function updateUserPassword(uname, newPw) {
   }
 }
 
-module.exports = { addUser, getUsers, checkUser, delUser, updateUserPassword };
+/*async function getUser(uname) {
+  const result = await pgPool.query(sql.GET_SPECIGIC_USER, [uname]);
+  const rows = result.rows;
+  return rows;
+}*/
+
+async function getSpecificUsers(username) {
+  const result = await pgPool.query(sql.GET_SPECIFIC_USERS, [username]);
+  const rows = result.rows;
+  return rows;
+}
+
+module.exports = { addUser, getUsers, checkUser, delUser, updateUserPassword, getSpecificUsers };

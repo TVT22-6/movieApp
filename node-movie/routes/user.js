@@ -21,6 +21,7 @@ const {
   checkUser,
   delUser,
   updateUserPassword,
+  getSpecificUsers,
 } = require("../postgre/user");
 const {
   addGroup,
@@ -43,6 +44,28 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+
+
+// Get Specific Users
+
+router.get("/getSpecificUsers/:username", async (req, res) => {
+  console.log("getSpecificUsers route hit"); // Check if this logs when you make the request
+  const username = req.params.username;
+  console.log("username:", username);
+
+  try {
+    const users = await getSpecificUsers(username); // Updated this line
+    console.log("users:", users);
+
+    res.status(200).json({ users }); // Updated this line
+  } catch (error) {
+    console.error("Error fetching users from the database:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 
 //
 //Userin liittyvää koodia alapuolella
