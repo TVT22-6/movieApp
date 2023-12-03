@@ -119,44 +119,24 @@ router.post("/login", upload.none(), async (req, res) => {
 });
 
 //Middlewaree, joka tarkistaa tokenin oikeellisuuden. Käytetään esim. delete ja change-password metodissa
-/*function authenticateToken(req, res, next) {
-  const token = req.headers.authorization?.split(" ")[1];
-  console.log("onko token:", token);
-  if (!token) {
-    return res.status(401).send("Access denied. No token provided.");
-  }
-  console.log("onko token ennen decodea:", token);
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    req.user = decoded; // Add the decoded user to the request
-    console.log("onko decoded:", decoded);
-    next(); // Proceed to the next middleware or route handler
-  } catch (error) {
-    res.status(403).send("Invalid token.");
-    console.log("onko token täällä:", token);
-  }
-}*/
 function authenticateToken(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
-  console.log("Request Headers:", req.headers);
-  console.log("onko token:", token);
-
+  //console.log("Middleware token:", token);
   if (!token) {
     return res.status(401).send("Access denied. No token provided.");
   }
-
-  console.log("onko token ennen decodea:", token);
-
+ // console.log("Middleware token ennen decodea:", token);
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.user = decoded; // Add the decoded user to the request
-    console.log("onko decoded:", decoded);
+   // console.log("Middleware onko decoded:", decoded);
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
     res.status(403).send("Invalid token.");
-    console.log("onko token täällä:", token);
+    //console.log("Middleware end onko token täällä:", token);
   }
 }
+
 
 router.put("/change-password", authenticateToken, async (req, res) => {
   const { currentPassword, newPassword } = req.body;

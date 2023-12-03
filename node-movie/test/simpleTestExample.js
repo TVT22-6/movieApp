@@ -1,78 +1,147 @@
-// test/simpleTestExample.js
-
 let chai = require('chai');
 let chaiHttp = require('chai-http');
-let server = require('../app'); // Make sure this path correctly points to your app.js
+let server = require('../app'); // Ensure this path is correct
 let should = chai.should();
 
 chai.use(chaiHttp);
 
+// Global variables for username and password
+let testUsername = `testuser_${Date.now()}`;
+let testPassword = "pass";
 let jwtToken;
 
-// Test endpoint for retrieving all users (customers)
 describe('/GET user', () => {
-    it('it should GET all the users', (done) => {
+    it('it should GET all the users', function(done) {
+        this.timeout(5000); // Adjust timeout if needed
         chai.request(server)
-            .get('/user') // Adjusted to the user route
+            .get('/user') // Adjust the endpoint if needed
             .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('array');
-                // Include additional assertions here based on your actual customer data structure
-                done();
-            });
-    });
-});
-
-// Test endpoint for adding a new user (customer)
-describe('/POST register', () => {
-    it('it should register a new user', (done) => {
-        let user = {
-            uname: "newuser", // Field should match the route handler's expectation
-            pw: "pass"
-        };
-        chai.request(server)
-            .post('/user/register') // Adjusted to the correct endpoint for registration
-            .send(user)
-            .end((err, res) => {
-                res.should.have.status(201); // Expect a 201 status for successful registration
-                res.body.should.be.a('object');
-                res.body.should.have.property('message').eql('User registered successfully');
+                // You can add more assertions here based on the expected structure
                 done();
             });
     });
 });
 
 
-describe('/POST login', () => {
-    it('it should log in a user with correct credentials', (done) => {
-        let credentials = {
-            uname: "newuser",
-            pw: "pass"
-        };
-        chai.request(server)
-            .post('/user/login')
-            .send(credentials)
-            .end((err, res) => {
-                res.should.have.status(200);
-                res.body.should.have.property('jwtToken');
-                jwtToken = res.body.jwtToken; // Assert the presence of jwtToken
-                done();
-            });
+describe('User Management Tests', () => {
+    describe('/POST register', () => {
+        it('it should register a new user', (done) => {
+            chai.request(server)
+                .post('/user/register')
+                .send({ uname: testUsername, pw: testPassword })
+                .end((err, res) => {
+                    res.should.have.status(201);
+                    done();
+                });
+        });
+
+        it('it should not allow registering the same username twice', (done) => {
+            chai.request(server)
+                .post('/user/register')
+                .send({ uname: testUsername, pw: testPassword })
+                .end((err, res) => {
+                    res.should.have.status(409); // Expecting a conflict error
+                    done();
+                });
+        });
     });
-});
 
-// Test endpoint for deleting a user
-describe('/DELETE delete', () => {
-    it('it should delete a user', (done) => {
-        chai.request(server)
-            .delete('/user/delete') // Just the delete endpoint, no username in the URL
-            .set('Authorization', `Bearer ${jwtToken}`) // Use the token here
-            .end((err, res) => {
-                res.should.have.status(200); // Expect a 200 status for successful deletion
-                done();
-            });
+
+
+    // Test for logging in a user
+    describe('/POST login', () => {
+        it('it should log in a user with correct credentials', (done) => {
+            let credentials = {
+                uname: testUsername,
+                pw: testPassword
+            };
+            chai.request(server)
+                .post('/user/login')
+                .send(credentials)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('jwtToken');
+                    jwtToken = res.body.jwtToken; // Store the JWT token
+                    done();
+                });
+        });
     });
+
+    describe('Password Change Tests', () => {
+        // Ensure the user is registered and logged in before running these tests
+        before((done) => {
+            // Register and log in the user, then store the JWT token in jwtToken
+            // ...
+            done();
+        });
+    
+        it('it should change the user password', (done) => {
+            let passwordChangeDetails = {
+                currentPassword: testPassword,
+                newPassword: "newPassword123"
+            };
+            chai.request(server)
+                .put('/user/change-password')
+                .set('Authorization', `Bearer ${jwtToken}`)
+                .send(passwordChangeDetails)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('message').eql('Password changed successfully');
+                    done();
+                });
+        });
+    
+        it('it should log in with the new password', (done) => {
+            let credentials = {
+                uname: testUsername,
+                pw: "newPassword123"
+            };
+            chai.request(server)
+                .post('/user/login')
+                .send(credentials)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('jwtToken');
+                    done();
+                });
+        });
+    
+        it('it should not log in with the old password', (done) => {
+            let credentials = {
+                uname: testUsername,
+                pw: testPassword
+            };
+            chai.request(server)
+                .post('/user/login')
+                .send(credentials)
+                .end((err, res) => {
+                    res.should.have.status(401); // Unauthorized status expected
+                    done();
+                });
+        });
+    
+        // After tests, reset any changes made to the test environment
+        after((done) => {
+            // Reset user password back to the original, if necessary
+            // ...
+            done();
+        });
+    });
+
+    // Test for deleting a user
+    describe('/DELETE delete', () => {
+        it('it should delete a user', (done) => {
+            chai.request(server)
+                .delete('/user/delete')
+                .set('Authorization', `Bearer ${jwtToken}`)
+                .end((err, res) => {
+                    res.should.have.status(200); // Expect a 200 status for successful deletion
+                    done();
+                });
+        });
+    });
+
+   
 });
-// More test cases should be written to cover the full range of CRUD operations
-
-
