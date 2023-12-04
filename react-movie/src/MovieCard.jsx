@@ -1,4 +1,5 @@
 import React from 'react';
+import PosterImg from './styles/review.png'
 
 
 
@@ -18,7 +19,7 @@ const MovieCard = ({ movie, onMovieClick }) => {
         <p>{movie.Year}</p>
       </div>
       <div>
-        <img src={movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/400'} alt={movie.Title} />
+        <img src={movie.Poster !== 'N/A' ? movie.Poster : PosterImg} alt={movie.Title} />
       </div>
       <div>
         <span>{movie.Type}</span>
