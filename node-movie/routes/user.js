@@ -14,6 +14,7 @@ const {
   getReview,
   getAllByMovie,
   getAll,
+  getSpecificReview,
 } = require("../postgre/Review");
 const {
   addUser,
@@ -125,11 +126,11 @@ function authenticateToken(req, res, next) {
   if (!token) {
     return res.status(401).send("Access denied. No token provided.");
   }
- // console.log("Middleware token ennen decodea:", token);
+  // console.log("Middleware token ennen decodea:", token);
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.user = decoded; // Add the decoded user to the request
-   // console.log("Middleware onko decoded:", decoded);
+    // console.log("Middleware onko decoded:", decoded);
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
     res.status(403).send("Invalid token.");
@@ -299,23 +300,40 @@ router.post("/addReview", authenticateToken, upload.none(), async (req, res) => 
 
     console.log(username + "add review backendissä")
 
-      if (!mname) {
-        return res.status(400).json({ error: "Movie name (mname) is required." });
-      }
-
-      // Save the review to the database
-      await addReview(mname, genre, date, content, userVS, username);
-
-      // Respond with a success message
-      res.status(201).json({
-        message: "Review successfully posted to the database in user routes",
-      });
-    } catch (error) {
-      // Handle errors
-      console.error("Error posting review to the database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+    if (!mname) {
+      return res.status(400).json({ error: "Movie name (mname) is required." });
     }
-  });
+
+    // Save the review to the database
+    await addReview(mname, genre, date, content, userVS, username);
+
+    // Respond with a success message
+    res.status(201).json({
+      message: "Review successfully posted to the database in user routes",
+    });
+  } catch (error) {
+    // Handle errors
+    console.error("Error posting review to the database:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/getSpecificReview/:reviewid", async (req, res) => {
+  const reviewid = req.params.reviewid;
+  console.log("reviewid:", reviewid);
+
+  try {
+    // Fetch review details from the database, including review members
+    const reviewDetails = await getSpecificReview(reviewid);
+
+    console.log("Review details fetched successfully:", reviewDetails);
+
+    res.status(200).json(reviewDetails);
+  } catch (error) {
+    console.error("Error fetching review details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 router.get("/getReview", async (req, res) => {
   try {
