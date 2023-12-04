@@ -46,6 +46,8 @@ const {
 } = require("../postgre/group");
 const { response } = require("express");
 
+const { addActorReview } = require("../postgre/actorReview");
+
 /**
  * User root get mapping
  */
@@ -545,11 +547,9 @@ router.post(
       );
 
       // Respond with a success message
-      res
-        .status(201)
-        .json({
-          message: "Review successfully posted to the database in user routes",
-        });
+      res.status(201).json({
+        message: "Review successfully posted to the database in user routes",
+      });
     } catch (error) {
       // Handle errors
       console.error("Error posting review to the database:", error);
