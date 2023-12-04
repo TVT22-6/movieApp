@@ -54,6 +54,7 @@ const ReviewForm = ({ selectedMovie }) => {
             'Authorization': `Bearer ${token}`
         };
         const movieName = selectedMovie.movieName || '';
+        console.log(selectedMovie)
         const currentdate = new Date();
         const datePosted = currentdate.toISOString().slice(0, 10);
         const genre = selectedMovie.genres || '';

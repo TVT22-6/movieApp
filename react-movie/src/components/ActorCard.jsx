@@ -2,8 +2,7 @@ import React from 'react';
 
 const ActorCard = ({ movie, onMovieClick }) => {
   const handleClick = (event) => {
-    // Call the onMovieClick function with the movie's IMDb ID and the event
-    onMovieClick(event, movie.imdbID);
+    onMovieClick(movie.imdbID, event);
   };
 
   return (

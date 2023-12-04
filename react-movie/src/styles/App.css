@@ -397,3 +397,40 @@ nav {
   cursor: pointer;
   outline: none;
 }
+
+.ReviewFormForActor {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: auto;
+}
+
+.ReviewFormForActor label {
+  margin-bottom: 8px;
+}
+
+.ReviewFormForActor input,
+.ReviewFormForActor select {
+  padding: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.ReviewFormForActor button {
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.ReviewFormForActor button:hover {
+  background-color: #45a049;
+}
+
+.reviewactorform {
+  margin-top: 50px;
+  text-align: center;
+}
