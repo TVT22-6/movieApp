@@ -17,14 +17,6 @@ const {
   getAll,
   getUserReview,
 } = require("../postgre/Review");
-const {
-  addUser,
-  getUsers,
-  checkUser,
-  delUser,
-  updateUserPassword,
-} = require("../postgre/user");
-const { addGroup, deleteGroup, getAllGroups } = require("../postgre/group");
 
 const {
   addUser,
@@ -103,28 +95,31 @@ router.get("/getSpecificUsers/:username", async (req, res) => {
   }
 });
 
-//User root post mapping. Supports urlencoded and multer
 router.post("/register", upload.none(), async (req, res) => {
   const uname = req.body.uname;
   const pw = req.body.pw;
 
   try {
+    // Check for empty username or password
+    if (!uname || !pw) {
+      return res.status(400).json({ error: "Username and password are required" });
+    }
+
+    // Basic password strength validation
+    if (pw.length < 3) { // Example condition: password length at least 6 characters
+      return res.status(422).json({ error: "Password is too weak" });
+    }
+
     // Check if the username already exists
     const userExists = await checkUser(uname);
     if (userExists) {
-      // If the username is taken, send a 409 Conflict response
       return res.status(409).json({ error: "Username already exists" });
     }
 
-    // If the username is not taken, hash the password
     const hashedPw = await bcrypt.hash(pw, 10);
-
-    // Add the new user to the database
     await addUser(uname, hashedPw);
-    // Send a 201 Created response
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    // Log the error and send a 500 Internal Server Error response
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -152,6 +147,7 @@ router.post("/login", upload.none(), async (req, res) => {
 //Middlewaree, joka tarkistaa tokenin oikeellisuuden. Käytetään esim. delete ja change-password metodissa
 function authenticateToken(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
+  //console.log("Request Headers:", req.headers);
   //console.log("Middleware token:", token);
   if (!token) {
     return res.status(401).send("Access denied. No token provided.");

@@ -24,7 +24,6 @@ describe('/GET user', () => {
     });
 });
 
-
 describe('User Management Tests', () => {
     describe('/POST register', () => {
         it('it should register a new user', (done) => {
@@ -46,7 +45,30 @@ describe('User Management Tests', () => {
                     done();
                 });
         });
+
+        it('it should not allow registering with invalid data', (done) => {
+            chai.request(server)
+                .post('/user/register')
+                .send({ uname: "", pw: "" }) // Sending invalid data
+                .end((err, res) => {
+                    res.should.have.status(400); // Bad Request for invalid data
+                    done();
+                });
+        });
+
+        it('it should enforce password strength/format rules', (done) => {
+            let weakPassword = '12'; // Example of a weak password, keeping this really simple for developing/testing
+            chai.request(server)
+                .post('/user/register')
+                .send({ uname: `testuser_${Date.now()}`, pw: weakPassword })
+                .end((err, res) => {
+                    res.should.have.status(422); // Expecting failure due to weak password
+                    done();
+                });
+        });
     });
+
+
 
 
 
@@ -64,6 +86,32 @@ describe('User Management Tests', () => {
                     res.should.have.status(200);
                     res.body.should.have.property('jwtToken');
                     jwtToken = res.body.jwtToken; // Store the JWT token
+                    done();
+                });
+        });
+
+        it('it should not log in a user with incorrect credentials', (done) => {
+            let credentials = {
+                uname: testUsername,
+                pw: 'wrongPassword'
+            };
+            chai.request(server)
+                .post('/user/login')
+                .send(credentials)
+                .end((err, res) => {
+                    res.should.have.status(401); // Unauthorized status
+                    should.not.exist(res.body.jwtToken);
+                    done();
+                });
+        });
+    
+        it('it should not log in a user with missing credentials', (done) => {
+            chai.request(server)
+                .post('/user/login')
+                .send({})
+                .end((err, res) => {
+                    res.should.have.status(401); // Bad Request status
+                    should.not.exist(res.body.jwtToken);
                     done();
                 });
         });
@@ -130,18 +178,53 @@ describe('User Management Tests', () => {
         });
     });
 
-    // Test for deleting a user
-    describe('/DELETE delete', () => {
-        it('it should delete a user', (done) => {
-            chai.request(server)
-                .delete('/user/delete')
-                .set('Authorization', `Bearer ${jwtToken}`)
-                .end((err, res) => {
-                    res.should.have.status(200); // Expect a 200 status for successful deletion
-                    done();
-                });
-        });
+   // Test for deleting a user
+   describe('/DELETE user', () => {
+    it('it should delete a user and verify deletion', (done) => {
+        chai.request(server)
+            .delete('/user/delete')
+            .set('Authorization', `Bearer ${jwtToken}`)
+            .send({ uname: testUsername }) // Use the global testUsername
+            .end((deleteErr, deleteRes) => {
+                deleteRes.should.have.status(200); // Expect a 200 status for successful deletion
+
+                // After deletion, verify that the user is no longer in the list of all users
+                chai.request(server)
+                    .get('/user') // Adjust the endpoint if needed
+                    .end((getErr, getRes) => {
+                        getRes.should.have.status(200);
+                        getRes.body.should.be.a('array');
+
+                        // Check that the deleted user is not in the list
+                        const userExists = getRes.body.some(user => user.username === testUsername);
+                        userExists.should.be.false;
+
+                        done();
+                    });
+            });
     });
 
-   
+    it('it should handle deletion of non-existent user gracefully', (done) => {
+        chai.request(server)
+            .delete('/user/delete')
+            .set('Authorization', `Bearer ${jwtToken}`)
+            .send({ uname: 'nonExistentUser' })
+            .end((err, res) => {
+                res.should.have.status(200); // Expect a 200 status if that's the intended response
+                done();
+            });
+    });
+
+    after((done) => {
+        // Delete the test user
+        chai.request(server)
+            .delete('/user/delete')
+            .set('Authorization', `Bearer ${jwtToken}`)
+            .send({ uname: testUsername })
+            .end((err, res) => {
+                // Check deletion success and call done()
+                done();
+            });
+    });
+  });
 });
