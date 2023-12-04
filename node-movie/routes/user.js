@@ -23,6 +23,15 @@ const {
   checkUser,
   delUser,
   updateUserPassword,
+} = require("../postgre/user");
+const { addGroup, deleteGroup, getAllGroups } = require("../postgre/group");
+
+const {
+  addUser,
+  getUsers,
+  checkUser,
+  delUser,
+  updateUserPassword,
   getSpecificUsers,
   getUser,
 } = require("../postgre/user");
@@ -470,7 +479,6 @@ router.post("/deleteGroup/:groupid", authenticateToken, async (req, res) => {
   try {
     // Assuming you have a function to delete a group in your database
     await deleteGroup(groupid, username);
-
     res.status(200).json({ message: "Group successfully deleted" });
   } catch (error) {
     console.error(error);
@@ -502,6 +510,53 @@ router.get("/group/:groupid", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+//Actorpost metodi
+
+router.post(
+  "/addActorReview",
+  authenticateToken,
+  upload.none(),
+  async (req, res) => {
+    try {
+      console.log("req.body", req.body);
+
+      const date = req.body.date;
+      const actorname = req.body.actorname;
+      const movie = req.body.movie;
+      const content = req.body.content;
+      const votescore = req.body.votescore;
+      const username = req.user.username;
+
+      if (!actorname) {
+        return res
+          .status(400)
+          .json({ error: "actor name (actorname) is required." });
+      }
+
+      // Save the review to the database
+      await addActorReview(
+        date,
+        actorname,
+        movie,
+        content,
+        votescore,
+        username
+      );
+
+      // Respond with a success message
+      res
+        .status(201)
+        .json({
+          message: "Review successfully posted to the database in user routes",
+        });
+    } catch (error) {
+      // Handle errors
+      console.error("Error posting review to the database:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
 
 // Join Group
 router.post("/joinGroup/:groupid", authenticateToken, async (req, res) => {

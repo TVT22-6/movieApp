@@ -27,12 +27,6 @@ const Review = () => {
     }
   };
 
-  /*const forceRender = () => {
-  if (Array.isArray(reviews)) {
-    setReviews([...reviews]);
-  }
-};*/
-
   const sortedReviews = () => {
     const sortedReviewsAll = [...reviews];
     if (orderBy === "alphabetical") {
@@ -77,7 +71,7 @@ const Review = () => {
                 <td>{review.content || "N/A"}</td>
                 <td>{review.uservotescore || "N/A"}</td>
                 <td>{review.userid || "N/A"}</td>
-                {console.log("14", review)}
+                {console.log("review review id", review.reviewid)}
               </ReviewCard>
             ))}
           </tbody>

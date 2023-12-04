@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import MovieCard from "./MovieCard";
+import ActorCard from "./components/ActorCard";
+import ReviewFormForActor from "./components/ReviewFormForActor";
 
 const Actor = () => {
   const [movies, setMovies] = useState([]);
+  const [fetchMovie, setFetchMovie] = useState([]);
   const [actors, setActors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selectedActor, setSelectedActor] = useState(null);
+  const [activeTab, setActiveTab] = useState("ActorList");
 
   const API_URL = "https://www.omdbapi.com?apikey=d4f64de4";
 
@@ -39,21 +43,35 @@ const Actor = () => {
       console.log("Movie Details:", movieData);
 
       const movieActors = movieData.Actors ? movieData.Actors.split(", ") : [];
+      const movieName = movieData.Title ? movieData.Title.split(", ") : [];
 
       setActors(movieActors);
+      setFetchMovie(movieName);
+      console.log(movieName);
       console.log("Actors:", movieActors);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const handleSearchMovies = async () => {
-    searchMovies(searchTerm);
-  };
-
   const handleMovieClick = (imdbID) => {
     setSelectedMovie(imdbID);
     searchActors(imdbID);
+
+    setActiveTab("ReviewFormForActor");
+  };
+
+  const handleActorClick = (actor, fetchMovie) => {
+    setSelectedActor(actor);
+    setSelectedMovie(fetchMovie);
+    setActiveTab("ReviewFormForActor");
+  };
+
+  const handleSearchMovies = async () => {
+    searchMovies(searchTerm);
+    // Reset selectedMovie and selectedActor when searching for new movies
+    setSelectedMovie(null);
+    setSelectedActor(null);
   };
 
   return (
@@ -71,7 +89,10 @@ const Actor = () => {
         <div className="actor">
           {actors.map((actor, index) => (
             <div key={index} className="actor-card">
-              <h3>{actor}</h3>
+              {/* Make actor names clickable */}
+              <a href="#" onClick={() => handleActorClick(actor, fetchMovie)}>
+                {actor}
+              </a>
             </div>
           ))}
         </div>
@@ -81,7 +102,7 @@ const Actor = () => {
           {/* Display movie search results */}
           <div className="container">
             {movies.map((movie, index) => (
-              <MovieCard
+              <ActorCard
                 key={index}
                 movie={movie}
                 onMovieClick={() => handleMovieClick(movie.imdbID)}
@@ -89,6 +110,15 @@ const Actor = () => {
             ))}
           </div>
         </div>
+      )}
+
+      {activeTab === "ReviewFormForActor" && (
+        <ReviewFormForActor
+          selectedActor={selectedActor}
+          selectedMovie={selectedMovie}
+          setSelectedMovie={setSelectedMovie} // Pass the setter function to update selectedMovie in ReviewFormForActor
+          setSelectedActor={setSelectedActor} // Pass the setter function to update selectedActor in ReviewFormForActor
+        />
       )}
     </div>
   );
