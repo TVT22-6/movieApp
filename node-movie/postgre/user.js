@@ -6,8 +6,9 @@ const sql = {
   GET_PW: "SELECT pw FROM customer WHERE username=$1",
   DELETE_USER: "DELETE FROM customer WHERE username=$1",
   UPDATE_PW: "UPDATE customer SET pw=$2 WHERE username=$1",
-  GET_SPECIFIC_USERS: "SELECT username FROM customer WHERE username ILIKE '%' || $1 || '%'"
-
+  GET_SPECIFIC_USERS:
+    "SELECT username FROM customer WHERE username ILIKE '%' || $1 || '%'",
+  GET_USER: "SELECT * FROM customer WHERE username=$1",
 };
 
 async function addUser(uname, pw) {
@@ -18,24 +19,25 @@ async function delUser(uname) {
   // Start a transaction
   const client = await pgPool.connect();
   try {
-    await client.query('BEGIN');
+    await client.query("BEGIN");
 
     // Delete personal links
-    const delPersonalLinksQuery = 'DELETE FROM personalpage WHERE username = $1';
+    const delPersonalLinksQuery =
+      "DELETE FROM personalpage WHERE username = $1";
     await client.query(delPersonalLinksQuery, [uname]);
 
     // Remove user from groups
-    const delUserGroupsQuery = 'DELETE FROM groupusers WHERE username = $1';
+    const delUserGroupsQuery = "DELETE FROM groupusers WHERE username = $1";
     await client.query(delUserGroupsQuery, [uname]);
 
     // Delete user
     await client.query(sql.DELETE_USER, [uname]);
 
     // Commit the transaction
-    await client.query('COMMIT');
+    await client.query("COMMIT");
   } catch (error) {
     // Rollback in case of error
-    await client.query('ROLLBACK');
+    await client.query("ROLLBACK");
     throw error; // Re-throw the error to be handled by the caller
   } finally {
     client.release();
@@ -62,16 +64,20 @@ async function updateUserPassword(uname, newPw) {
   try {
     await pgPool.query(sql.UPDATE_PW, [uname, newPw]);
   } catch (error) {
-    console.error('Error updating user password:', error);
+    console.error("Error updating user password:", error);
     throw error;
   }
 }
 
-/*async function getUser(uname) {
-  const result = await pgPool.query(sql.GET_SPECIGIC_USER, [uname]);
+async function getUser(username) {
+  const result = await pgPool.query(sql.GET_USER, [username]);
   const rows = result.rows;
-  return rows;
-}*/
+  if (rows.length > 0) {
+    return rows[0];
+  } else {
+    return null;
+  }
+}
 
 async function getSpecificUsers(username) {
   const result = await pgPool.query(sql.GET_SPECIFIC_USERS, [username]);
@@ -79,4 +85,12 @@ async function getSpecificUsers(username) {
   return rows;
 }
 
-module.exports = { addUser, getUsers, checkUser, delUser, updateUserPassword, getSpecificUsers };
+module.exports = {
+  addUser,
+  getUsers,
+  checkUser,
+  delUser,
+  updateUserPassword,
+  getSpecificUsers,
+  getUser,
+};

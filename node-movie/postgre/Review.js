@@ -7,6 +7,7 @@ const sql = {
   GET_ALL_BY_MOVIE: 'SELECT * FROM "Review" WHERE moviename=$1',
   GET_ALL: 'SELECT * FROM "Review"',
   GET_SPECIFIC_REVIEW: 'SELECT * FROM "Review" WHERE reviewid=$1',
+  GET_USER_REVIEW: 'SELECT * FROM "Review" WHERE username=$1',
 };
 
 async function getSpecificReview(reviewid) {
@@ -19,7 +20,14 @@ async function getSpecificReview(reviewid) {
   }
 }
 
-async function addReview(moviename, genre, dateposted, content, uservotescore, username) {
+async function addReview(
+  moviename,
+  genre,
+  dateposted,
+  content,
+  uservotescore,
+  username
+) {
   try {
     await pgPool.query(sql.INSERT_REVIEW, [
       moviename,
@@ -70,10 +78,21 @@ async function getAll() {
   }
 }
 
+async function getUserReview(username) {
+  try {
+    const result = await pgPool.query(sql.GET_USER_REVIEW, [username]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching data from the database:", error);
+    return null;
+  }
+}
+
 module.exports = {
   addReview,
   getReview,
   getAllByMovie,
   getAll,
   getSpecificReview,
+  getUserReview,
 };

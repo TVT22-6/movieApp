@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import "./styles/App.css";
 import Navbar from "./components/Navbar";
 import RegistrationForm from "./SignIn";
@@ -71,7 +71,7 @@ const App = () => {
       return genreString; // Return the genres
     } catch (error) {
       console.error("Error fetching data:", error);
-      return ''; // Return an empty array in case of an error
+      return ""; // Return an empty array in case of an error
     }
   };
 
@@ -93,10 +93,8 @@ const App = () => {
     searchMovies(title);
   };
 
-  // New function to handle user selection from the search results
-  const handleUserSelect = (userSearchResults) => {
-    // For simplicity, assuming the first result is selected
-    setSelectedUser(userSearchResults[0]);
+  const handleUserSelect = (user) => {
+    setSelectedUser(user);
   };
 
   const handleMovieClick = async (movieInfo) => {
@@ -108,7 +106,6 @@ const App = () => {
       genres: genres,
     });
     console.log("genre handleMovieClickissä:", genres);
-
 
     setShowReviewForm(true);
     setActiveTab("ReviewForm");
@@ -128,9 +125,8 @@ const App = () => {
           <button onClick={() => setActiveTab("actors")}>Actors</button>
           <button onClick={() => setActiveTab("user")}>User</button>
           <button onClick={() => setActiveTab("Group")}>Groups</button>
-           <button onClick={() => setActiveTab("Profile")}>Profile</button>
-           <button onClick={() => setActiveTab("auth")}>
-         
+          <button onClick={() => setActiveTab("Profile")}>Profile</button>
+          <button onClick={() => setActiveTab("auth")}>
             {jwtToken.value.length === 0 ? "Log In" : "Log Out"}
           </button>
         </div>
@@ -155,7 +151,6 @@ const App = () => {
             )}
           </div>
         )}
-        
         {/*Open actros tab*/}
         {activeTab === "actors" && (
           <div>
@@ -165,7 +160,9 @@ const App = () => {
         )}{" "}
         {/*Open actros tab*/}
         {activeTab === "ReviewForm" && (
-          <div>{showReviewForm && <ReviewForm selectedMovie={selectedMovie} />}</div>
+          <div>
+            {showReviewForm && <ReviewForm selectedMovie={selectedMovie} />}
+          </div>
         )}
         {/*Open reviw tab */}
         {activeTab === "Review" && (
@@ -179,20 +176,19 @@ const App = () => {
             <UserPage />
           </div>
         )}
-        {/*Open userPage tab */}
         {activeTab === "Profile" && (
-          <div>
-           <Router>
-             <Routes>
-                <Route path="/getSpecificUser/:username" element={<UserProfile userData={selectedUser} />} />
-               <Route path="/" element={<UserSearch onUserSelect={handleUserSelect} />} />
+          <Router>
+            <div>
+              <Link to="/getUser">User Search</Link>
+              <Link to={`/getUser/${selectedUser}`}>User Profile</Link>
+              <Routes>
+                <Route path="/getUser" element={<UserSearch />} />
+                <Route path="/getUser/:username" element={<UserProfile />} />
               </Routes>
-            </Router>
-              <UserProfile userData={userData.value} />
-          </div>
+            </div>
+          </Router>
         )}
         {/*Open userPage tab */}
-      
         {/* Login window, which contains the SignIn and DeleteUser functions */}
         {activeTab === "auth" && (
           <div>
@@ -213,7 +209,6 @@ const App = () => {
             )}
           </div>
         )}
-
         {activeTab === "Group" && (
           <div>
             <h2>Groups</h2>

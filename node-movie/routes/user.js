@@ -8,13 +8,14 @@ const {
   addPersonalLink,
   getPersonalLinksByUser,
   deletePersonalLink,
+  getUserLinks,
 } = require("../postgre/personalPage");
 const {
   addReview,
   getReview,
   getAllByMovie,
   getAll,
-  getSpecificReview,
+  getUserReview,
 } = require("../postgre/Review");
 const {
   addUser,
@@ -23,6 +24,7 @@ const {
   delUser,
   updateUserPassword,
   getSpecificUsers,
+  getUser,
 } = require("../postgre/user");
 const {
   addGroup,
@@ -46,7 +48,31 @@ router.get("/", async (req, res) => {
   }
 });
 
+//
+//Userin liittyvää koodia alapuolella
+//
+//
 
+//Get user
+router.get("/getUser/:username", async (req, res) => {
+  console.log("getUser route hit"); // Check if this logs when you make the request
+  const username = req.params.username;
+  console.log("username:", username);
+
+  try {
+    const user = await getUser(username); // Updated this line
+    if (user) {
+      console.log("user:", user);
+
+      res.status(200).json({ user }); // Updated this line
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching user from the database:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 // Get Specific Users
 
@@ -65,13 +91,6 @@ router.get("/getSpecificUsers/:username", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
-
-
-//
-//Userin liittyvää koodia alapuolella
-//
-//
 
 //User root post mapping. Supports urlencoded and multer
 router.post("/register", upload.none(), async (req, res) => {
@@ -137,7 +156,6 @@ function authenticateToken(req, res, next) {
     //console.log("Middleware end onko token täällä:", token);
   }
 }
-
 
 router.put("/change-password", authenticateToken, async (req, res) => {
   const { currentPassword, newPassword } = req.body;
@@ -230,6 +248,23 @@ const handleSubmit = async (event) => {
 //personal page liittyvää koodia alapuolella
 //
 
+//Get user links
+router.get("/getUserLinks/:username", async (req, res) => {
+  console.log("getUserLinks route hit"); // Check if this logs when you make the request
+  const username = req.params.username;
+  console.log("username:", username);
+
+  try {
+    const userLinks = await getUserLinks(username); // Updated this line
+    console.log("userLinks:", userLinks);
+
+    res.status(200).json({ userLinks }); // Updated this line
+  } catch (error) {
+    console.error("Error fetching user links from the database:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // Route to add a personal link
 router.post("/addLink", authenticateToken, async (req, res) => {
   console.log("addLink route hit"); // Check if this logs when you make the request
@@ -287,53 +322,43 @@ router.delete(
 //
 //
 
-router.post("/addReview", authenticateToken, upload.none(), async (req, res) => {
-  try {
-    console.log("req.body", req.body);
+router.post(
+  "/addReview",
+  authenticateToken,
+  upload.none(),
+  async (req, res) => {
+    try {
+      console.log("req.body", req.body);
 
-    const userVS = req.body.userVS;
-    const mname = req.body.mname;
-    const date = req.body.date;
-    const content = req.body.content;
-    const genre = req.body.genre;
-    const username = req.user.username;
+      const userVS = req.body.userVS;
+      const mname = req.body.mname;
+      const date = req.body.date;
+      const content = req.body.content;
+      const genre = req.body.genre;
+      const username = req.user.username;
 
-    console.log(username + "add review backendissä")
+      console.log(username + "add review backendissä");
 
-    if (!mname) {
-      return res.status(400).json({ error: "Movie name (mname) is required." });
+      if (!mname) {
+        return res
+          .status(400)
+          .json({ error: "Movie name (mname) is required." });
+      }
+
+      // Save the review to the database
+      await addReview(mname, genre, date, content, userVS, username);
+
+      // Respond with a success message
+      res.status(201).json({
+        message: "Review successfully posted to the database in user routes",
+      });
+    } catch (error) {
+      // Handle errors
+      console.error("Error posting review to the database:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-
-    // Save the review to the database
-    await addReview(mname, genre, date, content, userVS, username);
-
-    // Respond with a success message
-    res.status(201).json({
-      message: "Review successfully posted to the database in user routes",
-    });
-  } catch (error) {
-    // Handle errors
-    console.error("Error posting review to the database:", error);
-    res.status(500).json({ error: "Internal Server Error" });
   }
-});
-
-router.get("/getSpecificReview/:reviewid", async (req, res) => {
-  const reviewid = req.params.reviewid;
-  console.log("reviewid:", reviewid);
-
-  try {
-    // Fetch review details from the database, including review members
-    const reviewDetails = await getSpecificReview(reviewid);
-
-    console.log("Review details fetched successfully:", reviewDetails);
-
-    res.status(200).json(reviewDetails);
-  } catch (error) {
-    console.error("Error fetching review details:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+);
 
 router.get("/getReview", async (req, res) => {
   try {
@@ -385,6 +410,26 @@ router.get("/getAll", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+router.get("/getUserReview/:username", async (req, res) => {
+  console.log("getUserReview route hit"); // Check if this logs when you make the request
+  const username = req.params.username;
+  console.log("username reviewissä:", username);
+  try {
+    const userReviews = await getUserReview(username);
+    res.status(200).json({ userReviews });
+    console.log("userReviews:", userReviews);
+  } catch (error) {
+    console.error("Error fetching reviews from the database:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//
+//
+//Group pageen liittyvät metodit alapuolella
+//
+//
 
 // Create Group //user.js
 router.post("/postGroup", authenticateToken, async (req, res) => {
