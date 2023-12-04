@@ -12,7 +12,7 @@ import Review from "./components/Review";
 import Group from "./group";
 import Actor from "./actor";
 import MovieSearch from "./components/MovieSearch";
-import ReviewForm from "./components/ReviewForm";
+import ReviewForm from "./components/ReviewForm"
 import UserPage from "./components/UserPage";
 import UserProfile from "./components/showUserPage";
 import UserSearch from "./components/userSearch";
@@ -128,9 +128,9 @@ const App = () => {
           <button onClick={() => setActiveTab("actors")}>Actors</button>
           <button onClick={() => setActiveTab("user")}>User</button>
           <button onClick={() => setActiveTab("Group")}>Groups</button>
-           <button onClick={() => setActiveTab("Profile")}>Profile</button>
-           <button onClick={() => setActiveTab("auth")}>
-         
+          <button onClick={() => setActiveTab("Profile")}>Profile</button>
+          <button onClick={() => setActiveTab("auth")}>
+
             {jwtToken.value.length === 0 ? "Log In" : "Log Out"}
           </button>
         </div>
@@ -155,7 +155,7 @@ const App = () => {
             )}
           </div>
         )}
-        
+
         {/*Open actros tab*/}
         {activeTab === "actors" && (
           <div>
@@ -182,17 +182,17 @@ const App = () => {
         {/*Open userPage tab */}
         {activeTab === "Profile" && (
           <div>
-           <Router>
-             <Routes>
+            <Router>
+              <Routes>
                 <Route path="/getSpecificUser/:username" element={<UserProfile userData={selectedUser} />} />
-               <Route path="/" element={<UserSearch onUserSelect={handleUserSelect} />} />
+                <Route path="/" element={<UserSearch onUserSelect={handleUserSelect} />} />
               </Routes>
             </Router>
-              <UserProfile userData={userData.value} />
+            <UserProfile userData={userData.value} />
           </div>
         )}
         {/*Open userPage tab */}
-      
+
         {/* Login window, which contains the SignIn and DeleteUser functions */}
         {activeTab === "auth" && (
           <div>
