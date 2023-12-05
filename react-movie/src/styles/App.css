@@ -346,7 +346,7 @@ nav {
   }
 }
 
-/*Actor tab styling*/
+/*Actor tab styling beginning*/
 
 .actor {
   display: flex;
@@ -434,3 +434,82 @@ nav {
   margin-top: 50px;
   text-align: center;
 }
+
+.actor-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: 2rem;
+}
+
+.actor-list-item {
+  width: 200px;
+  margin: 1rem;
+  padding: 1rem;
+  background-color: #282828;
+  border-radius: 8px;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.actor-list-item h3 {
+  color: #f9d3b4;
+}
+
+.actor-card a {
+  color: #ffffff; /* Set the text color to white */
+  text-decoration: none; /* Remove underlines */
+}
+
+/* Actor tab styling end*/
+
+/* ReviewFormForActor styling beginning*/
+
+.ReviewFormForActor {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: auto;
+}
+
+.ReviewFormForActor label {
+  margin-bottom: 8px;
+  color: #f9d3b4; /* Match the color used for actor names in actor cards */
+}
+
+.ReviewFormForActor input,
+.ReviewFormForActor select {
+  padding: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #1f2123; /* Match the background color used for input fields in actor tab */
+  color: #a1a1a1;
+  font-size: 1rem; /* Adjust font size as needed */
+}
+
+.ReviewFormForActor textarea {
+  padding: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #1f2123;
+  color: #a1a1a1;
+  font-size: 1rem;
+  resize: vertical; /* Allow vertical resizing of the textarea */
+}
+
+.ReviewFormForActor button {
+  padding: 10px;
+  background-color: #282828; /* Match the green color used for submit buttons in actor tab */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.ReviewFormForActor button:hover {
+  background-color: #1f2123;
+}
+
+/* ReviewFormForActor styling ending*/

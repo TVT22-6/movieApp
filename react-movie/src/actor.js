@@ -112,7 +112,7 @@ const Actor = () => {
         </div>
       )}
 
-      {activeTab === "ReviewFormForActor" && (
+      {activeTab === "ReviewFormForActor" && selectedMovie && selectedActor &&(
         <ReviewFormForActor
           selectedActor={selectedActor}
           selectedMovie={selectedMovie}

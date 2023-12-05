@@ -30,6 +30,7 @@ const ReviewFormForActor = ({ selectedMovie, selectedActor, setSelectedMovie, se
 
     if (!token) {
       console.log('Please log in to add reviews.');
+      alert("You must be logged in to submit a review.");
       return;
     }
     
@@ -60,6 +61,7 @@ const ReviewFormForActor = ({ selectedMovie, selectedActor, setSelectedMovie, se
       setvotescore('');
 
       console.log('Review submitted successfully:', response.data);
+      alert("Thank you for submitting a review.");
     } catch (error) {
       console.error(error);
       console.log('Failed to add review:', error.response?.data.error || error.message);
