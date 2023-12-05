@@ -178,9 +178,45 @@ describe('User Management Tests', () => {
         });
     });
 
+
+    // These extra describe blocks is for testing the delete user functionality more thoroughly
+
+    // Test for adding data to personalpage
+      describe('/POST to personalpage (2 table)', () => {
+        it('it should add a personal link for the user', (done) => {
+            let personalLinkData = { linkName: 'TestLink', personalLink: 'http://example.com' };
+            chai.request(server)
+                .post('/user/addLink') // Ensure the endpoint matches
+                .set('Authorization', `Bearer ${jwtToken}`) // Use the JWT token obtained from login
+                .send(personalLinkData)
+                .end((err, res) => {
+                    res.should.have.status(201); // Expecting a successful creation status code
+                    // Further assertions to verify the link data can be added here
+                    done();
+                });
+        });
+    });
+
+    // Test for adding data to groups & groupusers
+    describe('/POST to groups & groupusers (3, 4 table)', () => {
+        it('it should create a group where the user is admin and member', (done) => {
+            let groupData = { gname: 'TestGroup' }; // Example group name
+            chai.request(server)
+                .post('/user/postGroup') // Ensure the endpoint matches
+                .set('Authorization', `Bearer ${jwtToken}`) // Use the JWT token obtained from login
+                .send(groupData)
+                .end((err, res) => {
+                    res.should.have.status(201); // Expecting a successful creation status code
+                    res.body.should.have.property('message', 'Group successfully created');
+                    done();
+                });
+        });
+    });
+
+
    // Test for deleting a user
-   describe('/DELETE user', () => {
-    it('it should delete a user and verify deletion', (done) => {
+   describe('/DELETE user and data', () => {
+    it('it should delete a user, connected tables and verify deletion', (done) => {
         chai.request(server)
             .delete('/user/delete')
             .set('Authorization', `Bearer ${jwtToken}`)

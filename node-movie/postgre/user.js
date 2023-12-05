@@ -21,14 +21,20 @@ async function delUser(uname) {
   try {
     await client.query("BEGIN");
 
+      // Delete any groups where the user is the admin
+      const delGroupsQuery = "DELETE FROM groups WHERE admin = $1";
+      await client.query(delGroupsQuery, [uname]);
+
     // Delete personal links
     const delPersonalLinksQuery =
       "DELETE FROM personalpage WHERE username = $1";
     await client.query(delPersonalLinksQuery, [uname]);
 
-    // Remove user from groups
+  // Remove user from groups
     const delUserGroupsQuery = "DELETE FROM groupusers WHERE username = $1";
     await client.query(delUserGroupsQuery, [uname]);
+
+
 
     // Delete user
     await client.query(sql.DELETE_USER, [uname]);
