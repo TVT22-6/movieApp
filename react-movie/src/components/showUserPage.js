@@ -7,8 +7,23 @@ const UserProfile = () => {
   const [userData, setUserData] = useState(null);
   const [userReviews, setUserReviews] = useState([]);
   const [userLinks, setUserLinks] = useState([]);
+  const [userActor, setUserActor] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetching, setFetching] = useState(false);
+  const formatDateTime = (dateTimeString) => {
+    const options = {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return new Date(dateTimeString).toLocaleString(undefined, options);
+  };
+  const formatDateTime2 = (dateTimeString) => {
+    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    return new Date(dateTimeString).toLocaleDateString(undefined, options);
+  };
 
   // ... (existing code)
 
@@ -89,6 +104,26 @@ const UserProfile = () => {
           console.error("Error fetching user links:", linkError);
           setUserLinks([]); // Set an empty array in case of an error
           setFetching(false);
+        }
+
+        try {
+          console.log("Fetching user actor...");
+
+          const actorResponse = await fetch(
+            `http://localhost:3001/user/getUserActor/${username}`
+          );
+
+          if (!actorResponse.ok) {
+            throw new Error(`HTTP Error! status: ${actorResponse.status}`);
+          }
+
+          const actorData = await actorResponse.json();
+          console.log("Actor data:", actorData);
+          if (actorData && actorData.userActor.length > 0)
+            console.log("userActor if:", actorData.userActor);
+          console.log("actorData if:", actorData);
+          console.log("actorData.userActor if:", actorData.userActor.length);
+          setUserActor(actorData.userActor);
         } finally {
           setLoading(false); // Set loading to false after both fetches
           setFetching(false);
@@ -143,20 +178,43 @@ const UserProfile = () => {
                   )}
                 </div>
                 <div>
-                  <h3>Links:</h3>
                   {userLinks && userLinks.length > 0 ? (
-                    <ul>
-                      {userLinks.map((link) => {
-                        return (
-                          <li key={link.linkname}>
-                            {link.personallink}
-                            {link.linkname}
-                          </li>
-                        );
-                      })}
-                    </ul>
+                    userLinks.map((link) => (
+                      <div key={link.linkname} className="link-card">
+                        <h3>{link.linkname}</h3>
+                        <p>Date Added: {formatDateTime(link.dateadded)}</p>
+                        <a
+                          href={link.personallink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {link.personallink}
+                        </a>
+                      </div>
+                    ))
                   ) : (
                     <p>No links available.</p>
+                  )}
+                </div>
+                <div>
+                  {userActor && userActor.length > 0 ? (
+                    userActor.map((actor) => (
+                      <div key={actor.actorreviewid} className="actor-card">
+                        <h3>{actor.actorname}</h3>
+                        <p>Date Added: {formatDateTime2(actor.date)}</p>
+                        <a
+                          href={actor.movie}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {actor.movie}
+                        </a>
+                        <p>{actor.content}</p>
+                        <p>{actor.votescore}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No actor reviews available.</p>
                   )}
                 </div>
               </div>

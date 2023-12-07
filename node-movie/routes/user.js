@@ -38,7 +38,7 @@ const {
 } = require("../postgre/group");
 const { response } = require("express");
 
-const { addActorReview } = require("../postgre/actorReview");
+const { addActorReview, getUserActor } = require("../postgre/actorReview");
 
 /**
  * User root get mapping
@@ -102,11 +102,14 @@ router.post("/register", upload.none(), async (req, res) => {
   try {
     // Check for empty username or password
     if (!uname || !pw) {
-      return res.status(400).json({ error: "Username and password are required" });
+      return res
+        .status(400)
+        .json({ error: "Username and password are required" });
     }
 
     // Basic password strength validation
-    if (pw.length < 3) { // Example condition: password length at least 6 characters
+    if (pw.length < 3) {
+      // Example condition: password length at least 6 characters
       return res.status(422).json({ error: "Password is too weak" });
     }
 
@@ -568,6 +571,30 @@ router.post(
   }
 );
 // Actorpostmetodi loppuu
+
+router.get("/getUserActor/:username", async (req, res) => {
+  console.log("getUserActor route hit"); // Check if this logs when you make the request
+  const username = req.params.username;
+  console.log("username:", username);
+
+  try {
+    const userActor = await getUserActor(username); // Updated this line
+    console.log("userActor:", userActor);
+    res.status(200).json({ userActor }); // Updated this line
+    console.log("userActor:", userActor);
+  } catch (error) {
+    console.error("Error fetching user actor from the database:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//
+//
+//
+//Group pageen liittyvät metodit alapuolella
+//
+//
+//
 
 // Join Group
 router.post("/joinGroup/:groupid", authenticateToken, async (req, res) => {
