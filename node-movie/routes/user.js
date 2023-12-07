@@ -16,8 +16,8 @@ const {
   getAllByMovie,
   getAll,
   getUserReview,
+  getSpecificReview,
 } = require("../postgre/Review");
-
 const {
   addUser,
   getUsers,
@@ -366,6 +366,20 @@ router.post(
     }
   }
 );
+
+router.get("/getSpecificReview/:reviewid", async (req, res) => {
+  const reviewid = req.params.reviewid;
+  console.log("reviewid:", reviewid);
+
+  try {
+    const reviewDetails = await getSpecificReview(reviewid);
+
+    res.status(200).json(reviewDetails);
+  } catch (error) {
+    console.error("Error fetching review details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 router.get("/getReview", async (req, res) => {
   try {

@@ -105,7 +105,6 @@ body {
   height: 460px;
   margin: 1.5rem;
 
-
   position: relative;
   border-radius: 12px;
   overflow: hidden;
@@ -327,11 +326,9 @@ nav {
     background-color: var(--mainColor);
     transition: 1s;
     z-index: 3;
-
   }
 
   header .responsive_nav {
-
     transform: translateY(100vh);
   }
 
