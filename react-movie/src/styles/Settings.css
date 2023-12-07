@@ -7,9 +7,14 @@
 }
 
 
-p, h1, h2, h3, h4, h5, h6 {
+p, h1, h2, h4, h5, h6 {
     color: whitesmoke;
 
+}
+
+h3 {
+    color: #000000;
+    text-align: center;
 }
 
 /* Common styles for boxes */
@@ -66,6 +71,12 @@ p, h1, h2, h3, h4, h5, h6 {
     opacity: 0.8;
 }
 
+.delete-box {
+    display: grid;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
 /* Red button styles */
 .red-button {
     background-color: red;
@@ -75,8 +86,23 @@ p, h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s;
+    width: 100px;
+
 }
 
 .red-button:hover {
-    background-color: darkred;
+    background-color: rgb(243, 77, 71);
+}
+
+/* Responsive Adjustments */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .box {
+        max-width: 80%; /* Adjusts width on tablets */
+    }
+}
+
+@media (max-width: 600px) {
+    .box {
+        max-width: 95%; /* Adjusts width on small phones */
+    }
 }

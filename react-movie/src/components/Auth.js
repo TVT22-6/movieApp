@@ -27,6 +27,7 @@ function Login() {
 
     const [uname, setUname] = useState('');
     const [pw, setPw] = useState('');
+    const [errorMessage, setErrorMessage] = useState(''); // State to hold error message
 
     
 
@@ -35,18 +36,26 @@ function Login() {
       .then(resp => {
         jwtToken.value = resp.data.jwtToken;
         localStorage.setItem('jwtToken', resp.data.jwtToken); // Storing the token in local storage
+        setErrorMessage(''); // Clear any previous errors
       })
-        .catch(error => console.log(error.response.data))
-    }
+      .catch(error => { // Make sure 'error' is received here
+        // Handle error response and set an error message
+        const message = (error && error.response && error.response.data && error.response.data.error) 
+                        ? error.response.data.error 
+                        : "An error occurred during login.";
+        setErrorMessage(message);
+      });
+  }
 
     return(
 
         <div className="box login-box">
-            <h2>Log In</h2>
+            <h3>Log In</h3>
             <label htmlFor="username">Username: </label>
             <input type="text" id="username" value={uname} onChange={e => setUname(e.target.value)}/>
             <label htmlFor="password">Password: </label>
             <input type="password" id="password" value={pw} onChange={e => setPw(e.target.value)}/>
+            {errorMessage && <div className="status-message">{errorMessage}</div>} {/* Display error message */}
             <button onClick={login}>Login</button>
         </div>
     );

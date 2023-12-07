@@ -48,7 +48,8 @@ function PasswordChangeForm() {
     };
 
     return (
-        <div>
+        <div className="box"> {/* Apply box class to the main div */}
+            <h3>Change Password</h3> {/* Optional heading */}
             <input 
                 type="password" 
                 value={currentPassword} 
@@ -67,10 +68,10 @@ function PasswordChangeForm() {
                 onChange={e => setConfirmNewPassword(e.target.value)} 
                 placeholder="Confirm New Password" 
             />
-            <button onClick={handleSubmit} disabled={isLoading}>
+            <button onClick={handleSubmit} disabled={isLoading} className={isLoading ? "red-button" : ""}>
                 {isLoading ? "Changing..." : "Change Password"}
             </button>
-            {message && <div>{message}</div>}
+            {message && <div className="status-message">{message}</div>} {/* Apply status-message class */}
         </div>
     );
 }

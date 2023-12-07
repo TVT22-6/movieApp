@@ -179,7 +179,7 @@ describe('User Management Tests', () => {
     });
 
 
-    // These extra describe blocks is for testing the delete user functionality more thoroughly
+    // These extra describe POST blocks is for testing the delete user functionality more thoroughly
 
     // Test for adding data to personalpage
       describe('/POST to personalpage (2 table)', () => {

@@ -38,7 +38,7 @@ const RegistrationForm = () => {
             <div className="status-message"><h2>Dont have an account? Sign in:</h2></div>
             <form onSubmit={handleSubmit}>
                 <div className="box signin-box">
-                <h2>Sign In</h2>
+                <h3>Sign In</h3>
                     <label htmlFor="username-reg">Username: </label>
                     <input
                         type="text"
@@ -55,10 +55,10 @@ const RegistrationForm = () => {
                         onChange={(e) => setPw(e.target.value)}
                     />
 
+                    {registrationStatus && <div className="status-message">{registrationStatus}</div>}
                     <button type="submit" className="submit-button">Register</button>
                 </div>
             </form>
-            {registrationStatus && <div className="status-message"><p>{registrationStatus}</p></div>}
         </div>
     );
 }
