@@ -116,7 +116,7 @@ const UserProfile = () => {
             {
               <div>
                 <h2>{userData.username}'s Profile</h2>
-                <div className="movie">
+                <div>
                   <h3>Reviews:</h3>
                   {userReviews && userReviews.length > 0 ? (
                     <table>
