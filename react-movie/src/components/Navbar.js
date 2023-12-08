@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { FaBars, FaTimes } from "react-icons/fa"
 import { jwtToken, userData } from "./Signals";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 
 
 
@@ -34,25 +35,36 @@ function Navbar({ setActiveTab, setTheme }) {
         <header>
             <h4>NWADB</h4>
             <nav ref={navRef}>
-                <a href="/#" onClick={() => handleTabClick('home')}>
+                <Link to="/home" onClick={() => handleTabClick('home')}>
                     Home
-                </a>
-                <a href="/#" onClick={() => handleTabClick('actors')}>
+                </Link>
+                <Link to="/actors" onClick={() => handleTabClick('actors')}>
                     Actors
-                </a>
-                <a href="/#" onClick={() => handleTabClick('Review')}>
+                </Link>
+                <Link to="/user" onClick={() => handleTabClick('user')}>
+                    User
+                </Link>
+                <Link to="/getUser" onClick={() => handleTabClick('Profile')}>
+                    Profile
+                </Link>
+                <Link to="/group" onClick={() => handleTabClick('Group')}>
+                    Groups
+                </Link>
+                <Link to="/review" onClick={() => handleTabClick('Review')}>
                     Review
-                </a>
+                </Link>
                 {jwtToken.value.length === 0 && (
-                    <a href="/#" onClick={() => handleTabClick('auth')}>
+                    <Link to="/auth" onClick={() => handleTabClick('auth')}>
                         Log In
-                    </a>
+                    </Link>
                 )}
                 {jwtToken.value.length > 0 && (
-                    <a href="/#" onClick={handleLogout}>Log Out</a>
+                    <Link to="/auth" onClick={handleLogout}>
+                        Log Out
+                    </Link>
                 )}
 
-                <a href="/#" onClick={handleToggleTheme}>Toggle Theme
+                <a onClick={handleToggleTheme}>Toggle Theme
                 </a>
 
 

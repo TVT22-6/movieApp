@@ -112,71 +112,88 @@ const App = () => {
   };
 
   return (
-    <div>
-      <div className="navbar">
-        <Navbar setActiveTab={setActiveTab} handleLogout={handleLogout} setTheme={setTheme} />
-      </div>
-      <div className={`app ${theme}`}>
-        <button onClick={handleToggleTheme}>Toggle Theme</button>
-        {/* Nappulat välilehtien vaihtamiseen */}
-        <div>
-          <button onClick={() => setActiveTab("Review")}>Review</button>
-          <button onClick={() => setActiveTab("home")}>Home</button>
-          <button onClick={() => setActiveTab("actors")}>Actors</button>
-          <button onClick={() => setActiveTab("user")}>User</button>
-          <button onClick={() => setActiveTab("Group")}>Groups</button>
-          <button onClick={() => setActiveTab("Profile")}>Profile</button>
-          <button onClick={() => setActiveTab("auth")}>
-            {jwtToken.value.length === 0 ? "Log In" : "Log Out"}
-          </button>
+    <Router>
+      <div>
+        <div className="navbar">
+          <Navbar setActiveTab={setActiveTab} handleLogout={handleLogout} setTheme={setTheme} />
         </div>
-        {/* Ehdollinen sisältö aktiivisen välilehden perusteella */}
-        {activeTab === "home" && (
+        <div className={`app ${theme}`}>
+          {/*
+          <button onClick={handleToggleTheme}>Toggle Theme</button>
+          
           <div>
-            <MovieSearch onSearch={handleSearchMovies} />
-            {movies.length > 0 ? (
-              <div className="container">
-                {movies.map((movie, index) => (
-                  <MovieCard
-                    key={index}
-                    movie={movie}
-                    onMovieClick={handleMovieClick}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="empty">
-                <h2>No movies found</h2>
-              </div>
-            )}
-          </div>
-        )}
-        {/*Open actros tab*/}
-        {activeTab === "actors" && (
-          <div>
-            <Actor />
-          </div>
-        )}{" "}
-        {/*Open actros tab*/}
-        {activeTab === "ReviewForm" && (
-          <div>
-            {showReviewForm && <ReviewForm selectedMovie={selectedMovie} />}
-          </div>
-        )}
-        {/*Open reviw tab */}
-        {activeTab === "Review" && (
-          <div>
-            <Review />
-          </div>
-        )}
-        {/*Open userPage tab */}
-        {activeTab === "user" && (
-          <div>
-            <UserPage />
-          </div>
-        )}
-        {activeTab === "Profile" && (
-          <Router>
+            <button onClick={() => setActiveTab("Review")}>Review</button>
+            <button onClick={() => setActiveTab("home")}>Home</button>
+            <button onClick={() => setActiveTab("actors")}>Actors</button>
+            <button onClick={() => setActiveTab("user")}>User</button>
+            <button onClick={() => setActiveTab("Group")}>Groups</button>
+            <button onClick={() => setActiveTab("Profile")}>Profile</button>
+            <button onClick={() => setActiveTab("auth")}>
+              {jwtToken.value.length === 0 ? "Log In" : "Log Out"}
+            </button>
+          </div>*/}
+          {/* Ehdollinen sisältö aktiivisen välilehden perusteella */}
+          {activeTab === "home" && (
+            <div>
+              <Routes>
+                <Route
+                  path="/home"
+                  element={
+                    <div>
+                      <MovieSearch onSearch={handleSearchMovies} />
+                      {movies.length > 0 ? (
+                        <div className="container">
+                          {movies.map((movie, index) => (
+                            <MovieCard
+                              key={index}
+                              movie={movie}
+                              onMovieClick={handleMovieClick}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="empty">
+                          <h2>No movies found</h2>
+                        </div>
+                      )}
+                    </div>
+                  }
+                />
+              </Routes>
+            </div>
+          )}
+          {/*Open actros tab*/}
+          {activeTab === "actors" && (
+            <div>
+              <Routes>
+                <Route path="/actors" element={<Actor />} />
+              </Routes>
+            </div>
+          )}
+          {/*Open ReviewForm*/}
+          {activeTab === "ReviewForm" && (
+            <div>
+              {showReviewForm && <ReviewForm selectedMovie={selectedMovie} />}
+            </div>
+          )}
+          {/*Open reviw tab */}
+          {activeTab === "Review" && (
+            <div>
+              <Routes>
+                <Route path="/Review" element={<Review />} />
+              </Routes>
+            </div>
+          )}
+          {/*Open userPage tab */}
+          {activeTab === "user" && (
+            <div>
+              <Routes>
+                <Route path="/user" element={<UserPage />} />
+              </Routes>
+            </div>
+          )}
+
+          {activeTab === "Profile" && (
             <div>
               <Link to="/getUser">User Search</Link>
               <Link to={`/getUser/${selectedUser}`}>User Profile</Link>
@@ -185,38 +202,39 @@ const App = () => {
                 <Route path="/getUser/:username" element={<UserProfile />} />
               </Routes>
             </div>
-          </Router>
-        )}
-        {/*Open userPage tab */}
-        {/* Login window, which contains the SignIn and DeleteUser functions */}
-        {activeTab === "auth" && (
-          <div>
-            {jwtToken.value.length === 0 ? (
-              <div>
-                <Login /> {/* Rendered when no user is logged in */}
-                <RegistrationForm />
-              </div>
-            ) : (
-              <div>
-                <button onClick={handleLogout} className="red-button">
-                  Log Out
-                </button>{" "}
-                {/* Rendered when a user is logged in */}
-                <PasswordChangeForm />
-                <DeleteUser />
-              </div>
-            )}
-          </div>
-        )}
-        {activeTab === "Group" && (
-          <div>
-            <h2>Groups</h2>
-            {/* Add content related to groups here */}
-            <Group />
-          </div>
-        )}
+
+          )}
+
+          {/* Login window, which contains the SignIn and DeleteUser functions */}
+          {activeTab === "auth" && (
+            <div>
+              {jwtToken.value.length === 0 ? (
+                <div>
+                  <Login /> {/* Rendered when no user is logged in */}
+                  <RegistrationForm />
+                </div>
+              ) : (
+                <div>
+                  <button onClick={handleLogout} className="red-button">
+                    Log Out
+                  </button>{" "}
+                  {/* Rendered when a user is logged in */}
+                  <PasswordChangeForm />
+                  <DeleteUser />
+                </div>
+              )}
+            </div>
+          )}
+          {activeTab === "Group" && (
+            <div>
+              <Routes>
+                <Route path="/group" element={<Group />} />
+              </Routes>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </Router >
   );
 };
 

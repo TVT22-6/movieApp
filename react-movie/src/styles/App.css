@@ -222,6 +222,10 @@ body.dark {
   background-color: #121212;
 }
 
+background.dark {
+  background-color: #121212;
+}
+
 .app.dark {
   color: #ffffff;
   background-color: #121212;
@@ -454,8 +458,10 @@ nav {
 }
 
 .actor-card a {
-  color: #ffffff; /* Set the text color to white */
-  text-decoration: none; /* Remove underlines */
+  color: #ffffff;
+  /* Set the text color to white */
+  text-decoration: none;
+  /* Remove underlines */
 }
 
 /* Actor tab styling end*/
@@ -471,7 +477,8 @@ nav {
 
 .ReviewFormForActor label {
   margin-bottom: 8px;
-  color: #f9d3b4; /* Match the color used for actor names in actor cards */
+  color: #f9d3b4;
+  /* Match the color used for actor names in actor cards */
 }
 
 .ReviewFormForActor input,
@@ -480,9 +487,11 @@ nav {
   margin-bottom: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background: #1f2123; /* Match the background color used for input fields in actor tab */
+  background: #1f2123;
+  /* Match the background color used for input fields in actor tab */
   color: #a1a1a1;
-  font-size: 1rem; /* Adjust font size as needed */
+  font-size: 1rem;
+  /* Adjust font size as needed */
 }
 
 .ReviewFormForActor textarea {
@@ -493,12 +502,14 @@ nav {
   background: #1f2123;
   color: #a1a1a1;
   font-size: 1rem;
-  resize: vertical; /* Allow vertical resizing of the textarea */
+  resize: vertical;
+  /* Allow vertical resizing of the textarea */
 }
 
 .ReviewFormForActor button {
   padding: 10px;
-  background-color: #282828; /* Match the green color used for submit buttons in actor tab */
+  background-color: #282828;
+  /* Match the green color used for submit buttons in actor tab */
   color: white;
   border: none;
   border-radius: 4px;
