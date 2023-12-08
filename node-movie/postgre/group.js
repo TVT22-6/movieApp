@@ -10,7 +10,11 @@ const sql = {
   JOIN_GROUP:
     "INSERT INTO groupusers (username, groupid_usergroups) VALUES ($1, $2)",
   SPECIFIC_GROUP:
-    "SELECT groupusers.username, groups.gname FROM groups INNER JOIN groupusers ON groups.groupid = groupusers.groupid_usergroups",
+    "SELECT groups.gname, groupusers.username FROM groups INNER JOIN groupusers ON groups.groupid = groupusers.groupid_usergroups WHERE groups.groupid = $1",
+  LEAVE_GROUP:
+    "DELETE FROM groupusers WHERE username = $1 AND groupid_usergroups = $2",
+  GROUP_REVIEWS:
+    'SELECT r.genre, r.dateposted, r.reviewid, r.content, r.uservotescore, r.moviename, r.username FROM "Review" r JOIN groupusers gu ON r.username = gu.username WHERE gu.groupid_usergroups = $1;',
 };
 
 // Add the `admin` parameter to the addGroup function
@@ -28,10 +32,6 @@ async function addGroup(gname, username) {
     throw error; // Rethrow the error for handling in the calling code
   }
 }
-
-// postgre/group.js
-
-// postgre/group.js
 
 async function deleteGroup(groupid, admin) {
   try {
@@ -71,8 +71,6 @@ async function getAllGroups() {
   return result.rows;
 }
 
-// postgre/group.js
-
 async function joinGroup(username, groupid_usergroups) {
   try {
     // Check if the user is already a member of the group
@@ -101,9 +99,9 @@ async function checkMembership(username, groupid_usergroups) {
   return result.rows.length > 0;
 }
 
-async function getGroup() {
+async function getCreatedGroup(gname) {
   try {
-    const result = await pgPool.query(sql.SPECIFIC_GROUP);
+    const result = await pgPool.query(sql.GET_GROUP, [gname]);
     return result.rows;
   } catch (error) {
     console.error("Error fetching data from the database:", error);
@@ -111,14 +109,48 @@ async function getGroup() {
   }
 }
 
-async function getCreatedGroup(gname) {
+async function getSpecificGroupDetails(groupid) {
+  const result = await pgPool.query(sql.SPECIFIC_GROUP, [groupid]);
+
+  // Check if there are any rows in the result
+  if (result.rows.length === 0) {
+    // Handle the case where no rows are found, e.g., return null or throw an error
+    return null;
+  }
+
+  const groupDetails = {
+    gname: result.rows[0].gname,
+    groupid: result.rows[0].groupid,
+    users: result.rows.map((row) => ({ username: row.username })),
+  };
+  return groupDetails;
+}
+
+async function leaveGroup(username, groupid_usergroups) {
   try {
-    const result = await pgPool.query(sql.GET_GROUP, [gname]);
-    console.log("mitä täsä tullee3333", result.rows);
+    // Check if the user is a member of the group
+    const isMember = await checkMembership(username, groupid_usergroups);
+    if (!isMember) {
+      throw new Error("User is not a member of this group");
+    }
+
+    // If a member, delete the user from the groupusers table
+    await pgPool.query(sql.LEAVE_GROUP, [username, groupid_usergroups]);
+
+    return { success: true, message: "Successfully left the group" };
+  } catch (error) {
+    console.error("Error leaving group:", error);
+    throw error;
+  }
+}
+
+async function getGroupReviews(groupid) {
+  try {
+    const result = await pgPool.query(sql.GROUP_REVIEWS, [groupid]);
     return result.rows;
   } catch (error) {
-    console.error("Error fetching data from the database:", error);
-    return null;
+    console.error("Error fetching group reviews:", error);
+    throw error;
   }
 }
 
@@ -128,6 +160,9 @@ module.exports = {
   getDeletedGroup,
   getAllGroups,
   joinGroup,
-  getGroup,
   getCreatedGroup,
+  getSpecificGroupDetails,
+  leaveGroup,
+  getGroupReviews,
+  checkMembership,
 };

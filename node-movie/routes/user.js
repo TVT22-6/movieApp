@@ -32,13 +32,23 @@ const {
   deleteGroup,
   getAllGroups,
   joinGroup,
-  getGroup,
   getCreatedGroup,
   getDeletedGroup,
+  getSpecificGroupDetails,
+  leaveGroup,
+  getGroupReviews,
+  checkMembership,
 } = require("../postgre/group");
 const { response } = require("express");
 
 const { addActorReview, getUserActor } = require("../postgre/actorReview");
+
+const {
+  postRequest,
+  getRequest,
+  updateRequest,
+  deleteRequest,
+} = require("../postgre/requests");
 
 /**
  * User root get mapping
@@ -449,83 +459,6 @@ router.get("/getUserReview/:username", async (req, res) => {
   }
 });
 
-//
-//
-//Group pageen liittyvät metodit alapuolella
-//
-//
-
-// Create Group //user.js
-router.post("/postGroup", authenticateToken, async (req, res) => {
-  const gname = req.body.gname;
-
-  try {
-    const username = req.user.username;
-
-    // Updated the function call to pass both gname and username
-    await addGroup(gname, username);
-
-    console.log("Group added:", gname, username);
-
-    res.status(201).json({ message: "Group successfully created" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-router.delete("/getDeletedGroup/:groupid", async (req, res) => {
-  const groupid = req.params.groupid;
-
-  try {
-    await getDeletedGroup(groupid);
-
-    res.status(200).json({ message: "Group successfully deleted" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-router.post("/deleteGroup/:groupid", authenticateToken, async (req, res) => {
-  const groupid = req.params.groupid;
-  const username = req.user.username;
-
-  try {
-    // Assuming you have a function to delete a group in your database
-    await deleteGroup(groupid, username);
-    res.status(200).json({ message: "Group successfully deleted" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-router.get("/groups", async (req, res) => {
-  try {
-    const groups = await getAllGroups();
-    res.status(200).json({ data: groups });
-  } catch (error) {
-    console.error("Error fetching groups from the database:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// Get Group Details
-router.get("/group/:groupid", async (req, res) => {
-  const groupid = req.params.groupid;
-
-  try {
-    // Fetch group details from the database, including group members
-    const groupDetails = await getGroupDetails(groupid);
-
-    res.status(200).json({ groupDetails });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
 //Actorpost metodi
 
 router.post(
@@ -596,9 +529,83 @@ router.get("/getUserActor/:username", async (req, res) => {
 //
 //
 
+// Create Group //user.js
+router.post("/postGroup", authenticateToken, async (req, res) => {
+  const gname = req.body.gname;
+
+  try {
+    const username = req.user.username;
+
+    // Updated the function call to pass both gname and username
+    await addGroup(gname, username);
+
+    console.log("Group added:", gname, username);
+
+    res.status(201).json({ message: "Group successfully created" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.delete("/getDeletedGroup/:groupid", async (req, res) => {
+  const groupid = req.params.groupid;
+
+  try {
+    await getDeletedGroup(groupid);
+
+    res.status(200).json({ message: "Group successfully deleted" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.post("/deleteGroup/:groupid", authenticateToken, async (req, res) => {
+  const groupid = req.params.groupid;
+  const username = req.user.username;
+
+  try {
+    // Assuming you have a function to delete a group in your database
+    await deleteGroup(groupid, username);
+
+    res.status(200).json({ message: "Group successfully deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/groups", async (req, res) => {
+  try {
+    const groups = await getAllGroups();
+    res.status(200).json({ data: groups });
+  } catch (error) {
+    console.error("Error fetching groups from the database:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Get Group Details
+router.get("/group/:groupid", async (req, res) => {
+  const groupid = req.params.groupid;
+
+  try {
+    // Fetch group details from the database, including group members
+    const groupDetails = await getGroupDetails(groupid);
+
+    res.status(200).json({ groupDetails });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // Join Group
 router.post("/joinGroup/:groupid", authenticateToken, async (req, res) => {
   const groupid = req.params.groupid;
+  console.log("joinGroup route hit. Params:", req.params); // Log to check the parameters
+  console.log("Received data:", req.body); // Log to check the received data
 
   try {
     const username = req.user.username;
@@ -616,9 +623,9 @@ router.get("/getGroup/:groupid", async (req, res) => {
 
   try {
     // Fetch group details from the database, including group members
-    const groupDetails = await getGroup(groupid);
+    const groupDetails = await getSpecificGroupDetails(groupid);
 
-    res.status(200).json({ groupDetails });
+    res.status(200).json(groupDetails);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -637,6 +644,123 @@ router.get("/getCreatedGroup/:gname", async (req, res) => {
     res.status(200).json(groupDetails);
   } catch (error) {
     console.error("Error fetching group details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.delete("/leaveGroup/:groupid", authenticateToken, async (req, res) => {
+  const groupid = req.params.groupid;
+  try {
+    const username = req.user.username;
+    await leaveGroup(username, groupid);
+    res.status(200).json({ message: "Successfully left the group" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/groupReviews/:groupid", authenticateToken, async (req, res) => {
+  const groupid = req.params.groupid;
+  const username = req.user.username; // Get the logged-in username
+
+  try {
+    // Check if the user is a member of the group
+    const isMember = await checkMembership(username, groupid);
+    if (!isMember) {
+      throw new Error("User is not a member of this group");
+    }
+
+    // Fetch group reviews from the database
+    const groupReviews = await getGroupReviews(groupid);
+
+    res.status(200).json(groupReviews);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//
+//
+////Request pageen liittyvät metodit alapuolella
+//
+//
+
+// Post Request
+router.post("/joinRequest", async (req, res) => {
+  const { groupid, username } = req.body;
+
+  try {
+    // Assuming you have the admin's username stored in your database
+    const adminUsername = "admin"; // Replace with your actual admin username
+
+    // Save the join request in the database
+    await postRequest(groupid, username, adminUsername);
+
+    res.status(200).json({ message: "Join request sent successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Get Request
+router.get("/joinRequests/:admin", async (req, res) => {
+  const adminUsername = req.params.admin_username;
+
+  try {
+    // Fetch pending join requests for the admin
+    const joinRequests = await getRequest(null, adminUsername); // Passing null for group_id fetches all pending requests for the admin
+
+    res.status(200).json({ joinRequests });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.post("/respondToJoinRequest/:requestId", async (req, res) => {
+  const requestId = req.params.requestId;
+  const { status } = req.body;
+
+  try {
+    // Update the status of the join request
+    await updateRequest(requestId, status);
+
+    // Handle further actions based on status (accept/reject)
+
+    res.status(200).json({ message: "Join request responded successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Update Request
+router.put("/updateRequest/:request_id", async (req, res) => {
+  const request_id = req.params.request_id;
+
+  try {
+    await updateRequest(request_id);
+    res.status(200).json({ message: "Request successfully updated" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Delete Request
+router.delete("/deleteJoinRequest/:requestId", async (req, res) => {
+  const requestId = req.params.requestId;
+
+  try {
+    // Delete the join request from the database
+    await deleteRequest(requestId);
+
+    res.status(200).json({ message: "Join request deleted successfully." });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

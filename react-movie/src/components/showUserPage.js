@@ -178,6 +178,7 @@ const UserProfile = () => {
                   )}
                 </div>
                 <div>
+                  <h3>Links:</h3>
                   {userLinks && userLinks.length > 0 ? (
                     userLinks.map((link) => (
                       <div key={link.linkname} className="link-card">
@@ -197,6 +198,7 @@ const UserProfile = () => {
                   )}
                 </div>
                 <div>
+                  <h3>Actor Reviews:</h3>
                   {userActor && userActor.length > 0 ? (
                     userActor.map((actor) => (
                       <div key={actor.actorreviewid} className="actor-card">

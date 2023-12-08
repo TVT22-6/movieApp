@@ -23,6 +23,13 @@ const UserSearch = ({ onUserSelect }) => {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      // Call handleSearch when Enter key is pressed
+      handleSearch(onUserSelect);
+    }
+  };
+
   return (
     <div>
       <input
@@ -30,6 +37,7 @@ const UserSearch = ({ onUserSelect }) => {
         placeholder="Search users"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       <button onClick={() => handleSearch(onUserSelect)}>Search</button>
       <img
