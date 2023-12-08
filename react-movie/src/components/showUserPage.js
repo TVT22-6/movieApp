@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ProfileCard from "./profileCard";
+import UserPage from "./UserPage";
 
 const UserProfile = () => {
   const { username } = useParams();
@@ -152,7 +153,7 @@ const UserProfile = () => {
               <div>
                 <h2>{userData.username}'s Profile</h2>
                 <div>
-                  <h3>Reviews:</h3>
+                  <h2>Reviews:</h2>
                   {userReviews && userReviews.length > 0 ? (
                     <table>
                       <tbody>
@@ -178,7 +179,7 @@ const UserProfile = () => {
                   )}
                 </div>
                 <div>
-                  <h3>Links:</h3>
+                  <h2>Links:</h2>
                   {userLinks && userLinks.length > 0 ? (
                     userLinks.map((link) => (
                       <div key={link.linkname} className="link-card">
@@ -198,7 +199,7 @@ const UserProfile = () => {
                   )}
                 </div>
                 <div>
-                  <h3>Actor Reviews:</h3>
+                  <h2>Actor Reviews:</h2>
                   {userActor && userActor.length > 0 ? (
                     userActor.map((actor) => (
                       <div key={actor.actorreviewid} className="actor-card">
@@ -219,6 +220,8 @@ const UserProfile = () => {
                     <p>No actor reviews available.</p>
                   )}
                 </div>
+                {/* UserPage */}
+                <UserPage />
               </div>
             }
           </>

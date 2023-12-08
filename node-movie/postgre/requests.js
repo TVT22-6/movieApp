@@ -2,18 +2,19 @@ const pgPool = require("./connection");
 
 const sql = {
   POST_REQUEST:
-    "INSERT INTO join_requests (group_id, username, admin) VALUES ($1, $2, $3)",
+    "INSERT INTO join_requests (groupid, username, admin, status) VALUES ($1, $2, $3, 'pending')",
   GET_REQUEST:
-    'SELECT * FROM join_requests WHERE group_id = $1 AND status = "pending" AND admin_username = $2',
+    'SELECT * FROM join_requests WHERE groupid = $1 AND status = "pending" AND admin = $2',
   UPDATE_REQUEST:
     'UPDATE join_requests SET status = "accepted" WHERE request_id = $1',
   DELETE_REQUEST: "DELETE FROM join_requests WHERE request_id = $1",
+  GET_ADMIN_BY_GROUPID: "SELECT admin FROM groups WHERE groupid = $1",
 };
 
-async function postRequest(group_id, username, admin) {
+async function postRequest(groupid, username, admin) {
   try {
     const result = await pgPool.query(sql.POST_REQUEST, [
-      group_id,
+      groupid,
       username,
       admin,
     ]);
@@ -26,10 +27,10 @@ async function postRequest(group_id, username, admin) {
   }
 }
 
-async function getRequest(group_id, admin_username) {
+async function getRequest(groupid, admin_username) {
   try {
     const result = await pgPool.query(sql.GET_REQUEST, [
-      group_id,
+      groupid,
       admin_username,
     ]);
     return result.rows;
@@ -63,9 +64,25 @@ async function deleteRequest(request_id) {
   }
 }
 
+async function getAdminUsernameByGroupId(groupid) {
+  try {
+    const result = await pgPool.query(sql.GET_ADMIN_BY_GROUPID, [groupid]);
+    console.log(
+      "Admin username retrieved successfully in request.js backend:",
+      result.rows
+    );
+    return result.rows[0]?.admin || null;
+  } catch (error) {
+    console.error("Error getting admin by groupid:", error);
+    return null;
+  }
+}
+
+
 module.exports = {
   postRequest,
   getRequest,
   updateRequest,
   deleteRequest,
+  getAdminUsernameByGroupId,
 };

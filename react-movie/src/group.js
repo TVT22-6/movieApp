@@ -193,6 +193,50 @@ const Group = () => {
     }
   };
 
+  const handleSendRequest = async (groupid) => {
+    console.log("handleSendRequest called", groupid);
+    const token = jwtToken.value;
+    console.log("handleSendRequest called", token);
+
+    if (!token) {
+      return;
+    }
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+
+    console.log("handleSendRequest called", token, "tässä tämä", headers);
+
+    try {
+      console.log("jwtToken:", jwtToken);
+      // Assuming you have an API endpoint to send join requests
+      const response = await axios.post(
+        `http://localhost:3001/user/joinRequest/${groupid}`,
+        {},
+        {
+          headers
+        }
+      );
+      console.log("Response 1:", response.data);
+
+      console.log("Response data:", response.data);
+
+      if (response.ok) {
+        // Request was successful
+        console.log("Join request sent successfully");
+        // You can perform additional actions here if needed
+      } else {
+        // Handle errors
+        console.error("Failed to send join request");
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      console.log("Error sending join request:", error);
+    }
+  };
+
   const handleViewGroup = async (groupid) => {
     try {
       // Fetch details for the selected group
@@ -349,7 +393,7 @@ const Group = () => {
             <button onClick={() => handleDeleteGroup(selectedGroupId)}>
               Delete
             </button>
-            <button onClick={() => handleJoinGroup(selectedGroupId)}>
+            <button onClick={() => handleSendRequest(selectedGroupId)}>
               Join
             </button>
             {/* Display leave button */}

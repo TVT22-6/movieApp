@@ -48,6 +48,7 @@ const {
   getRequest,
   updateRequest,
   deleteRequest,
+  getAdminUsernameByGroupId,
 } = require("../postgre/requests");
 
 /**
@@ -688,12 +689,22 @@ router.get("/groupReviews/:groupid", authenticateToken, async (req, res) => {
 //
 
 // Post Request
-router.post("/joinRequest", async (req, res) => {
-  const { groupid, username } = req.body;
+router.post("/joinRequest/:groupid", authenticateToken, async (req, res) => {
+  const groupid = req.params.groupid;
+  const username = req.user.username; // Get the logged-in username
+  console.log("Received data:", req.body); // Log to check the received data
+  console.log("groupid:", groupid);
+  console.log("username:", username);
 
   try {
-    // Assuming you have the admin's username stored in your database
-    const adminUsername = "admin"; // Replace with your actual admin username
+    // Get the admin's username based on the groupid
+    const adminUsername = await getAdminUsernameByGroupId(groupid);
+    console.log("adminUsername:", adminUsername);
+
+    if (!adminUsername) {
+      // Handle the case where admin username is not found
+      return res.status(404).json({ error: "Admin not found for the group." });
+    }
 
     // Save the join request in the database
     await postRequest(groupid, username, adminUsername);
@@ -706,7 +717,7 @@ router.post("/joinRequest", async (req, res) => {
 });
 
 // Get Request
-router.get("/joinRequests/:admin", async (req, res) => {
+router.get("/joinReque/:admin", async (req, res) => {
   const adminUsername = req.params.admin_username;
 
   try {
