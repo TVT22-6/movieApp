@@ -114,7 +114,7 @@ const App = () => {
   return (
     <div>
       <div className="navbar">
-        <Navbar setActiveTab={setActiveTab} handleLogout={handleLogout} />
+        <Navbar setActiveTab={setActiveTab} handleLogout={handleLogout} setTheme={setTheme} />
       </div>
       <div className={`app ${theme}`}>
         <button onClick={handleToggleTheme}>Toggle Theme</button>

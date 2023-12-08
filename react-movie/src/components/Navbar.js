@@ -23,8 +23,10 @@ function Navbar({ setActiveTab, setTheme }) {
         showNavbar();
     };
 
-    const handleToggleTheme = (theme) => {
-        setTheme(theme === "light" ? "dark" : "light");
+    const handleToggleTheme = () => {
+        if (setTheme) {
+            setTheme((theme) => (theme === "light" ? "dark" : "light"));
+        }
         showNavbar();
     };
 
