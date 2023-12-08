@@ -49,7 +49,7 @@ const Review = () => {
 
 
   return (
-    <div>
+    <div className="reviews">
       <h2>Reviews</h2>
       <label>
         Order By:

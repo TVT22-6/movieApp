@@ -31,7 +31,7 @@ const UserSearch = ({ onUserSelect }) => {
   };
 
   return (
-    <div>
+    <div className="user-search">
       <input
         type="text"
         placeholder="Search users"

@@ -51,7 +51,7 @@ function Navbar({ setActiveTab, setTheme }) {
                     Groups
                 </Link>
                 <Link to="/review" onClick={() => handleTabClick('Review')}>
-                    Review
+                    Reviews
                 </Link>
                 {jwtToken.value.length === 0 && (
                     <Link to="/auth" onClick={() => handleTabClick('auth')}>

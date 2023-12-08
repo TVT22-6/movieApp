@@ -30,7 +30,7 @@ body {
 
 .search {
   width: 71%;
-  margin: 4rem 0 2rem;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -537,4 +537,92 @@ nav {
 
 .link-card a:hover {
   text-decoration: underline;
+}
+
+/* UserSearch component styling */
+.user-search {
+  width: 100%;
+  margin: 2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-search input {
+  width: 50%;
+  padding: 1rem;
+  border-radius: 3rem;
+  border: none;
+  font-size: 1.5rem;
+  font-family: var(--font-raleway);
+  font-weight: 500;
+  outline: none;
+  color: #a1a1a1;
+  background: #1f2123;
+}
+
+.user-search button,
+.user-search img {
+  margin-left: 1rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 3rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.user-search img {
+  width: 35px;
+  height: 35px;
+}
+
+.user-search ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.user-search li {
+  margin: 0.5rem 0;
+}
+
+.user-search a {
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-raleway);
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.user-search a:hover {
+  text-decoration: underline;
+}
+
+/* Reviews styling */
+.reviews {
+  margin-top: 2rem;
+}
+
+.reviews h2 {
+  font-size: 2rem;
+  color: #f9d3b4;
+  margin-bottom: 1rem;
+}
+
+.reviews label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #a1a1a1;
+}
+
+.reviews select {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  border: 1px solid #a1a1a1;
+  background-color: #1f2123;
+  color: #a1a1a1;
+  font-family: var(--font-raleway);
+  font-size: 1rem;
+  outline: none;
 }
