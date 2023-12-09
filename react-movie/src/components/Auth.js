@@ -2,6 +2,7 @@ import {useState } from "react";
 
 import { jwtToken, userData } from "./Signals";
 import axios from "axios";
+import RegistrationForm from "../SignIn";
 import '../styles/Settings.css';
 function Login() {
 
@@ -22,6 +23,7 @@ function Login() {
       </div>
     )
   }
+  
 
   function LoginForm(){
 
@@ -48,7 +50,7 @@ function Login() {
   }
 
     return(
-
+        <div>
         <div className="box login-box">
             <h3>Log In</h3>
             <label htmlFor="username">Username: </label>
@@ -57,8 +59,12 @@ function Login() {
             <input type="password" id="password" value={pw} onChange={e => setPw(e.target.value)}/>
             {errorMessage && <div className="status-message">{errorMessage}</div>} {/* Display error message */}
             <button onClick={login}>Login</button>
+
+        </div>
+        <RegistrationForm/>
         </div>
     );
   }
+
 
 export {Login};

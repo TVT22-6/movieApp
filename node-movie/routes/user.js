@@ -119,9 +119,9 @@ router.post("/register", upload.none(), async (req, res) => {
     }
 
     // Basic password strength validation
-    if (pw.length < 3) {
+    if (pw.length < 6) {
       // Example condition: password length at least 6 characters
-      return res.status(422).json({ error: "Password is too weak" });
+      return res.status(422).json({ error: "Password is too weak, atleast 6 digits" });
     }
 
     // Check if the username already exists

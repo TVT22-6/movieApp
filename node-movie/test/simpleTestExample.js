@@ -7,7 +7,7 @@ chai.use(chaiHttp);
 
 // Global variables for username and password
 let testUsername = `testuser_${Date.now()}`;
-let testPassword = "pass";
+let testPassword = "password";
 let jwtToken;
 
 describe('/GET user', () => {
@@ -57,7 +57,7 @@ describe('User Management Tests', () => {
         });
 
         it('it should enforce password strength/format rules', (done) => {
-            let weakPassword = '12'; // Example of a weak password, keeping this really simple for developing/testing
+            let weakPassword = '12345'; // Example of a weak password, keeping this really simple for developing/testing
             chai.request(server)
                 .post('/user/register')
                 .send({ uname: `testuser_${Date.now()}`, pw: weakPassword })
@@ -197,8 +197,31 @@ describe('User Management Tests', () => {
         });
     });
 
+      // Test for adding data to actor review
+   // Test for adding an actor review
+    describe('/POST to addActorReview (table 3)', () => {
+    it('it should add an actor review for the user', (done) => {
+        let actorReviewData = {
+            date: '2023-01-01',
+            actorname: 'Keanu Reeves',
+            movie: 'John Wick',
+            content: 'Great performance!',
+            votescore: 5
+        };
+        chai.request(server)
+            .post('/user/addActorReview')
+            .set('Authorization', `Bearer ${jwtToken}`) // Käytä saamaasi JWT-tokenia
+            .send(actorReviewData)
+            .end((err, res) => {
+                res.should.have.status(201); // Odottaa onnistunutta luomisen tilakoodia
+                // Tässä voit lisätä lisää väittämiä varmistaaksesi, että arvostelu on tallennettu oikein
+                done();
+            });
+    });
+    });
+
     // Test for adding data to groups & groupusers
-    describe('/POST to groups & groupusers (3, 4 table)', () => {
+    describe('/POST to groups & groupusers (4, 5 table)', () => {
         it('it should create a group where the user is admin and member', (done) => {
             let groupData = { gname: 'TestGroup' }; // Example group name
             chai.request(server)

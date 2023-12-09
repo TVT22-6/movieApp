@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ProfileCard from "./profileCard";
-import UserPage from "./UserPage";
 
 const UserProfile = () => {
   const { username } = useParams();
@@ -220,8 +219,7 @@ const UserProfile = () => {
                     <p>No actor reviews available.</p>
                   )}
                 </div>
-                {/* UserPage */}
-                <UserPage />
+        
               </div>
             }
           </>

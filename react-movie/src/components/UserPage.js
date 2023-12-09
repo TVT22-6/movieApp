@@ -1,14 +1,18 @@
-import React from "react";
-import { LinkBox } from "./addLinks"; // Assuming LinkBox is in the same directory
+import React from 'react';
+import {LinkBox} from './addLinks'; // Assuming LinkBox is in the same directory
+import { PasswordChangeForm } from "./passW";
+import DeleteUser from "../DeleteUser";
 
 const UserPage = () => {
-  return (
-    <div className="user-page">
-      <h2>Add Personal Links</h2>
-      <LinkBox />
-      {/* You can add more user-specific components here */}
-    </div>
-  );
+    return (
+        <div className="user-page">
+            <h1>User Page</h1>
+            <LinkBox />
+            <PasswordChangeForm />
+            <DeleteUser />
+            {/* You can add more user-specific components here */}
+        </div>
+    );
 };
 
 export default UserPage;

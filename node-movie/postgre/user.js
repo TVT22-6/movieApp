@@ -30,11 +30,13 @@ async function delUser(uname) {
       "DELETE FROM personalpage WHERE username = $1";
     await client.query(delPersonalLinksQuery, [uname]);
 
-  // Remove user from groups
+    // Remove user from groups
     const delUserGroupsQuery = "DELETE FROM groupusers WHERE username = $1";
     await client.query(delUserGroupsQuery, [uname]);
 
-
+    // Delete user's actor reviews
+    const delActorReviewsQuery = "DELETE FROM actor WHERE username = $1";
+    await client.query(delActorReviewsQuery, [uname]);
 
     // Delete user
     await client.query(sql.DELETE_USER, [uname]);
