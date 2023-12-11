@@ -38,6 +38,7 @@ const {
   leaveGroup,
   getGroupReviews,
   checkMembership,
+  kickUser,
 } = require("../postgre/group");
 const { response } = require("express");
 
@@ -51,7 +52,7 @@ const { addActorReview,
 const {
   postRequest,
   getRequest,
-  updateRequest,
+  acceptRequest,
   deleteRequest,
   getAdminUsernameByGroupId,
 } = require("../postgre/requests");
@@ -677,10 +678,11 @@ router.get("/getTopRatedActors", async (req, res) => {
 router.post("/joinGroup/:groupid", authenticateToken, async (req, res) => {
   const groupid = req.params.groupid;
   console.log("joinGroup route hit. Params:", req.params); // Log to check the parameters
-  console.log("Received data:", req.body); // Log to check the received data
+
 
   try {
     const username = req.user.username;
+    console.log("username :", username);
     await joinGroup(username, groupid);
     res.status(200).json({ message: "Successfully joined the group" });
   } catch (error) {
@@ -753,6 +755,21 @@ router.get("/groupReviews/:groupid", authenticateToken, async (req, res) => {
   }
 });
 
+router.delete("/kickUser/:groupid_usergroups/:usernameToKick", authenticateToken, async (req, res) => {
+  const { groupid_usergroups, usernameToKick } = req.params;
+  const requestingUser = req.user.username; // Assuming you have the user information in req.user
+
+  try {
+    // Check if the requesting user is an admin of the group
+    await kickUser(groupid_usergroups, requestingUser, usernameToKick);
+
+    res.status(200).send("User kicked successfully");
+  } catch (error) {
+    console.error("Kick user error:", error);
+    res.status(403).send(error.message); // 403 Forbidden if permission check fails
+  }
+});
+
 //
 //
 ////Request pageen liittyvät metodit alapuolella
@@ -788,19 +805,32 @@ router.post("/joinRequest/:groupid", authenticateToken, async (req, res) => {
 });
 
 // Get Request
-router.get("/joinReque/:admin", async (req, res) => {
-  const adminUsername = req.params.admin_username;
+router.get("/getRequest/:groupid", authenticateToken, async (req, res) => {
+ const  groupid  = req.params.groupid;  
+ const tokenUsername = req.user.username;
+ console.log("groupid:", groupid);
+  console.log("tokenUsername:", tokenUsername);
 
   try {
-    // Fetch pending join requests for the admin
-    const joinRequests = await getRequest(null, adminUsername); // Passing null for group_id fetches all pending requests for the admin
+    const adminUsername = await getAdminUsernameByGroupId(groupid);
+    console.log("adminUsername:", adminUsername);
 
-    res.status(200).json({ joinRequests });
+
+  // Check if the logged-in user is the admin
+  if (adminUsername !== tokenUsername) {
+    return res.status(403).json({ error: "Access denied. User is not the admin." });
+  }
+
+    getRequestData = await getRequest(adminUsername);
+    console.log("adminUsername:", adminUsername);
+
+    res.status(200).json(getRequestData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 router.post("/respondToJoinRequest/:requestId", async (req, res) => {
   const requestId = req.params.requestId;
@@ -820,12 +850,16 @@ router.post("/respondToJoinRequest/:requestId", async (req, res) => {
 });
 
 // Update Request
-router.put("/updateRequest/:request_id", async (req, res) => {
-  const request_id = req.params.request_id;
+router.post("/acceptRequest/:username/:groupid", async (req, res) => {
+  const request_id = req.params.username;
+  const groupid = req.params.groupid;
+  console.log("request_id:", request_id);
+  console.log("groupid_usergroups:", groupid);
 
   try {
-    await updateRequest(request_id);
-    res.status(200).json({ message: "Request successfully updated" });
+   const acceptUser = await acceptRequest(request_id, groupid);
+    console.log("acceptUser:", acceptUser);
+    res.status(200).json({ acceptUser });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -833,19 +867,33 @@ router.put("/updateRequest/:request_id", async (req, res) => {
 });
 
 // Delete Request
-router.delete("/deleteJoinRequest/:requestId", async (req, res) => {
-  const requestId = req.params.requestId;
+router.delete("/deleteJoinRequest/:id", async (req, res) => {
+  const requestId = req.params.id;
 
   try {
     // Delete the join request from the database
-    await deleteRequest(requestId);
+    const deleteUserRequest = await deleteRequest(requestId);
 
-    res.status(200).json({ message: "Join request deleted successfully." });
+    res.status(200).json({ deleteUserRequest });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+/*router.get("/getAdminUsernameByGroupId/:groupid", async (req, res) => {
+  const groupid = req.params.groupid;
+
+  try {
+    const adminUsername = await getAdminUsernameByGroupId(groupid);
+    console.log("adminUsername get adminissa:", adminUsername);
+
+    res.status(200).json({ adminUsername });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});*/
 
 router;
 

@@ -14,6 +14,9 @@ const Group = () => {
   const [selectedGroupId, setSelectedGroupId] = useState(null);
   const [leaveMessage, setLeaveMessage] = useState("");
   const [groupReviews, setGroupReviews] = useState([]);
+  const [joinRequests, setJoinRequests] = useState([]);
+  const [showJoinRequestWindow, setShowJoinRequestWindow] = useState(false);
+
 
   const token = jwtToken.value;
 
@@ -100,6 +103,7 @@ const Group = () => {
       console.error("Create Group Error:", error);
       console.error(error.response?.data || error.message);
     }
+    handleViewGroups();
   };
 
   const handleDeleteGroup = async (groupid) => {
@@ -237,6 +241,8 @@ const Group = () => {
     }
   };
 
+  
+
   const handleViewGroup = async (groupid) => {
     try {
       // Fetch details for the selected group
@@ -244,19 +250,74 @@ const Group = () => {
         `http://localhost:3001/user/getGroup/${groupid}`
       );
       const groupDetails = response.data;
+      console.log("Group details:", groupDetails);
+      console.log("Group details:", groupDetails.groupid);
 
       // Set the selected group details and group id
       setSelectedGroup(groupDetails);
       setSelectedGroupId(groupid);
-
+      
       // Update the mode to "details"
       setMode("details");
+
+      handleViewJoinRequests(groupid);
+
+    
+        // Fetch join requests for the group only if the user is an admin
+        
+      
     } catch (error) {
       console.error(error.response?.data || error.message);
     }
   };
 
+  const handleViewJoinRequests = async (groupid) => {
+
+    const token = jwtToken.value;
+    console.log("handleViewJoinRequests called", token);
+
+    if (!token) {
+      return;
+    }
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+    console.log("handleViewJoinRequests called", token, "tässä tämä", headers);
+
+    try {
+      console.log("jwtToken:", jwtToken);
+      const response = await axios.get(
+        `http://localhost:3001/user/getRequest/${groupid}`,
+        { headers }
+      );
+     
+  
+      console.log("Join requests:", response.data);
+  
+      // Extract the data from the response
+      const joinRequestsData = response.data;
+  
+      setJoinRequests(joinRequestsData);
+      console.log("Join requests112:", joinRequestsData);
+      console.log("Join requests113:", joinRequestsData);
+  
+      // Show join request window if there are join requests
+      if (joinRequestsData) {
+        console.log("Join requests114:", joinRequestsData);
+        setShowJoinRequestWindow(true);
+      } else {
+        setShowJoinRequestWindow(false);
+      }
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+    }
+  };
+  
+
   // Function to handle "View Groups" button click
+
   const handleViewGroups = () => {
     // Reset selectedGroupId and hide details
     setSelectedGroupId(null);
@@ -264,6 +325,7 @@ const Group = () => {
 
     // Update the mode to "view"
     setMode("view");
+    
   };
 
   const handleLeaveGroup = async (groupid) => {
@@ -338,6 +400,65 @@ const Group = () => {
     }
   };
 
+  const handleKickUser = async (usernameToKick) => {
+    try {
+      // Assuming selectedGroupId is the groupid of the selected group
+      const groupid = selectedGroupId;
+      console.log('groupid:', groupid);
+      // Call the kickUser endpoint on the server
+      await axios.delete(`http://localhost:3001/user/kickUser/${groupid}/${usernameToKick}`, {
+        headers,
+      });
+
+      // Fetch updated group information or re-fetch the list of groups
+      const groupsResponse = await axios.get("http://localhost:3001/user/groups", { headers });
+      setGroups(groupsResponse.data.data);
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+    }
+  };
+
+  const handleAcceptRequest = async (request) => {
+    console.log("handleAcceptRequest called", request);
+    try {
+      const response = await axios.post(
+        `http://localhost:3001/user/acceptRequest/${request.username}/${request.groupid}`,
+        {},
+        { headers }
+      );
+
+      console.log("Accept request response:", response.data);
+
+      // Update the joinRequests state after accepting the request
+      setJoinRequests((prevRequests) =>
+        prevRequests.filter((r) => r.username !== request.username)
+      );
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+    }
+    handleDeleteRequests(request);
+    handleViewGroup(request.groupid);
+    
+  };
+
+  const handleDeleteRequests = async (request) => {
+    console.log("handleDeleteRequests called", request.id);
+    try {
+      await axios.delete(
+        `http://localhost:3001/user/deleteJoinRequest/${request.id}`,
+      );
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+    }
+    handleViewJoinRequests(request.groupid);
+  };
+
+
+  
+  const handleRejectRequest = async (request) => {
+    handleDeleteRequests(request);
+  };
+  
   return (
     <div className="component-container">
       <div>
@@ -386,7 +507,11 @@ const Group = () => {
             <ul>
               {selectedGroup.users &&
                 selectedGroup.users.map((user) => (
-                  <li key={user.username}>{user.username}</li>
+                  <li key={user.username}>{user.username}
+                  <button onClick={() => handleKickUser(user.username)}>
+                    Kick User
+                  </button>
+                  </li>
                 ))}
             </ul>
             {/* Display delete and join buttons */}
@@ -403,6 +528,25 @@ const Group = () => {
             <button onClick={() => handleGroupReviews(selectedGroupId)}>
               Group Reviews
             </button>
+
+            {showJoinRequestWindow && (
+        <div>
+          <h2>Join Requests</h2>
+          <ul>
+            {joinRequests.map((request) => (
+              <li key={request.id}>
+                {request.username} wants to join the group.
+                <button onClick={() => handleAcceptRequest(request)}>
+                  Accept
+                </button>
+                <button onClick={() => handleRejectRequest(request)}>
+                  Reject
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
           </div>
         )}
         {mode === "groupReviews" && groupReviews.length > 0 && (
@@ -431,6 +575,8 @@ const Group = () => {
         {joinMessage && <p>{joinMessage}</p>}
         {leaveMessage && <p>{leaveMessage}</p>}
       </div>
+
+      
     </div>
   );
 };

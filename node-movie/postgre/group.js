@@ -1,5 +1,4 @@
 const pgPool = require("./connection");
-// postgre/group.js
 const sql = {
   INSERT_GROUP:
     "INSERT INTO groups (gname, admin) VALUES ($1, $2) RETURNING *;",
@@ -10,11 +9,13 @@ const sql = {
   JOIN_GROUP:
     "INSERT INTO groupusers (username, groupid_usergroups) VALUES ($1, $2)",
   SPECIFIC_GROUP:
-    "SELECT groups.gname, groupusers.username FROM groups INNER JOIN groupusers ON groups.groupid = groupusers.groupid_usergroups WHERE groups.groupid = $1",
+    "SELECT groupid, groups.gname, groupusers.username FROM groups INNER JOIN groupusers ON groups.groupid = groupusers.groupid_usergroups WHERE groups.groupid = $1",
   LEAVE_GROUP:
     "DELETE FROM groupusers WHERE username = $1 AND groupid_usergroups = $2",
   GROUP_REVIEWS:
     'SELECT r.genre, r.dateposted, r.reviewid, r.content, r.uservotescore, r.moviename, r.username FROM "Review" r JOIN groupusers gu ON r.username = gu.username WHERE gu.groupid_usergroups = $1;',
+  KICK_USER: "DELETE FROM groupusers WHERE username = $1 AND groupid_usergroups = $2",
+  CHECK_ADMIN_MATCH: "SELECT * FROM groups WHERE groupid = $1 AND admin = $2",
 };
 
 // Add the `admin` parameter to the addGroup function
@@ -154,6 +155,35 @@ async function getGroupReviews(groupid) {
   }
 }
 
+async function kickUser(groupid, requestingUser, userToKick) {
+  try {
+    // Check if the requesting user is an admin of the group
+    const isAdminMatch = await checkAdminMatch(groupid, requestingUser);
+
+    console.log('isAdminMatch:', isAdminMatch);
+    console.log('groupid:', groupid);
+    console.log('requestingUser:', requestingUser);
+
+    if (!isAdminMatch) {
+      throw new Error("User does not have permission to kick users from this group");
+    }
+
+    // Now, proceed with kicking the user
+    await pgPool.query(sql.KICK_USER, [userToKick, groupid]);
+
+    // Optionally, you might want to perform additional actions or validations here
+  } catch (error) {
+    console.error("Error kicking user from group:", error);
+    throw error;
+  }
+}
+
+
+async function checkAdminMatch(groupid, admin) {
+  const result = await pgPool.query(sql.CHECK_ADMIN_MATCH, [groupid, admin]);
+  return result.rows.length > 0;
+}
+
 module.exports = {
   addGroup,
   deleteGroup,
@@ -165,4 +195,5 @@ module.exports = {
   leaveGroup,
   getGroupReviews,
   checkMembership,
+  kickUser,
 };
