@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ActorCard from "./components/ActorCard";
 import ReviewFormForActor from "./components/ReviewFormForActor";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+
 
 const Actor = () => {
   const [movies, setMovies] = useState([]);
@@ -13,14 +12,13 @@ const Actor = () => {
   const [selectedActor, setSelectedActor] = useState(null);
   const [actorReviews, setActorReviews] = useState([]);
   const [activeTab, setActiveTab] = useState("ActorList");
-  const [loading, setLoading] = useState(true);
-  const [fetching, setFetching] = useState(true);
+  const [topRatedActors, setTopRatedActors] = useState(null);
 
   const API_URL = "https://www.omdbapi.com?apikey=d4f64de4";
 
   useEffect(() => {
     if (selectedActor) {
-      fetchActorReviews();
+      fetchActorReviews();          // Execute fetchactors when selectedactors is provided
     }
   }, [selectedActor]);
 
@@ -33,8 +31,8 @@ const Actor = () => {
 
       if (data.Response === "True" && data.Search && data.Search.length > 0) {
         setMovies(data.Search);
-        setActors([]); // Clear previous actors when searching for new movies
-        setSelectedMovie(null); // Clear selected movie when searching
+        setActors([]);                // Clear previous actors when searching for new movies
+        setSelectedMovie(null);       // Clear selected movie when searching
       } else {
         setMovies([]);
         setActors([]);
@@ -68,24 +66,19 @@ const Actor = () => {
   const handleMovieClick = (imdbID) => {
     setSelectedMovie(imdbID);
     searchActors(imdbID);
-
     setActiveTab("ReviewFormForActor");
   };
 
   const handleActorClick = (actor) => {
     setSelectedActor(actor);
     setActiveTab("ReviewFormForActor");
-    
-  
   };
 
-  const handleSearchMovies = async () => {
-    if (searchTerm.trim() === "") {
-      // If the search term is empty, do nothing
+  const handleSearchMovies = async () => {     
+    if (searchTerm.trim() === "") {           // If the search term is empty, do nothin
       return;
     }
     searchMovies(searchTerm);
-    // Reset selectedMovie and selectedActor when searching for new movies
     setSelectedMovie(null);
     setSelectedActor(null);
   };
@@ -94,23 +87,15 @@ const Actor = () => {
   const fetchActorReviews = async () => {
     try {
       const response = await fetch(`http://localhost:3001/user/getActorReviews/${selectedActor}`);
-      console.log(selectedActor);
-      
+
       if (!response.ok) {
         console.error(`HTTP Error! Status: ${response.status}`);
         return;
       }
-  
       const actorReviewData = await response.json();
-      
-  
-      console.log("Actor Reviews:", actorReviewData);
-      
-  
+    
       if (actorReviewData && actorReviewData.actorReviews.length > 0) {
         setActorReviews(actorReviewData.reviewsAll);
-        console.log("iffissä1",actorReviewData);
-        console.log("iffissä3", actorReviewData.reviewsAll);
         setActorReviews(actorReviewData.actorReviews);
       }
     } catch (error) {
@@ -118,25 +103,37 @@ const Actor = () => {
     } 
   };
 
-      
-      /*const response = await fetch(`http://localhost:3001/getActorReviews/${encodeURIComponent(actorname)}`);
-      // Check if the response status is OK (200) before trying to parse JSON
+  const fetchTopRatedActors = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/user/getTopRatedActors");
+  
       if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}`);
-      }
-      // Check if the response content type is JSON
-      const contentType = response.headers.get('Content-Type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Error(`Unexpected response content type: ${contentType}`);
+        console.error(`HTTP Error! Status: ${response.status}`);
+        return;
       }
   
-      const data = await response.json();
-      console.log("Actor Reviews:", data.reviewsAll);
-      setActorReviews(data.reviewsAll);
+      const topRatedActorsData = await response.json();
+  
+      if (topRatedActorsData && topRatedActorsData.topRatedActors.length > 0) {
+        console.log("Top Rated Actors:", topRatedActorsData.topRatedActors);
+        // Handle the top-rated actors data as needed
+        setTopRatedActors(topRatedActorsData.reviewsAll);
+        setTopRatedActors(topRatedActorsData.topRatedActors);
+        setActiveTab("TopRatedActors");
+      } else {
+        console.log("No top-rated actors found");
+      }
     } catch (error) {
-      console.error("Error fetching actor reviews:", error);
-    }*/
+      console.error("Error fetching top-rated actors:", error);
+    }
+  };
 
+  const handleTopRatedActorsClick = () => {
+    fetchTopRatedActors();
+    //setActiveTab("TopRatedActors"); // Set the active tab to "TopRatedActors" when clicked
+  };
+
+      
 
   return (
     <div>
@@ -147,14 +144,29 @@ const Actor = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <button onClick={handleSearchMovies}>Search</button>
+        <button onClick={handleTopRatedActorsClick}>Top Rated Actors</button>
+
+        {activeTab === "TopRatedActors" && topRatedActors && (
+          <div>
+            <h3>Top Rated Actors:</h3>
+            <ul>
+              {topRatedActors.map((actor, index) => (
+                <li key={index}>
+                  {actor.actorname}
+                  <br />
+                <p>Rating: {parseFloat(actor.avg_votescore).toFixed(1)}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       {selectedMovie ? (
         <div className="actor">
           {actors.map((actor, index) => (
             <div key={index} className="actor-card">
-              {/* Make actor names clickable */}
-              <a href="#" onClick={() => handleActorClick(actor, fetchMovie)}>
+              <a href="#" onClick={() => handleActorClick(actor, fetchMovie)}> {/* Make actor names clickable */}
                 {actor}
               </a>
             </div>
@@ -183,8 +195,8 @@ const Actor = () => {
           selectedMovie={selectedMovie}
           actorReviews={actorReviews}
           setActorReviews={setActorReviews}
-          setSelectedMovie={setSelectedMovie} // Pass the setter function to update selectedMovie in ReviewFormForActor
-          setSelectedActor={setSelectedActor} // Pass the setter function to update selectedActor in ReviewFormForActor
+          setSelectedMovie={setSelectedMovie} 
+          setSelectedActor={setSelectedActor} 
         />
         <h3>Actor Reviews:</h3>
           {actorReviews && actorReviews.length > 0 ? (

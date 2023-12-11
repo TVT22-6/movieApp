@@ -4,8 +4,9 @@ const sql = {
     INSERT_ACTORREVIEW:
       'INSERT INTO "actor" (date, actorname, movie, content, votescore, username) VALUES ($1, $2, $3, $4, $5, $6)',
     GET_ACTORREVIEWS: 'SELECT * FROM "actor" WHERE actorname = $1', // Update this line
-    GET_ALL: 'SELECT * FROM "actor"',
+    GET_ALLACTORS: 'SELECT * FROM "actor"',
     GET_USER_ACTOR: 'SELECT * FROM "actor" WHERE username = $1',
+    GET_TOPRATEDACTORS: 'SELECT actorname, AVG(votescore) AS avg_votescore FROM actor GROUP BY actorname ORDER BY avg_votescore DESC LIMIT 5',
   };
   
   async function addActorReview(date, actorname, movie, content, votescore, username) {
@@ -48,9 +49,33 @@ const sql = {
     }
   }
 
+  async function getAllActors(){
+    try{
+      const result = await pgPool.query(sql.GET_ALLACTORS);
+      return result.rows;
+    }
+    catch (error) {
+      console.log("Error fetching everything from actor:", error);
+      return[];
+    }
+  }
+
+  async function getTopRatedActors() {
+    try {
+      const result = await pgPool.query(sql.GET_TOPRATEDACTORS);
+      const topRatedActors = result.rows;
+      return topRatedActors;
+    } catch (error) {
+      console.error("Error fetching top-rated actors from the database:", error);
+      return [];
+    }
+  }
+
 
   module.exports = {
     addActorReview,
     getUserActor,
     getActorReviews,
+    getAllActors,
+    getTopRatedActors,
   };
