@@ -35,7 +35,7 @@ function Navbar({ setActiveTab, setTheme }) {
         <header>
             <h4>NWADB</h4>
             <nav ref={navRef}>
-                <Link to="/home" onClick={() => handleTabClick('home')}>
+                <Link to="/" onClick={() => handleTabClick('home')}>
                     Home
                 </Link>
                 <Link to="/actors" onClick={() => handleTabClick('actors')}>

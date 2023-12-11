@@ -26,7 +26,7 @@ const App = () => {
       <Navbar handleLogout={handleLogout} setTheme={setTheme} />
       <div className={`app ${theme}`}>
         <Routes>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/actors" element={<Actor />} />
           <Route path="/review" element={<Review />} />
           <Route path="/user" element={<UserPage />} />

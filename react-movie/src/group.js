@@ -339,7 +339,7 @@ const Group = () => {
   };
 
   return (
-    <div>
+    <div className="component-container">
       <div>
         <button onClick={handleViewGroups}>View Groups</button>
         <button onClick={() => setMode("create")}>Create Group</button>
