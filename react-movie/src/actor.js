@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ActorCard from "./components/ActorCard";
 import ReviewFormForActor from "./components/ReviewFormForActor";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const Actor = () => {
   const [movies, setMovies] = useState([]);
@@ -9,9 +11,18 @@ const Actor = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [selectedActor, setSelectedActor] = useState(null);
+  const [actorReviews, setActorReviews] = useState([]);
   const [activeTab, setActiveTab] = useState("ActorList");
+  const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(true);
 
   const API_URL = "https://www.omdbapi.com?apikey=d4f64de4";
+
+  useEffect(() => {
+    if (selectedActor) {
+      fetchActorReviews();
+    }
+  }, [selectedActor]);
 
   const searchMovies = async (title) => {
     try {
@@ -61,18 +72,71 @@ const Actor = () => {
     setActiveTab("ReviewFormForActor");
   };
 
-  const handleActorClick = (actor, fetchMovie) => {
+  const handleActorClick = (actor) => {
     setSelectedActor(actor);
-    setSelectedMovie(fetchMovie);
     setActiveTab("ReviewFormForActor");
+    
+  
   };
 
   const handleSearchMovies = async () => {
+    if (searchTerm.trim() === "") {
+      // If the search term is empty, do nothing
+      return;
+    }
     searchMovies(searchTerm);
     // Reset selectedMovie and selectedActor when searching for new movies
     setSelectedMovie(null);
     setSelectedActor(null);
   };
+
+
+  const fetchActorReviews = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/user/getActorReviews/${selectedActor}`);
+      console.log(selectedActor);
+      
+      if (!response.ok) {
+        console.error(`HTTP Error! Status: ${response.status}`);
+        return;
+      }
+  
+      const actorReviewData = await response.json();
+      
+  
+      console.log("Actor Reviews:", actorReviewData);
+      
+  
+      if (actorReviewData && actorReviewData.actorReviews.length > 0) {
+        setActorReviews(actorReviewData.reviewsAll);
+        console.log("iffissä1",actorReviewData);
+        console.log("iffissä3", actorReviewData.reviewsAll);
+        setActorReviews(actorReviewData.actorReviews);
+      }
+    } catch (error) {
+      console.error("Error fetching actor reviews:", error);
+    } 
+  };
+
+      
+      /*const response = await fetch(`http://localhost:3001/getActorReviews/${encodeURIComponent(actorname)}`);
+      // Check if the response status is OK (200) before trying to parse JSON
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}`);
+      }
+      // Check if the response content type is JSON
+      const contentType = response.headers.get('Content-Type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error(`Unexpected response content type: ${contentType}`);
+      }
+  
+      const data = await response.json();
+      console.log("Actor Reviews:", data.reviewsAll);
+      setActorReviews(data.reviewsAll);
+    } catch (error) {
+      console.error("Error fetching actor reviews:", error);
+    }*/
+
 
   return (
     <div>
@@ -113,14 +177,34 @@ const Actor = () => {
       )}
 
       {activeTab === "ReviewFormForActor" && selectedMovie && selectedActor &&(
+        <div>
         <ReviewFormForActor
           selectedActor={selectedActor}
           selectedMovie={selectedMovie}
+          actorReviews={actorReviews}
+          setActorReviews={setActorReviews}
           setSelectedMovie={setSelectedMovie} // Pass the setter function to update selectedMovie in ReviewFormForActor
           setSelectedActor={setSelectedActor} // Pass the setter function to update selectedActor in ReviewFormForActor
         />
+        <h3>Actor Reviews:</h3>
+          {actorReviews && actorReviews.length > 0 ? (
+            <ul>
+              {actorReviews.map((review, index) => (
+                <li key={index}>
+                  <p>Movie: {review.movie}</p>
+                  <p>Content: {review.content}</p>
+                  <p>Vote Score: {review.votescore}</p>
+                  <p>User: {review.username}</p>
+                  <p>Date: {review.date}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No reviews available for this actor.</p>
       )}
     </div>
+      )}
+      </div>
   );
 };
 
