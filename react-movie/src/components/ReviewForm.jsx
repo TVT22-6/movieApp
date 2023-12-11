@@ -3,7 +3,7 @@ import { jwtToken } from './Signals';
 import axios from 'axios';
 
 const ReviewForm = ({ selectedMovie }) => {
-    console.log('Selected Movie:', selectedMovie);
+    console.log('Selected Movie review form:', selectedMovie);
     const [movieName, setMovieName] = useState('');
     const [localReview, setLocalReview] = useState('');
     const [rating, setRating] = useState('');
@@ -53,14 +53,10 @@ const ReviewForm = ({ selectedMovie }) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         };
-        const movieName = selectedMovie.movieName || '';
-        console.log(selectedMovie)
+        const movieName = selectedMovie.Title || '';
         const currentdate = new Date();
         const datePosted = currentdate.toISOString().slice(0, 10);
         const genre = selectedMovie.genres || '';
-        console.log("Genre reviewformissa:", selectedMovie.genres)
-        console.log('Genres reviewformissa:', genre)
-
         const reviewData = {
             mname: movieName,
             genre: genre,
@@ -95,14 +91,6 @@ const ReviewForm = ({ selectedMovie }) => {
                 onChange={handleChange}
                 required
             />
-            {/*  <label htmlFor="genre">Genre</label>
-            <input
-                id="genre"
-                type="text"
-                value={genre}
-                onChange={handleChange}
-                required
-            />*/}
             <label htmlFor="rating">Rating</label>
             <select id="rating" value={rating} onChange={handleRatingChange} required>
                 <option value="">Select Rating</option>
