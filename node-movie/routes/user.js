@@ -41,7 +41,7 @@ const {
 } = require("../postgre/group");
 const { response } = require("express");
 
-const { addActorReview, getUserActor } = require("../postgre/actorReview");
+const { addActorReview, getUserActor, getActorReviews } = require("../postgre/actorReview");
 
 const {
   postRequest,
@@ -601,6 +601,96 @@ router.get("/group/:groupid", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+//Actorpost metodi
+
+router.post(
+  "/addActorReview",
+  authenticateToken,
+  upload.none(),
+  async (req, res) => {
+    try {
+      console.log("req.body", req.body);
+
+      const date = req.body.date;
+      const actorname = req.body.actorname;
+      const movie = req.body.movie;
+      const content = req.body.content;
+      const votescore = req.body.votescore;
+      const username = req.user.username;
+
+      if (!actorname) {
+        return res
+          .status(400)
+          .json({ error: "actor name (actorname) is required." });
+      }
+
+      // Save the review to the database
+      await addActorReview(
+        date,
+        actorname,
+        movie,
+        content,
+        votescore,
+        username
+      );
+
+      // Respond with a success message
+      res.status(201).json({
+        message: "Review successfully posted to the database in user routes",
+      });
+    } catch (error) {
+      // Handle errors
+      console.error("Error posting review to the database:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
+// Actorpostmetodi loppuu
+
+// Get actors
+
+router.get("/getActorReviews/:actorname", async (req, res) => {
+  console.log("getUserActor route hit"); // Check if this logs when you make the request
+  const actorname = req.params.actorname;
+  console.log("username:", actorname);
+
+  try {
+    const actorReviews = await getActorReviews(actorname); // Updated this line
+    console.log("ActorReviews:",actorReviews)
+    res.status(200).json({ actorReviews }); // Updated this line
+  } catch (error) {
+    console.error("Error fetching user actor from the database:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+/*
+router.get("/getActorReviews/:actorname", async (req, res) => {
+  console.log("Request received for /getActorReviews"); 
+  
+  try {
+    const actorname = req.params.actorname;
+
+    if (!actorname) {
+      return res.status(400).json({ error: "Actor name is required" });
+    }
+
+    const actorReviews = await getActorReviews(actorname);
+
+    res.json({ reviewsAll: actorReviews });
+
+    res.status(200).json({ reviewsAll: actorReviews }); // Ensure you are sending JSON here
+  } catch (error) {
+    console.error("Error fetching actor reviews from the database:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});*/
+
+
+
+//
+//GetActors loppuu
+//
 
 // Join Group
 router.post("/joinGroup/:groupid", authenticateToken, async (req, res) => {
