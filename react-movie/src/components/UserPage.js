@@ -2,6 +2,7 @@ import React from 'react';
 import {LinkBox} from './addLinks'; // Assuming LinkBox is in the same directory
 import { PasswordChangeForm } from "./passW";
 import DeleteUser from "../DeleteUser";
+import '../styles/Settings.css';
 
 const UserPage = () => {
     return (

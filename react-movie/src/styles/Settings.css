@@ -1,41 +1,55 @@
 /* settings.css */
 
-/* This Message CSS will control, LogIn-, SignIn- and registaration text */
+/* Importing Fonts */
+@import url("https://fonts.googleapis.com/css?family=Roboto+Slab:100,300,400,700");
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i");
+
+
+.user-page{
+   text-align: center;
+}
+
+/* This Message CSS will control, LogIn-, SignIn- and registration text */
 .status-message {
     text-align: center;
     margin-top: 20px;
+    font-family: var(--font-raleway);
+    color: var(--textColor);
 }
-
 
 p, h1, h2, h4, h5, h6 {
-    color: whitesmoke;
-
+    color: var(--textColor);
+    font-family: var(--font-raleway);
 }
 
-h3 {
-    color: #000000;
+ h3 {
+    color: #f9d3b4;
     text-align: center;
+    font-family: var(--font-roboto);
 }
 
 /* Common styles for boxes */
 .box {
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 20px;
     margin: 10px auto;
     max-width: 300px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0, 1);
+    font-family: var(--font-raleway);
+    background-color: #1f2123;
+    color: #a1a1a1;
 }
 
 .box:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    box-shadow: 0px 13px 10px -7px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05, 1.05);
 }
 
 /* Styles for headings inside the box */
 .box h2 {
     text-align: center;
+    color: #f9d3b4;
 }
 
 /* Styles for labels and inputs inside the box */
@@ -43,6 +57,7 @@ h3 {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: #eee;
 }
 
 .box input[type="text"], .box input[type="password"] {
@@ -50,14 +65,16 @@ h3 {
     padding: 8px;
     margin: 5px 0 20px 0;
     display: block;
-    border: 1px solid #ccc;
+    border: none;
     border-radius: 4px;
     box-sizing: border-box;
+    background: #1f2123;
+    color: #a1a1a1;
 }
 
 /* Styles for buttons */
 .box button {
-    background-color: #4CAF50;
+    background-color: #282828;
     color: white;
     padding: 10px 15px;
     margin: 5px 0;
@@ -68,6 +85,7 @@ h3 {
 }
 
 .box button:hover {
+    background-color: #1f2123;
     opacity: 0.8;
 }
 
@@ -76,6 +94,7 @@ h3 {
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
 }
+
 
 /* Red button styles */
 .red-button {
@@ -86,8 +105,7 @@ h3 {
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s;
-    width: 100px;
-
+    width: 100%;
 }
 
 .red-button:hover {

@@ -86,26 +86,30 @@ const LinkBox = () => {
         <div className="link-box">
             <h2>Add a New Link</h2>
             <form onSubmit={handleSubmit}>
-                <div className="form-field">
-                    <label htmlFor="linkName">Link Name/Description:</label>
-                    <input
-                        type="text"
-                        id="linkName"
-                        value={linkName}
-                        onChange={e => setLinkName(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-field">
-                    <label htmlFor="personalLink">Link:</label>
-                    <input
-                        type="url"
-                        id="personalLink"
-                        value={personalLink}
-                        onChange={e => setPersonalLink(e.target.value)}
-                        required
-                    />
-                </div>
+            <div className="link-input-section">
+            <div className="form-field">
+    <label htmlFor="linkName" className="input-label">Link Name/Description:</label>
+    <input
+        placeholder="Link Name/Description:" 
+        type="text"
+        id="linkName"
+        value={linkName}
+        onChange={e => setLinkName(e.target.value)}
+        required
+    />
+</div>
+<div className="form-field">
+    <label htmlFor="personalLink" className="input-label">Link:</label>
+    <input
+         placeholder="Link:"
+        type="url"
+        id="personalLink"
+        value={personalLink}
+        onChange={e => setPersonalLink(e.target.value)}
+        required
+    />
+</div>
+</div>
                 <button type="submit" className="submit-button">Add Link</button>
             </form>
             {statusMessage && <p className="status-message">{statusMessage}</p>}

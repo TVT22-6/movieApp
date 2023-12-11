@@ -48,7 +48,9 @@ const DeleteUser = () => {
         <div class="delete-box">
             <h2>Delete Your Account</h2>
             <p>This action is irreversible. Please proceed with caution.</p>
+            <div className='red-container'>
             <button onClick={handleDelete} className="red-button">Delete My Account</button>
+            </div>
             {deleteStatus && <p>{deleteStatus}</p>}
         </div>
     );
