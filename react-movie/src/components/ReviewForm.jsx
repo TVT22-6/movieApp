@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { jwtToken } from './Signals';
 import axios from 'axios';
+import '../styles/reviewForm.css';
 
-const ReviewForm = ({ selectedMovie }) => {
+const ReviewForm = ({ selectedMovie, onSubmit }) => {
     console.log('Selected Movie review form:', selectedMovie);
     const [movieName, setMovieName] = useState('');
     const [localReview, setLocalReview] = useState('');
@@ -74,6 +75,9 @@ const ReviewForm = ({ selectedMovie }) => {
             setLocalReview('');
             setRating('');
 
+            //close the form
+            onSubmit();
+
             console.log('Review submitted successfully:', response.data);
         } catch (error) {
             console.error(error);
@@ -82,27 +86,31 @@ const ReviewForm = ({ selectedMovie }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="ReviewForm">
-            <label htmlFor="review">Review</label>
-            <input
-                id="review"
-                type="text"
-                value={localReview}
-                onChange={handleChange}
-                required
-            />
-            <label htmlFor="rating">Rating</label>
-            <select id="rating" value={rating} onChange={handleRatingChange} required>
-                <option value="">Select Rating</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
+        <div className='review-form-overlay'>
+            <div className='review-form-container'>
+                <form onSubmit={handleSubmit} className="ReviewForm">
+                    <label htmlFor="review">Review</label>
+                    <input
+                        id="review"
+                        type="text"
+                        value={localReview}
+                        onChange={handleChange}
+                        required
+                    />
+                    <label htmlFor="rating">Rating</label>
+                    <select id="rating" value={rating} onChange={handleRatingChange} required>
+                        <option value="">Select Rating</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
 
-            <button type="submit">Submit</button>
-        </form>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
     );
 };
 

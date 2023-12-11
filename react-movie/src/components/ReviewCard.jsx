@@ -18,21 +18,24 @@ const ReviewCard = ({ review }) => {
 
     return (
         <div>
-            <div className="movie" onClick={handleReviewClick}>
-                <div>
-                    <p>{new Date(review.dateposted).toLocaleDateString('en-GB')}</p>
-                </div>
-                <div>
-                    <img src={PosterImg} alt={review.moviename} />
-                </div>
-                <div>
-                    <span>{review.genre}</span>
-                    <h3>{review.moviename}</h3>
+            <div className="movielsit">
+                <div className="movie" onClick={handleReviewClick}>
+                    <div>
+                        <p>{new Date(review.dateposted).toLocaleDateString('en-GB')}</p>
+                    </div>
+                    <div>
+                        <img src={PosterImg} alt={review.moviename} />
+                    </div>
+                    <div>
+                        <span>{review.genre}</span>
+                        <h3>{review.moviename}</h3>
+                    </div>
                 </div>
             </div>
 
             {showPreview && <PreviewReview review={review} onClose={closePreview} />}
         </div>
+
 
     );
 };

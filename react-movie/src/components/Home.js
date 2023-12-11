@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import MovieSearch from './MovieSearch';
-import MovieCard from '../MovieCard';
+import MovieCard from './MovieCard';
 import ReviewForm from './ReviewForm';
+import '../styles/App.css';
 
 const API_URL = "http://www.omdbapi.com?apikey=d4f64de4";
 
@@ -31,6 +32,15 @@ const Home = () => {
         }
     };
 
+    const handleReviewSubmit = async () => {
+        // Your logic for submitting the review to the database
+
+        // Close the ReviewForm
+        setShowReviewForm(false);
+
+        // You can perform additional actions after submitting the review if needed
+    };
+
     const searchGenre = async ({ imdbID, movieName }) => {
         try {
             const movieResponse = await fetch(`${API_URL}&i=${imdbID}`);
@@ -48,6 +58,11 @@ const Home = () => {
         }
     };
 
+    useEffect(() => {
+        // Fetch movies when the component mounts
+        searchMovies("star wars");
+    }, []);
+
     const handleMovieClick = async (movieInfo) => {
         const genres = await searchGenre(movieInfo);
         setSelectedMovie({ ...movieInfo, genres });
@@ -62,7 +77,7 @@ const Home = () => {
                     <MovieCard key={index} movie={movie} onMovieClick={() => handleMovieClick(movie)} />
                 ))}
             </div>
-            {showReviewForm && selectedMovie && <ReviewForm selectedMovie={selectedMovie} />}
+            {showReviewForm && selectedMovie && (<ReviewForm selectedMovie={selectedMovie} onSubmit={handleReviewSubmit} />)}
         </div>
     );
 };
