@@ -4,23 +4,19 @@ import { jwtToken, userData } from "./Signals";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 
 
-
-
-function Navbar({ setActiveTab, setTheme }) {
+function Navbar({ setTheme }) {
     const navRef = useRef();
     const showNavbar = () => {
         navRef.current.classList.toggle("responsive_nav");
     };
 
-    const handleTabClick = (tab) => {
-        setActiveTab(tab);
+    const handleTabClick = () => {
         showNavbar();
     };
 
     const handleLogout = () => {
         jwtToken.value = "";
         userData.value = null;
-        setActiveTab("home");
         showNavbar();
     };
 
@@ -35,31 +31,31 @@ function Navbar({ setActiveTab, setTheme }) {
         <header>
             <h4>NWADB</h4>
             <nav ref={navRef}>
-                <Link to="/" onClick={() => handleTabClick('home')}>
+                <Link to="/" onClick={() => handleTabClick()}>
                     Home
                 </Link>
-                <Link to="/actors" onClick={() => handleTabClick('actors')}>
+                <Link to="/actors" onClick={() => handleTabClick()}>
                     Actors
                 </Link>
-                <Link to="/user" onClick={() => handleTabClick('user')}>
+                <Link to="/user" onClick={() => handleTabClick()}>
                     User
                 </Link>
-                <Link to="/getUser" onClick={() => handleTabClick('Profile')}>
+                <Link to="/getUser" onClick={() => handleTabClick()}>
                     Profile
                 </Link>
-                <Link to="/group" onClick={() => handleTabClick('Group')}>
+                <Link to="/group" onClick={() => handleTabClick()}>
                     Groups
                 </Link>
-                <Link to="/review" onClick={() => handleTabClick('Review')}>
+                <Link to="/review" onClick={() => handleTabClick()}>
                     Reviews
                 </Link>
                 {jwtToken.value.length === 0 && (
-                    <Link to="/auth" onClick={() => handleTabClick('auth')}>
+                    <Link to="/auth" onClick={() => handleTabClick()}>
                         Log In
                     </Link>
                 )}
                 {jwtToken.value.length > 0 && (
-                    <Link to="/auth" onClick={handleLogout}>
+                    <Link to="/" onClick={() => handleLogout()}>
                         Log Out
                     </Link>
                 )}
