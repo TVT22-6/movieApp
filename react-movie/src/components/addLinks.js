@@ -115,23 +115,26 @@ const LinkBox = () => {
             {statusMessage && <p className="status-message">{statusMessage}</p>}
 
             <h2>Your Links</h2>
-            {links.length > 0 ? (
-                <ul>
-                    {links.map((link, index) => (
-                        <li key={index}>
-                            <a href={link.personallink} target="_blank" rel="noopener noreferrer">
-                                {link.linkname || 'Unnamed Link'}
-                            </a>
-                            <div>Link added: {formatDate(link.dateadded)}</div>
-                            <button onClick={() => handleDelete(link.personalpageid)}>Delete</button>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No links to display.</p>
-            )}
-        </div>
-    );
+{links.length > 0 ? (
+    <ul>
+        {links.map((link, index) => (
+            <li key={index}>
+                <div className="link-description">
+                    {link.linkname || 'Unnamed Link'}
+                </div>
+                <a href={link.personallink} target="_blank" rel="noopener noreferrer">
+                    {link.personallink}
+                </a>
+                <div>Link added: {formatDate(link.dateadded)}</div>
+                <button onClick={() => handleDelete(link.personalpageid)} className="delete-button">Delete</button>
+            </li>
+        ))}
+    </ul>
+) : (
+    <p>No links to display.</p>
+)}
+</div>
+);
 };
 
 export {LinkBox} ;

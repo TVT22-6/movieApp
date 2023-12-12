@@ -30,7 +30,7 @@
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0, 1);
     font-family: var(--font-raleway);
     background-color: #1f2123;
-    color: #a1a1a1;
+    color: #ffffff;
 }
 
 .link-box:hover {
@@ -72,6 +72,28 @@
     color: #eee;
 }
 
+.link-description {
+    max-width: 100%; /* Set a maximum width */
+    white-space: normal; /* Allow the text to wrap */
+    word-wrap: break-word; /* Break words that are too long */
+    overflow-wrap: break-word; /* Ensure wrapping in all scenarios */
+    margin-bottom: 5px; /* Space below the description */
+    color: rgb(255, 255, 255); /* Set the text color */
+    text-align: center; /* Center the text */
+}
+
+ul {
+    list-style: none; /* Removes bullet points */
+    padding: 0;
+}
+
+li {
+    margin-bottom: 15px; /* Space between list items */
+    background: #2d2f32; /* Background color for visibility */
+    padding: 10px; /* Padding inside each list item */
+    border-radius: 5px; /* Rounded corners */
+}
+
 .submit-button {
     background-color: #282828;
     color: white;
@@ -85,6 +107,21 @@
 
 .submit-button:hover {
     background-color: #1f2123;
+}
+
+.delete-button {
+    background-color: #f70e0e; /* Red background for delete button */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 8px 12px; /* Padding for size */
+    margin-top: 10px; /* Spacing above the button */
+    cursor: pointer; /* Cursor to pointer to indicate it's clickable */
+    border-radius: 4px; /* Rounded corners */
+    transition: background-color 0.2s; /* Smooth transition for hover effect */
+}
+
+.delete-button:hover {
+    background-color: #ff7272; /* Slightly darker red on hover */
 }
 
 /* Responsive adjustments to align with settings.css */

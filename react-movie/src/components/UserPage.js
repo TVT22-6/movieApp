@@ -8,7 +8,7 @@ const UserPage = () => {
     return (
         <div className="user-page">
             <h1>User Page</h1>
-            <LinkBox />
+            <LinkBox /> 
             <PasswordChangeForm />
             <DeleteUser />
             {/* You can add more user-specific components here */}

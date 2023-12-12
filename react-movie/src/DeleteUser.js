@@ -47,7 +47,10 @@ const DeleteUser = () => {
     return (
         <div className="delete-box">
             <h2>Delete Your Account</h2>
-            <p>This action is irreversible. Please proceed with caution.</p>
+            <p>This action is irreversible. Please proceed with caution.<br>
+            </br>
+            It will delete all your data and you will not be able to recover it.
+            </p>
             <div className='red-container'>
                 <button onClick={handleDelete} className="red-button">Delete My Account</button>
             </div>
