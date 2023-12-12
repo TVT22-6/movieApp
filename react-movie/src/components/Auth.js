@@ -49,21 +49,20 @@ function Login() {
       });
   }
 
-    return(
-        <div>
+  return (
+    <div>
         <div className="box login-box">
             <h3>Log In</h3>
             <label htmlFor="username">Username: </label>
-            <input type="text" id="username" value={uname} onChange={e => setUname(e.target.value)}/>
+            <input type="text" id="username" placeholder="Enter username" value={uname} onChange={e => setUname(e.target.value)} />
             <label htmlFor="password">Password: </label>
-            <input type="password" id="password" value={pw} onChange={e => setPw(e.target.value)}/>
-            {errorMessage && <div className="status-message">{errorMessage}</div>} {/* Display error message */}
+            <input type="password" id="password" placeholder="Enter password" value={pw} onChange={e => setPw(e.target.value)} />
+            {errorMessage && <div className="status-message">{errorMessage}</div>}
             <button onClick={login}>Login</button>
-
         </div>
-        <RegistrationForm/>
-        </div>
-    );
+        <RegistrationForm />
+    </div>
+);
   }
 
 
