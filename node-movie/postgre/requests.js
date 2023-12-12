@@ -5,7 +5,7 @@ const sql = {
   POST_REQUEST:
     "INSERT INTO join_requests (groupid, username, admin, status) VALUES ($1, $2, $3, 'pending')",
   GET_REQUEST:
-    "SELECT * FROM join_requests WHERE status = 'pending' AND admin = $1 ",
+    "SELECT * FROM join_requests WHERE status = 'pending' AND admin = $1",
   ACCEPT_REQUEST:
     'INSERT INTO groupusers (username, groupid_usergroups) VALUES ($1, $2)',
   DELETE_REQUEST: "DELETE FROM join_requests WHERE id = $1",
@@ -46,6 +46,7 @@ async function getRequest(admin) {
   try {
     const result = await pgPool.query(sql.GET_REQUEST, [
       admin,
+      
     ]);
     console.log( "result.rows:", result.rows);
     return result.rows;

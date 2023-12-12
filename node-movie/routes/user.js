@@ -39,6 +39,8 @@ const {
   getGroupReviews,
   checkMembership,
   kickUser,
+  getMyGroups,
+  searchGroups,
 } = require("../postgre/group");
 const { response } = require("express");
 
@@ -767,6 +769,36 @@ router.delete("/kickUser/:groupid_usergroups/:usernameToKick", authenticateToken
   } catch (error) {
     console.error("Kick user error:", error);
     res.status(403).send(error.message); // 403 Forbidden if permission check fails
+  }
+});
+
+router.get("/myGroups", authenticateToken, async (req, res) => {
+  const username = req.user.username; // Assuming you have the user information in req.user
+
+  try {
+    // Fetch groups created by the user
+    const myGroups = await getMyGroups(username);
+    console.log("myGroups:", myGroups);
+    res.status(200).json(myGroups);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/searchGroups/:gname", async (req, res) => {
+  const gname = req.params.gname;
+  console.log("gname:", gname);
+  console.log("req.params:", req.params);
+
+  try {
+    const groups = await searchGroups(gname);
+    console.log("groups:", groups);
+
+    res.status(200).json(groups);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

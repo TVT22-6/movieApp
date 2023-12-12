@@ -16,6 +16,9 @@ const sql = {
     'SELECT r.genre, r.dateposted, r.reviewid, r.content, r.uservotescore, r.moviename, r.username FROM "Review" r JOIN groupusers gu ON r.username = gu.username WHERE gu.groupid_usergroups = $1;',
   KICK_USER: "DELETE FROM groupusers WHERE username = $1 AND groupid_usergroups = $2",
   CHECK_ADMIN_MATCH: "SELECT * FROM groups WHERE groupid = $1 AND admin = $2",
+  GET_MY_GROUPS: "SELECT groups.gname, groupusers.username FROM groups JOIN groupusers ON groups.groupid = groupusers.groupid_usergroups WHERE groupusers.username = $1",
+  SEARCH_GROUPS: "SELECT gname FROM groups WHERE gname ILIKE '%' || $1 || '%'",
+  
 };
 
 // Add the `admin` parameter to the addGroup function
@@ -168,6 +171,10 @@ async function kickUser(groupid, requestingUser, userToKick) {
       throw new Error("User does not have permission to kick users from this group");
     }
 
+    else if (requestingUser === userToKick) {
+      throw new Error("Cannot kick yourself from the group");
+    }
+
     // Now, proceed with kicking the user
     await pgPool.query(sql.KICK_USER, [userToKick, groupid]);
 
@@ -178,11 +185,27 @@ async function kickUser(groupid, requestingUser, userToKick) {
   }
 }
 
-
 async function checkAdminMatch(groupid, admin) {
   const result = await pgPool.query(sql.CHECK_ADMIN_MATCH, [groupid, admin]);
   return result.rows.length > 0;
 }
+
+async function getMyGroups(username) {
+  try {
+    const result = await pgPool.query(sql.GET_MY_GROUPS, [username]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching data from the database:", error);
+    return null;
+  }
+}
+
+async function searchGroups(gname) {
+    const result = await pgPool.query(sql.SEARCH_GROUPS, [gname]);
+    const rows = result.rows;
+    return rows;
+}
+
 
 module.exports = {
   addGroup,
@@ -196,4 +219,6 @@ module.exports = {
   getGroupReviews,
   checkMembership,
   kickUser,
+  getMyGroups,
+  searchGroups,
 };

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jwtToken } from "./components/Signals";
 import GroupCard from "./components/groupCard";
+import SearchIcon from "./search.svg";
+import { Link } from "react-router-dom";
 
 const Group = () => {
   const [mode, setMode] = useState("view");
@@ -16,6 +18,10 @@ const Group = () => {
   const [groupReviews, setGroupReviews] = useState([]);
   const [joinRequests, setJoinRequests] = useState([]);
   const [showJoinRequestWindow, setShowJoinRequestWindow] = useState(false);
+  const [myGroups, setMyGroups] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showHeader, setShowHeader] = useState(false);
 
 
   const token = jwtToken.value;
@@ -80,6 +86,7 @@ const Group = () => {
       console.log("Group created successfully:", response.data);
       setCreationMessage("Group created successfully");
       handleHideMessageTimer(setCreationMessage);
+
 
       // Step 2: Fetch the group details, including groupid, from the server
       const createdGroupResponse = await axios.get(
@@ -158,6 +165,7 @@ const Group = () => {
         );
       }
     }
+    handleViewGroups();
   };
 
   const handleJoinGroup = async (groupid) => {
@@ -241,7 +249,7 @@ const Group = () => {
     }
   };
 
-  
+
 
   const handleViewGroup = async (groupid) => {
     try {
@@ -256,65 +264,83 @@ const Group = () => {
       // Set the selected group details and group id
       setSelectedGroup(groupDetails);
       setSelectedGroupId(groupid);
-      
+
       // Update the mode to "details"
       setMode("details");
 
       handleViewJoinRequests(groupid);
 
-    
-        // Fetch join requests for the group only if the user is an admin
-        
-      
+
+      // Fetch join requests for the group only if the user is an admin
+
+
     } catch (error) {
       console.error(error.response?.data || error.message);
     }
   };
 
   const handleViewJoinRequests = async (groupid) => {
-
     const token = jwtToken.value;
     console.log("handleViewJoinRequests called", token);
-
+  
     if (!token) {
       return;
     }
-
+  
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     };
     console.log("handleViewJoinRequests called", token, "tässä tämä", headers);
-
+  
     try {
-      console.log("jwtToken:", jwtToken);
+      console.log("jwtToken:", token);
       const response = await axios.get(
         `http://localhost:3001/user/getRequest/${groupid}`,
         { headers }
       );
-     
   
       console.log("Join requests:", response.data);
   
-      // Extract the data from the response
-      const joinRequestsData = response.data;
+      // Check if the response data is an array and not empty
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        const firstItem = response.data[0];
+        console.log("Join requests212:", firstItem.groupid);
+        console.log("Join requests222:", groupid);
   
-      setJoinRequests(joinRequestsData);
-      console.log("Join requests112:", joinRequestsData);
-      console.log("Join requests113:", joinRequestsData);
+        // Check if the groupid in the response matches the expected groupid
+        if (firstItem.groupid === groupid) {
+          console.log("Join requests111:", firstItem.groupid);
+          console.log("Join requests111:", groupid);
   
-      // Show join request window if there are join requests
-      if (joinRequestsData) {
-        console.log("Join requests114:", joinRequestsData);
-        setShowJoinRequestWindow(true);
+          // Extract the data from the response
+          const joinRequestsData = response.data;
+  
+          setJoinRequests(joinRequestsData);
+          console.log("Join requests112:", joinRequestsData);
+          console.log("Join requests113:", joinRequestsData);
+  
+          // Show join request window if there are join requests
+          if (joinRequestsData) {
+            console.log("Join requests114:", joinRequestsData);
+            setShowJoinRequestWindow(true);
+          } else {
+            setShowJoinRequestWindow(false);
+          }
+        } else {
+          console.log("Received data does not match the expected groupid.");
+          // Handle the case where the groupid does not match
+        }
       } else {
-        setShowJoinRequestWindow(false);
+        console.log("No data or empty array received.");
       }
     } catch (error) {
       console.error(error.response?.data || error.message);
     }
   };
   
+  
+
 
   // Function to handle "View Groups" button click
 
@@ -322,10 +348,13 @@ const Group = () => {
     // Reset selectedGroupId and hide details
     setSelectedGroupId(null);
     setSelectedGroup(null);
+    setSearchResults(null);
 
     // Update the mode to "view"
     setMode("view");
-    
+    setShowHeader(false);
+    setShowJoinRequestWindow(false);
+
   };
 
   const handleLeaveGroup = async (groupid) => {
@@ -416,6 +445,7 @@ const Group = () => {
     } catch (error) {
       console.error(error.response?.data || error.message);
     }
+    handleViewGroup(selectedGroupId);
   };
 
   const handleAcceptRequest = async (request) => {
@@ -438,7 +468,7 @@ const Group = () => {
     }
     handleDeleteRequests(request);
     handleViewGroup(request.groupid);
-    
+
   };
 
   const handleDeleteRequests = async (request) => {
@@ -454,131 +484,221 @@ const Group = () => {
   };
 
 
-  
+
   const handleRejectRequest = async (request) => {
     handleDeleteRequests(request);
   };
-  
+
+  const handleMyGroups = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/user/myGroups`,
+        { headers }
+      );
+      const myGroups = response.data;
+      setMyGroups(myGroups);
+
+
+      setMode("myGroups");
+
+      console.log("My groups response:", response.data);
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+    }
+  };
+
+  const handleSearch = async () => {
+    setMode("search");
+    setShowHeader(true);
+    try {
+      const response = await fetch(
+        `http://localhost:3001/user/searchGroups/${searchTerm}`
+      );
+      console.log("searchTerm:", searchTerm);
+      if (!response.ok) {
+        throw new Error(`HTTP Error! status: ${response.status}`);
+      }
+      const searchResults = await response.json();
+      setSearchResults(searchResults);
+      setSearchTerm(searchTerm);
+
+      console.log("searchTerm2:", searchTerm);
+      console.log("searchResults:", searchResults);
+    } catch (error) {
+      console.error("Error fetching user search results:", error);
+    }
+  };
+
+
   return (
-    <div className="component-container">
-      <div>
-        <button onClick={handleViewGroups}>View Groups</button>
-        <button onClick={() => setMode("create")}>Create Group</button>
+    <div>
+      <div className="search">
+        <input
+          type="text"
+          placeholder="Search for groups"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <img src={SearchIcon} alt="search" onClick={handleSearch} />
       </div>
+      <div className="component-container">
 
-      {/* Display content based on the selected mode */}
-      <div>
-        {mode === "view" && !selectedGroupId && (
-          <div>
-            <h2>All Groups</h2>
-            <ul>
-              {groups.map((group) => (
-                <li key={group.groupid}>
-                  {group.gname}
-                  <button onClick={() => handleViewGroup(group.groupid)}>
-                    View Group
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {mode === "create" && (
-          <div>
-            <h2>Create Group</h2>
-            <div>
-              <label>Group Name:</label>
-              <input
-                type="text"
-                value={gname}
-                onChange={(e) => setGroupName(e.target.value)}
-              />
-            </div>
-            <button type="button" onClick={handleCreateGroup}>
-              Create Group
-            </button>
-            {creationMessage && <p>{creationMessage}</p>}
-          </div>
-        )}
-        {mode === "details" && selectedGroup && (
-          <div>
-            <h2>{selectedGroup.gname} Details</h2>
-            <p>Users:</p>
-            <ul>
-              {selectedGroup.users &&
-                selectedGroup.users.map((user) => (
-                  <li key={user.username}>{user.username}
-                  <button onClick={() => handleKickUser(user.username)}>
-                    Kick User
-                  </button>
-                  </li>
-                ))}
-            </ul>
-            {/* Display delete and join buttons */}
-            <button onClick={() => handleDeleteGroup(selectedGroupId)}>
-              Delete
-            </button>
-            <button onClick={() => handleSendRequest(selectedGroupId)}>
-              Join
-            </button>
-            {/* Display leave button */}
-            <button onClick={() => handleLeaveGroup(selectedGroupId)}>
-              Leave Group
-            </button>
-            <button onClick={() => handleGroupReviews(selectedGroupId)}>
-              Group Reviews
-            </button>
-
-            {showJoinRequestWindow && (
-        <div>
-          <h2>Join Requests</h2>
-          <ul>
-            {joinRequests.map((request) => (
-              <li key={request.id}>
-                {request.username} wants to join the group.
-                <button onClick={() => handleAcceptRequest(request)}>
-                  Accept
-                </button>
-                <button onClick={() => handleRejectRequest(request)}>
-                  Reject
-                </button>
-              </li>
-            ))}
-          </ul>
+        <div className="manage-buttons">
+          <button onClick={handleViewGroups}>View Groups</button>
+          <button onClick={() => setMode("create")}>Create Group</button>
+          <button onClick={handleMyGroups}>My Groups</button>
         </div>
-      )}
+        {Array.isArray(searchResults) && (
+          <div >
+             {showHeader && (
+
+<h2>Search Results</h2>
+
+)}
+            <div className='movie-list'>
+             
+              {searchResults.map((group) => (
+                <div key={group.gname} className="actor-card">
+                 <h3>{group.gname} </h3>
+                </div>
+              ))}
+            </div>
           </div>
         )}
-        {mode === "groupReviews" && groupReviews.length > 0 && (
-          <div>
-            <h2>Group Reviews</h2>
 
-            <table>
-              <tbody>
-                {groupReviews.map((review) => (
-                  <GroupCard key={review.reviewid} review={review}>
-                    <td> {review.username}</td>
-                    <td>{review.content}</td>
-                    <td>{review.uservotescore}</td>
-                    <td>{review.moviename}</td>
-                    <td>{review.dateposted}</td>
-                  </GroupCard>
+        {/* Display content based on the selected mode */}
+        <div>
+          {mode === "view" && !selectedGroupId && (
+            <div>
+              <h2>All Groups</h2>
+              <div className="movie-list">
+                {groups.map((group) => (
+                  <div key={group.groupid} className="actor-card">
+                    <h3>{group.gname}</h3>
+                    <button onClick={() => handleViewGroup(group.groupid)}>
+                      View Group
+                    </button>
+                  </div>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+              </div>
+            </div>
+          )}
+         
 
-        {/* Display messages */}
-        {creationMessage && <p>{creationMessage}</p>}
-        {deleteMessage && <p>{deleteMessage}</p>}
-        {joinMessage && <p>{joinMessage}</p>}
-        {leaveMessage && <p>{leaveMessage}</p>}
+          {mode === "create" && (
+            <div>
+              <h2>Create Group</h2>
+              <div>
+                <h5>Group Name:</h5>
+                <input
+                  type="text"
+                  value={gname}
+                  onChange={(e) => setGroupName(e.target.value)}
+                />
+              </div>
+              <button  type="button" onClick={handleCreateGroup}>
+                Create Group
+              </button>
+              {creationMessage && <p>{creationMessage}</p>}
+            </div>
+          )}
+          {mode === "details" && selectedGroup && (
+            <div>
+              <div className="manage-buttons">
+              <button onClick={() => handleDeleteGroup(selectedGroupId)}>
+                Delete
+              </button>
+              <button onClick={() => handleSendRequest(selectedGroupId)}>
+                Join
+              </button>
+              {/* Display leave button */}
+              <button onClick={() => handleLeaveGroup(selectedGroupId)}>
+                Leave Group
+              </button>
+              <button onClick={() => handleGroupReviews(selectedGroupId)}>
+                Group Reviews
+              </button>
+              </div>
+              <h2>{selectedGroup.gname} Details</h2>
+              
+              <div className="movie-list">
+                {selectedGroup.users &&
+                  selectedGroup.users.map((user) => (
+                    <div key={user.username}  className="actor-card">
+                      <h3>{user.username}</h3>
+                      <button onClick={() => handleKickUser(user.username)}>
+                        Kick User
+                      </button>
+                    </div>
+                  ))}
+              </div>
+              {/* Display delete and join buttons */}
+              
+              
+              {showJoinRequestWindow && (
+                <div>
+                  <h2>Join Requests</h2>
+                  <div className="movie-list">
+                    {joinRequests.map((request) => (
+                      <div key={request.id} className="actor-card">
+                        <h3>{request.username} wants to join the group. </h3>
+                        <button onClick={() => handleAcceptRequest(request)}>
+                          Accept
+                        </button>
+                        <button onClick={() => handleRejectRequest(request)}>
+                          Reject
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          {mode === "groupReviews" && groupReviews.length > 0 && (
+            <div>
+              <h2>Group Reviews</h2>
+
+              <table>
+                <tbody>
+                  {groupReviews.map((review) => (
+                    <GroupCard key={review.reviewid} review={review}>
+                      <td> {review.username}</td>
+                      <td>{review.content}</td>
+                      <td>{review.uservotescore}</td>
+                      <td>{review.moviename}</td>
+                      <td>{review.dateposted}</td>
+                    </GroupCard>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {mode === "myGroups" && myGroups && (
+            <div>
+              <h2>My Groups</h2>
+              <div className="movie-list">
+                {myGroups.map((group) => (
+                  <div  key={group.username} className="actor-card">
+                    <h3>{group.gname}</h3>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Display messages */}
+          {creationMessage && <p>{creationMessage}</p>}
+          {deleteMessage && <p>{deleteMessage}</p>}
+          {joinMessage && <p>{joinMessage}</p>}
+          {leaveMessage && <p>{leaveMessage}</p>}
+        </div>
+
+
       </div>
-
-      
     </div>
   );
+
 };
 
 export default Group;
