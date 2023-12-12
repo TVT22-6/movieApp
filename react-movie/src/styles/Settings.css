@@ -68,8 +68,14 @@ p, h1, h2, h4, h5, h6 {
     border: none;
     border-radius: 4px;
     box-sizing: border-box;
-    background: #1f2123;
+    background-color: #2d2f32;
     color: #a1a1a1;
+}
+
+/* Style for the placeholder text */
+.box input::placeholder {
+    color: #888;
+    font-style: italic;
 }
 
 /* Styles for buttons */

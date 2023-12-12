@@ -33,34 +33,36 @@ const RegistrationForm = () => {
               });
     };
 
-    return (
-        <div>
-            <div className="status-message"><h2>Dont have an account? Sign in:</h2></div>
-            <form onSubmit={handleSubmit}>
-                <div className="box signin-box">
+return (
+    <div>
+        <div className="status-message"><h2>Don't have an account? Sign in:</h2></div>
+        <form onSubmit={handleSubmit}>
+            <div className="box signin-box">
                 <h3>Sign In</h3>
-                    <label htmlFor="username-reg">Username: </label>
-                    <input
-                        type="text"
-                        id="username-reg"
-                        value={uname}
-                        onChange={(e) => setUname(e.target.value)}
-                    />
+                <label htmlFor="username-reg">Username: </label>
+                <input
+                    type="text"
+                    id="username-reg"
+                    placeholder="Enter username" // Added placeholder
+                    value={uname}
+                    onChange={(e) => setUname(e.target.value)}
+                />
 
-                    <label htmlFor="password-reg">Password: </label>
-                    <input
-                        type="password"
-                        id="password-reg"
-                        value={pw}
-                        onChange={(e) => setPw(e.target.value)}
-                    />
+                <label htmlFor="password-reg">Password: </label>
+                <input
+                    type="password"
+                    id="password-reg"
+                    placeholder="Enter password" // Added placeholder
+                    value={pw}
+                    onChange={(e) => setPw(e.target.value)}
+                />
 
-                    {registrationStatus && <div className="status-message">{registrationStatus}</div>}
-                    <button type="submit" className="submit-button">Register</button>
-                </div>
-            </form>
-        </div>
-    );
+                {registrationStatus && <div className="status-message">{registrationStatus}</div>}
+                <button type="submit" className="submit-button">Register</button>
+            </div>
+        </form>
+    </div>
+);
 }
 
 export default RegistrationForm;

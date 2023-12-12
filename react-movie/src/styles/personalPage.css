@@ -72,6 +72,21 @@
     color: #eee;
 }
 
+.submit-button {
+    background-color: #282828;
+    color: white;
+    padding: 10px 15px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.submit-button:hover {
+    background-color: #1f2123;
+}
+
 /* Responsive adjustments to align with settings.css */
 @media (min-width: 601px) and (max-width: 1024px) {
     .link-box {
