@@ -69,6 +69,11 @@ const Home = () => {
         setShowReviewForm(true);
     };
 
+    const handleCloseReviewForm = () => {
+        // Set the state to close the ReviewForm
+        setShowReviewForm(false);
+    };
+
     return (
         <div>
             <MovieSearch onSearch={searchMovies} />
@@ -77,7 +82,7 @@ const Home = () => {
                     <MovieCard key={index} movie={movie} onMovieClick={() => handleMovieClick(movie)} />
                 ))}
             </div>
-            {showReviewForm && selectedMovie && (<ReviewForm selectedMovie={selectedMovie} onSubmit={handleReviewSubmit} />)}
+            {showReviewForm && selectedMovie && (<ReviewForm selectedMovie={selectedMovie} onSubmit={handleReviewSubmit} onClose={handleCloseReviewForm} />)}
         </div>
     );
 };

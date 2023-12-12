@@ -3,7 +3,7 @@ import { jwtToken } from './Signals';
 import axios from 'axios';
 import '../styles/reviewForm.css';
 
-const ReviewForm = ({ selectedMovie, onSubmit }) => {
+const ReviewForm = ({ selectedMovie, onSubmit, onClose }) => {
     console.log('Selected Movie review form:', selectedMovie);
     const [movieName, setMovieName] = useState('');
     const [localReview, setLocalReview] = useState('');
@@ -36,6 +36,12 @@ const ReviewForm = ({ selectedMovie, onSubmit }) => {
                 break;
         }
     };
+
+    const handleCLose = () => {
+        setLocalReview('');
+        setRating('');
+        onClose();
+    }
 
     const handleRatingChange = (event) => {
         setRating(event.target.value);
@@ -95,6 +101,7 @@ const ReviewForm = ({ selectedMovie, onSubmit }) => {
                         type="text"
                         value={localReview}
                         onChange={handleChange}
+                        rows={0}
                         required
                     />
                     <label htmlFor="rating">Rating</label>
@@ -108,6 +115,7 @@ const ReviewForm = ({ selectedMovie, onSubmit }) => {
                     </select>
 
                     <button type="submit">Submit</button>
+                    <button type="button" onClick={handleCLose}>Close</button>
                 </form>
             </div>
         </div>
