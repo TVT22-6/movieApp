@@ -31,8 +31,11 @@ function Login() {
     const [pw, setPw] = useState('');
     const [errorMessage, setErrorMessage] = useState(''); // State to hold error message
 
+    const handleSubmit = (event) => {
+      event.preventDefault(); // Prevents the default form submission behavior
+      login();
+  };
     
-
     function login(){
       axios.postForm('http://localhost:3001/user/login', {uname,pw})
       .then(resp => {
@@ -53,17 +56,31 @@ function Login() {
     <div>
         <div className="box login-box">
             <h3>Log In</h3>
-            <label htmlFor="username">Username: </label>
-            <input type="text" id="username" placeholder="Enter username" value={uname} onChange={e => setUname(e.target.value)} />
-            <label htmlFor="password">Password: </label>
-            <input type="password" id="password" placeholder="Enter password" value={pw} onChange={e => setPw(e.target.value)} />
-            {errorMessage && <div className="status-message">{errorMessage}</div>}
-            <button onClick={login}>Login</button>
+            <form onSubmit={handleSubmit}> {/* Add the form tag here */}
+                <label htmlFor="username">Username: </label>
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Enter username"
+                    value={uname}
+                    onChange={e => setUname(e.target.value)}
+                />
+                <label htmlFor="password">Password: </label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter password"
+                    value={pw}
+                    onChange={e => setPw(e.target.value)}
+                />
+                {errorMessage && <div className="status-message">{errorMessage}</div>}
+                <button type="submit">Login</button> {/* Ensure this is a submit button */}
+            </form>
         </div>
         <RegistrationForm />
     </div>
 );
-  }
+}
 
 
 export {Login};

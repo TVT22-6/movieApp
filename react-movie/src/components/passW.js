@@ -11,7 +11,8 @@ function PasswordChangeForm() {
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState('');
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (event) => { // Pass 'event' as a parameter
+        event.preventDefault(); // Prevents the default form submission behavior
         if (newPassword !== confirmNewPassword) {
             setMessage("New passwords do not match!");
             return;
@@ -50,28 +51,30 @@ function PasswordChangeForm() {
     return (
         <div className="box"> {/* Apply box class to the main div */}
             <h3>Change Password</h3> {/* Optional heading */}
-            <input 
-                type="password" 
-                value={currentPassword} 
-                onChange={e => setCurrentPassword(e.target.value)} 
-                placeholder="Current Password" 
-            />
-            <input 
-                type="password" 
-                value={newPassword} 
-                onChange={e => setNewPassword(e.target.value)} 
-                placeholder="New Password" 
-            />
-            <input 
-                type="password" 
-                value={confirmNewPassword} 
-                onChange={e => setConfirmNewPassword(e.target.value)} 
-                placeholder="Confirm New Password" 
-            />
-            <button onClick={handleSubmit} disabled={isLoading} className={isLoading ? "red-button" : ""}>
-                {isLoading ? "Changing..." : "Change Password"}
-            </button>
-            {message && <div className="status-message">{message}</div>} {/* Apply status-message class */}
+            <form onSubmit={handleSubmit}> {/* Add form tag and onSubmit event */}
+                <input 
+                    type="password" 
+                    value={currentPassword} 
+                    onChange={e => setCurrentPassword(e.target.value)} 
+                    placeholder="Current Password" 
+                />
+                <input 
+                    type="password" 
+                    value={newPassword} 
+                    onChange={e => setNewPassword(e.target.value)} 
+                    placeholder="New Password" 
+                />
+                <input 
+                    type="password" 
+                    value={confirmNewPassword} 
+                    onChange={e => setConfirmNewPassword(e.target.value)} 
+                    placeholder="Confirm New Password" 
+                />
+                <button type="submit" disabled={isLoading} className={isLoading ? "red-button" : ""}>
+                    {isLoading ? "Changing..." : "Change Password"}
+                </button>
+                {message && <div className="status-message">{message}</div>} {/* Apply status-message class */}
+            </form>
         </div>
     );
 }

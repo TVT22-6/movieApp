@@ -9,6 +9,12 @@ const DeleteUser = () => {
 
     const handleDelete = () => {
 
+            // Confirmation dialog
+    const confirmDelete = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
+    if (!confirmDelete) {
+        return; // If user cancels, exit the function
+    }
+
         const token = localStorage.getItem('jwtToken'); // Retrieve the JWT token from local storage
         // console.log('Token being sent:', token); // Debugging: Log the token
 
@@ -35,12 +41,12 @@ const DeleteUser = () => {
                 localStorage.removeItem('jwtToken');
 
                 // Redirect user to the home page
-                // window.location.reload();
+                 window.location.reload();
             })
             .catch(error => {
                 const errorMessage = error.response?.data || error.message;
                 console.error("Error during user deletion:", errorMessage);
-                setDeleteStatus('Failed to delete account: ' + errorMessage);
+                setDeleteStatus('Failed to delete account: You are not logged in. ');
             });
     };
 

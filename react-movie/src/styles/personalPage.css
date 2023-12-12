@@ -20,6 +20,18 @@
     margin-bottom: 20px; /* Adds space after the input field */
 }
 
+.shareable-link-input {
+    background-color: #2d2f32; /* Darker background */
+    color: white;
+    width: 40%; /* Adjust width as needed */
+    min-height: 40px;
+    padding: 5px 10px;
+    margin-bottom: 20px;
+    border: none;
+    text-align: center;
+}
+
+
 /* Adjusting the link-box class to match the settings.css */
 .link-box {
     border-radius: 12px;
