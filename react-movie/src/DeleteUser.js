@@ -6,12 +6,12 @@ import { jwtToken, userData } from "./components/Signals";
 
 const DeleteUser = () => {
     const [deleteStatus, setDeleteStatus] = useState('');
-   
+
     const handleDelete = () => {
 
         const token = localStorage.getItem('jwtToken'); // Retrieve the JWT token from local storage
-       // console.log('Token being sent:', token); // Debugging: Log the token
-    
+        // console.log('Token being sent:', token); // Debugging: Log the token
+
 
         if (!token) {
             setDeleteStatus('No authentication token found. Please log in.');
@@ -23,33 +23,33 @@ const DeleteUser = () => {
                 Authorization: `Bearer ${token}`
             }
         })
-        .then(response => {
-            console.log(response.data);
-            setDeleteStatus('Account successfully deleted.');
-            
-             // Reset the signals
-            jwtToken.value = '';
-            userData.value = null;
+            .then(response => {
+                console.log(response.data);
+                setDeleteStatus('Account successfully deleted.');
 
-            // Clear the token from local storage
-            localStorage.removeItem('jwtToken');
+                // Reset the signals
+                jwtToken.value = '';
+                userData.value = null;
 
-            // Redirect user to the home page
-            // window.location.reload();
-        })
-        .catch(error => {
-            const errorMessage = error.response?.data || error.message;
-            console.error("Error during user deletion:", errorMessage);
-            setDeleteStatus('Failed to delete account: ' + errorMessage);
-        });
+                // Clear the token from local storage
+                localStorage.removeItem('jwtToken');
+
+                // Redirect user to the home page
+                // window.location.reload();
+            })
+            .catch(error => {
+                const errorMessage = error.response?.data || error.message;
+                console.error("Error during user deletion:", errorMessage);
+                setDeleteStatus('Failed to delete account: ' + errorMessage);
+            });
     };
 
     return (
-        <div class="delete-box">
+        <div className="delete-box">
             <h2>Delete Your Account</h2>
             <p>This action is irreversible. Please proceed with caution.</p>
             <div className='red-container'>
-            <button onClick={handleDelete} className="red-button">Delete My Account</button>
+                <button onClick={handleDelete} className="red-button">Delete My Account</button>
             </div>
             {deleteStatus && <p>{deleteStatus}</p>}
         </div>
