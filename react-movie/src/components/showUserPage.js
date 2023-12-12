@@ -146,84 +146,79 @@ const UserProfile = () => {
     <>
       {userData && userData.username ? (
         (console.log("userData1234:", userData),
-        (
-          <>
-            {
-              <div>
-                <h2>{userData.username}'s Profile</h2>
+          (
+            <>
+              {
                 <div>
-                  <h2>Reviews:</h2>
-                  {userReviews && userReviews.length > 0 ? (
-                    <table>
-                      <tbody>
+                  <h2>{userData.username}'s Profile</h2>
+                  <div>
+                    <h2>Reviews:</h2>
+                    {userReviews && userReviews.length > 0 ? (
+                      <div className="movie-list">
                         {userReviews.map((review, index) => (
-                          <React.Fragment key={index}>
-                            <ProfileCard key={review.reviewid} review={review}>
-                              <td>{review.moviename}</td>
-                              <td>{review.uservotescore}</td>
-                              <td>{review.content}</td>
-                              <td>
-                                {new Date(
-                                  review.dateposted
-                                ).toLocaleDateString()}
-                              </td>
-                              <span>{review.genre}</span>
-                            </ProfileCard>
-                          </React.Fragment>
+                          <ProfileCard key={review.reviewid} review={review}>
+                            <h3>{review.moviename}</h3>
+                            <p>{review.uservotescore}</p>
+                            <p>{review.content}</p>
+                            <p>
+                              {new Date(review.dateposted).toLocaleDateString()}
+                            </p>
+                            <span>{review.genre}</span>
+                          </ProfileCard>
                         ))}
-                      </tbody>
-                    </table>
-                  ) : (
-                    <p>No reviews available.</p>
-                  )}
-                </div>
-                <div>
-                  <h2>Links:</h2>
-                  {userLinks && userLinks.length > 0 ? (
-                    userLinks.map((link) => (
-                      <div key={link.linkname} className="link-card">
-                        <h3>{link.linkname}</h3>
-                        <p>Date Added: {formatDateTime(link.dateadded)}</p>
-                        <a
-                          href={link.personallink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {link.personallink}
-                        </a>
                       </div>
-                    ))
-                  ) : (
-                    <p>No links available.</p>
-                  )}
-                </div>
-                <div>
+                    ) : (
+                      <p>No reviews available.</p>
+                    )}
+                  </div>
+                  <div>
+                    <h2>Links:</h2>
+                    {userLinks && userLinks.length > 0 ? (
+                      userLinks.map((link) => (
+                        <div key={link.linkname} className="link-card">
+                          <h3>{link.linkname}</h3>
+                          <p>Date Added: {formatDateTime(link.dateadded)}</p>
+                          <a
+                            href={link.personallink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {link.personallink}
+                          </a>
+                        </div>
+                      ))
+                    ) : (
+                      <p>No links available.</p>
+                    )}
+                  </div>
+
                   <h2>Actor Reviews:</h2>
-                  {userActor && userActor.length > 0 ? (
-                    userActor.map((actor) => (
-                      <div key={actor.actorreviewid} className="actor-card">
-                        <h3>{actor.actorname}</h3>
-                        <p>Date Added: {formatDateTime2(actor.date)}</p>
-                        <a
-                          href={actor.movie}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {actor.movie}
-                        </a>
-                        <p>{actor.content}</p>
-                        <p>{actor.votescore}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p>No actor reviews available.</p>
-                  )}
+                  <div className="movie-list">
+                    {userActor && userActor.length > 0 ? (
+                      userActor.map((actor) => (
+                        <div key={actor.actorreviewid} className="actor-card">
+                          <h3>{actor.actorname}</h3>
+                          <p>Date Added: {formatDateTime2(actor.date)}</p>
+                          <a
+                            href={actor.movie}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {actor.movie}
+                          </a>
+                          <p>{actor.content}</p>
+                          <p>{actor.votescore}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p>No actor reviews available.</p>
+                    )}
+                  </div>
+
                 </div>
-        
-              </div>
-            }
-          </>
-        ))
+              }
+            </>
+          ))
       ) : (
         <>
           <p> Loading ... </p>

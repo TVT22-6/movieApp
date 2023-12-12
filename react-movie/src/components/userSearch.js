@@ -31,22 +31,22 @@ const UserSearch = ({ onUserSelect }) => {
   };
 
   return (
-    <div className="user-search">
-      <input
-        type="text"
-        placeholder="Search users"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        onKeyDown={handleKeyDown}
-      />
-      <button onClick={() => handleSearch(onUserSelect)}>Search</button>
-      <img
-        src={SearchIcon}
-        alt="search"
-        onClick={() => handleSearch(onUserSelect)}
-      />
-
-      <ul>
+    <div className="user-search-container">
+      <div className="search">
+        <input
+          type="text"
+          placeholder="Search users"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
+        <img
+          src={SearchIcon}
+          alt="search"
+          onClick={() => handleSearch(onUserSelect)}
+        />
+      </div>
+      <ul className="user-list">
         {searchResults.map((user) => (
           <li key={user.username}>
             {/* Use Link to navigate to the user profile page */}
@@ -55,6 +55,7 @@ const UserSearch = ({ onUserSelect }) => {
         ))}
       </ul>
     </div>
+
   );
 };
 

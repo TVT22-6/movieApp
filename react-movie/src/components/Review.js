@@ -3,7 +3,7 @@ import ReviewCard from "./ReviewCard";
 
 const Review = () => {
   const [reviews, setReviews] = useState([]);
-  const [orderBy, setOrderBy] = useState("alphabetical");
+  const [orderBy, setOrderBy] = useState("dateposted");
 
   useEffect(() => {
     // Fetch reviews when the component mounts
@@ -29,7 +29,9 @@ const Review = () => {
 
   const sortedReviews = () => {
     const sortedReviewsAll = [...reviews];
-    if (orderBy === "alphabetical") {
+    if (orderBy === "dateposted") {
+      sortedReviewsAll.sort((a, b) => b.dateposted.localeCompare(a.dateposted));
+    } else if (orderBy === "alphabetical") {
       sortedReviewsAll.sort((a, b) => a.moviename.localeCompare(b.moviename));
     } else if (orderBy === "genre") {
       sortedReviewsAll.sort((a, b) => a.genre.localeCompare(b.genre));
@@ -54,6 +56,7 @@ const Review = () => {
       <label>
         Order By:
         <select value={orderBy} onChange={handleOrderByChange}>
+          <option value="dateposted">Date Posted</option>
           <option value="alphabetical">Alphabetical</option>
           <option value="genre">Genre</option>
           <option value="uservotescore">User Vote Score</option>

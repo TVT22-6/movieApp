@@ -730,3 +730,39 @@ nav {
 .component-container button:hover {
   opacity: 0.8;
 }
+
+/* User search result styling */
+
+.user-search-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search {
+  /* Your existing styling for the search bar */
+}
+
+.user-list {
+  list-style: none;
+  padding: 1rem 0;
+  margin: 1rem 0;
+  /* Add some margin below the search bar */
+}
+
+.user-list li {
+  margin: 0.5rem 0;
+}
+
+.user-list a {
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-raleway);
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.user-list a:hover {
+  text-decoration: underline;
+}
