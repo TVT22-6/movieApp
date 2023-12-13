@@ -6,6 +6,7 @@ const sql = {
     GET_ACTORREVIEWS: 'SELECT * FROM "actor" WHERE actorname = $1', // Update this line
     GET_ALLACTORS: 'SELECT * FROM "actor"',
     GET_USER_ACTOR: 'SELECT * FROM "actor" WHERE username = $1',
+    GET_SPECIFIC_ACTORREVIEW: 'SELECT * FROM "actor" WHERE actorreviewid=$1',
     GET_TOPRATEDACTORS: 'SELECT actorname, AVG(votescore) AS avg_votescore FROM actor GROUP BY actorname ORDER BY avg_votescore DESC LIMIT 5',
   };
   
@@ -71,6 +72,16 @@ const sql = {
     }
   }
 
+  async function getSpecificActorReview(actorreviewid) {
+  try {
+    const result = await pgPool.query(sql.GET_SPECIFIC_ACTORREVIEW, [actorreviewid]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching review from the database:", error);
+    return null;
+  }
+}
+
 
   module.exports = {
     addActorReview,
@@ -78,4 +89,5 @@ const sql = {
     getActorReviews,
     getAllActors,
     getTopRatedActors,
+    getSpecificActorReview,
   };

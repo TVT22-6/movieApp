@@ -49,6 +49,7 @@ const { addActorReview,
   getActorReviews, 
   getAllActors,
   getTopRatedActors,
+  getSpecificActorReview,
 } = require("../postgre/actorReview");
 
 const {
@@ -605,9 +606,8 @@ router.post(
 ////
 
 router.get("/getAllActors", async (req, res) => {
-  //const actorname = req.params.actorname;
   try {
-    const AllActorReviews = await getAll(); 
+    const AllActorReviews = await getAllActors(); 
 
     res.status(200).json({ AllActorReviews });
 
@@ -673,6 +673,26 @@ router.get("/getTopRatedActors", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+//
+//GetSpecificActorReview
+//
+
+router.get("/getSpecificActorReview/:actorreviewid", async (req, res) => {
+  const actorreviewid = req.params.actorreviewid;
+  console.log("reviewid:", actorreviewid);
+
+  try {
+    const specificActorReview = await getSpecificActorReview(actorreviewid);
+
+    res.status(200).json(specificActorReview);
+  } catch (error) {
+    console.error("Error fetching review details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//
 
 
 

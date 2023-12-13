@@ -749,3 +749,18 @@ nav {
 .manage-buttons button:hover {
   background-color: #2980b9;
 }
+
+/*Review styles after integrating actor reviews to review tab*/
+
+.reviews-container {
+  display: flex;
+}
+
+.reviews-left {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.reviews-right {
+  flex: 1;
+}
