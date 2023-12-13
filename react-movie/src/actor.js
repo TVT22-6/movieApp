@@ -12,7 +12,6 @@ const Actor = () => {
   const [selectedActor, setSelectedActor] = useState(null);
   const [actorReviews, setActorReviews] = useState([]);
   const [activeTab, setActiveTab] = useState("ActorList");
-  const [topRatedActors, setTopRatedActors] = useState(null);
 
   const API_URL = "https://www.omdbapi.com?apikey=d4f64de4";
 
@@ -48,15 +47,14 @@ const Actor = () => {
     try {
       const movieResponse = await fetch(`${API_URL}&i=${imdbID}`);
       const movieData = await movieResponse.json();
-
       console.log("Movie Details:", movieData);
 
       const movieActors = movieData.Actors ? movieData.Actors.split(", ") : [];
-      const movieName = movieData.Title ? movieData.Title.split(", ") : [];
+      const movie = movieData.Title ? movieData.Title.replace(/[\{\}"]/g, '') : [];
 
       setActors(movieActors);
-      setFetchMovie(movieName);
-      console.log(movieName);
+      setFetchMovie(movie);
+      setSelectedMovie(movie);
       console.log("Actors:", movieActors);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -103,35 +101,6 @@ const Actor = () => {
     } 
   };
 
-  const fetchTopRatedActors = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/user/getTopRatedActors");
-  
-      if (!response.ok) {
-        console.error(`HTTP Error! Status: ${response.status}`);
-        return;
-      }
-  
-      const topRatedActorsData = await response.json();
-  
-      if (topRatedActorsData && topRatedActorsData.topRatedActors.length > 0) {
-        console.log("Top Rated Actors:", topRatedActorsData.topRatedActors);
-        // Handle the top-rated actors data as needed
-        setTopRatedActors(topRatedActorsData.reviewsAll);
-        setTopRatedActors(topRatedActorsData.topRatedActors);
-        setActiveTab("TopRatedActors");
-      } else {
-        console.log("No top-rated actors found");
-      }
-    } catch (error) {
-      console.error("Error fetching top-rated actors:", error);
-    }
-  };
-
-  const handleTopRatedActorsClick = () => {
-    fetchTopRatedActors();
-    //setActiveTab("TopRatedActors"); // Set the active tab to "TopRatedActors" when clicked
-  };
 
       
 
@@ -144,22 +113,6 @@ const Actor = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <button onClick={handleSearchMovies}>Search</button>
-        <button onClick={handleTopRatedActorsClick}>Top Rated Actors</button>
-
-        {activeTab === "TopRatedActors" && topRatedActors && (
-          <div>
-            <h3>Top Rated Actors:</h3>
-            <ul>
-              {topRatedActors.map((actor, index) => (
-                <li key={index}>
-                  {actor.actorname}
-                  <br />
-                <p>Rating: {parseFloat(actor.avg_votescore).toFixed(1)}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
 
       {selectedMovie ? (
@@ -198,22 +151,6 @@ const Actor = () => {
           setSelectedMovie={setSelectedMovie} 
           setSelectedActor={setSelectedActor} 
         />
-        <h3>Actor Reviews:</h3>
-          {actorReviews && actorReviews.length > 0 ? (
-            <ul>
-              {actorReviews.map((review, index) => (
-                <li key={index}>
-                  <p>Movie: {review.movie}</p>
-                  <p>Content: {review.content}</p>
-                  <p>Vote Score: {review.votescore}</p>
-                  <p>User: {review.username}</p>
-                  <p>Date: {review.date}</p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No reviews available for this actor.</p>
-      )}
     </div>
       )}
       </div>
