@@ -186,8 +186,7 @@ const Review = () => {
         </table>
       ) : (
         <p>
-          {console.log("13", reviews)}
-          No reviews found.</p>
+          {console.log("13", reviews)}</p>
       )}
       {console.log("12", reviews)}
       </div>
@@ -232,13 +231,12 @@ const Review = () => {
             </tbody>
           </table>
         ) : (
-          <p>No actor reviews found.</p>
+          <p></p>
         )}
 
 
 {TopRatedActors && TopRatedActors.length > 0 ? (
   <div>
-    <h2>Top Rated Actors</h2>
     <div className="top-rated-actors-container">
       {TopRatedActors.map((topRatedActor, index) => (
         <TopRatedActorCard
@@ -249,7 +247,7 @@ const Review = () => {
     </div>
   </div>
 ) : (
-  <p>No top-rated actors found.</p>
+  <p></p>
 )}
       </div>
     </div>

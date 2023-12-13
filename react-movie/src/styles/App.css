@@ -577,34 +577,246 @@ nav {
   text-decoration: underline;
 }
 
-/* Reviews styling */
-.reviews {
+
+/* Review tab styling */
+.reviews-container {
+  display: flex;
+  justify-content: space-between;
   margin-top: 2rem;
 }
 
-.reviews h2 {
+.reviews-container h2 {
   font-size: 2rem;
   color: #f9d3b4;
   margin-bottom: 1rem;
 }
 
-.reviews label {
-  display: block;
-  margin-bottom: 0.5rem;
+.reviews-left,
+.reviews-right {
+  flex: 1;
+}
+
+/* Review table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  border: 1px solid #343739;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+th {
+  background-color: #282828;
+  color: #eee;
+}
+
+/* Select box styles */
+label {
+  color: #eee;
+  margin-right: 1rem;
+}
+
+select {
+  padding: 0.5rem;
+  border-radius: 3px;
+  border: 1px solid #343739;
+  background-color: #282828;
+  color: #eee;
+}
+
+/* Button styles */
+button {
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: #1f2123;
+  color: #a1a1a1;
+  font-size: 1rem;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #282828;
+}
+
+/* Actor Reviews container styles */
+.top-rated-actors-container {
+  margin-top: 2rem;
+}
+
+/* Actor Reviews table styles */
+.top-rated-actors-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.top-rated-actors-container th,
+.top-rated-actors-container td {
+  border: 1px solid #343739;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.top-rated-actors-container th {
+  background-color: #282828;
+  color: #eee;
+}
+
+/* Actor Reviews card styles */
+.actorReviewCard {
+  width: 200px;
+  margin: 1rem;
+  padding: 1rem;
+  background-color: #242628;
+  border-radius: 8px;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  color: #faddc6;
+}
+
+.actorReviewCard h3 {
+  color: #faddc6;
+}
+
+/* Search box styles */
+label[for="searchTerm"] {
+  color: #242628;
+  margin-right: 1rem;
+}
+
+#searchTerm {
+  padding: 0.5rem;
+  border-radius: 3px;
+  border: 1px solid #343739;
+  background-color: #282828;
+  color: #eee;
+  margin-right: 1rem;
+}
+
+#searchButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: #1f2123;
+  color: #a1a1a1;
+  font-size: 1rem;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+#searchButton:hover {
+  background-color: #282828;
+}
+
+/* Reset button styles */
+#resetButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: #1f2123;
+  color: #a1a1a1;
+  font-size: 1rem;
+  margin-top: 1rem;
+  margin-left: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+#resetButton:hover {
+  background-color: #282828;
+}
+.search {
+  width: 71%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1.75rem;
+  border-radius: 3rem;
+  background: #1f2123;
+  -webkit-box-shadow: 5px 5px 7px #1c1d1f, -5px -5px 7px #222527;
+  box-shadow: 5px 5px 7px #1c1d1f, -5px -5px 7px #222527;
+}
+
+.search input {
+  flex: 1;
+  border: none;
+  font-size: 1.5rem;
+  font-family: var(--font-raleway);
+  font-weight: 500;
+  padding-right: 1rem;
+  outline: none;
+  color: #a1a1a1;
+  background: #1f2123;
+}
+
+.search img {
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  justify-content: center;
+}
+
+/* Additional styles for the search button */
+.search {
+  width: 71%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1.75rem;
+  border-radius: 3rem;
+  background: #282828; /* Updated color to a grey shade */
+  -webkit-box-shadow: 5px 5px 7px #1c1d1f, -5px -5px 7px #222527;
+  box-shadow: 5px 5px 7px #1c1d1f, -5px -5px 7px #222527;
+}
+
+.search input {
+  flex: 1;
+  border: none;
+  font-size: 1.5rem;
+  font-family: var(--font-raleway);
+  font-weight: 500;
+  padding-right: 1rem;
+  outline: none;
+  color: #a1a1a1;
+  background: #282828; /* Match the background color */
+}
+
+.search img {
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  justify-content: center;
+}
+
+/* Additional styles for the search button */
+.search button {
+  background: #282828; /* Match the background color */
+  border: none;
+  padding: 0.75rem 1.5rem;
+  margin-left: 1rem;
+  border-radius: 3rem;
+  font-size: 1.5rem;
+  font-family: var(--font-raleway);
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
   color: #a1a1a1;
 }
 
-.reviews select {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 0.25rem;
-  border: 1px solid #a1a1a1;
-  background-color: #1f2123;
-  color: #a1a1a1;
-  font-family: var(--font-raleway);
-  font-size: 1rem;
-  outline: none;
+.search button:hover {
+  background: #333333; /* Darker background color on hover */
 }
+
 
 .moviecard {
   width: 310px;
@@ -750,17 +962,3 @@ nav {
   background-color: #2980b9;
 }
 
-/*Review styles after integrating actor reviews to review tab*/
-
-.reviews-container {
-  display: flex;
-}
-
-.reviews-left {
-  flex: 1;
-  margin-right: 20px;
-}
-
-.reviews-right {
-  flex: 1;
-}

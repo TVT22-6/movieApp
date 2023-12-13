@@ -26,7 +26,7 @@ const TopRatedActorCard = ({ actorReview }) => {
           </div>
           <div>
             <span>{actorReview.actorname || 'N/A'}</span>
-            <h3>{`Average Vote Score: ${actorReview.avg_votescore || 'N/A'}`}</h3>
+            <h3>{`Average Vote Score: ${actorReview.avg_votescore !== null ? parseFloat(actorReview.avg_votescore).toFixed(1) : 'N/A'}`}</h3>
           </div>
         </div>
       </div>
