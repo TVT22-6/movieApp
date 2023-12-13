@@ -583,6 +583,8 @@ nav {
   display: flex;
   justify-content: space-between;
   margin-top: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
 .reviews-container h2 {
@@ -602,6 +604,23 @@ nav {
 
 .reviews-right {
   margin-left: 2rem;
+}
+
+@media (max-width: 768px) {
+  .reviews-container {
+    flex-direction: column;
+  }
+
+  .reviews-left {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 2rem;
+  }
+
+  .reviews-right {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 /* Review table styles */

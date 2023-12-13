@@ -72,7 +72,7 @@ const Actor = () => {
     setActiveTab("ReviewFormForActor");
   };
 
-  const handleSearchMovies = async () => {     
+  const handleSearchMovies = async () => {
     if (searchTerm.trim() === "") {           // If the search term is empty, do nothin
       return;
     }
@@ -91,18 +91,18 @@ const Actor = () => {
         return;
       }
       const actorReviewData = await response.json();
-    
+
       if (actorReviewData && actorReviewData.actorReviews.length > 0) {
         setActorReviews(actorReviewData.reviewsAll);
         setActorReviews(actorReviewData.actorReviews);
       }
     } catch (error) {
       console.error("Error fetching actor reviews:", error);
-    } 
+    }
   };
 
 
-      
+
 
   return (
     <div>
@@ -141,19 +141,22 @@ const Actor = () => {
         </div>
       )}
 
-      {activeTab === "ReviewFormForActor" && selectedMovie && selectedActor &&(
+      {activeTab === "ReviewFormForActor" && selectedMovie && selectedActor && (
         <div>
-        <ReviewFormForActor
-          selectedActor={selectedActor}
-          selectedMovie={selectedMovie}
-          actorReviews={actorReviews}
-          setActorReviews={setActorReviews}
-          setSelectedMovie={setSelectedMovie} 
-          setSelectedActor={setSelectedActor} 
-        />
-    </div>
+          <ReviewFormForActor
+            selectedActor={selectedActor}
+            selectedMovie={selectedMovie}
+            actorReviews={actorReviews}
+            setActorReviews={setActorReviews}
+            setSelectedMovie={setSelectedMovie}
+            setSelectedActor={setSelectedActor}
+            onClose={() => {
+              setActiveTab("ActorList");
+            }}
+          />
+        </div>
       )}
-      </div>
+    </div>
   );
 };
 

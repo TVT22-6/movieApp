@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { jwtToken } from './Signals';
 import axios from 'axios';
 
-const ReviewFormForActor = ({ selectedMovie, selectedActor, setSelectedMovie, setSelectedActor }) => {
+const ReviewFormForActor = ({ selectedMovie, selectedActor, setSelectedMovie, setSelectedActor, onClose }) => {
   const [localReview, setLocalReview] = useState('');
   const [date, setdate] = useState('');
   const [votescore, setvotescore] = useState('');
@@ -33,7 +33,7 @@ const ReviewFormForActor = ({ selectedMovie, selectedActor, setSelectedMovie, se
       alert("You must be logged in to submit a review.");
       return;
     }
-    
+
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -68,23 +68,32 @@ const ReviewFormForActor = ({ selectedMovie, selectedActor, setSelectedMovie, se
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="ReviewFormForActor">
-      <label htmlFor="review">Review</label>
-      <input id="review" type="text" value={localReview} onChange={handleChange} required />
-      <label htmlFor="votescore">Vote Score</label>
-      <select id="votescore" value={votescore} onChange={handlevotescoreChange} required>
-        <option value="">Select Vote Score</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
+  const handleClose = () => {
+    onClose();
+  };
 
-                <button type="submit">Submit</button>
-            </form>
-    );
+  return (
+    <div className='review-form-overlay'>
+      <div className='review-form-container'>
+        <form onSubmit={handleSubmit} className="ReviewFormForActor">
+          <label htmlFor="review">Review</label>
+          <input id="review" type="text" value={localReview} onChange={handleChange} required />
+          <label htmlFor="votescore">Vote Score</label>
+          <select id="votescore" value={votescore} onChange={handlevotescoreChange} required>
+            <option value="">Select Vote Score</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+
+          <button type="submit">Submit</button>
+          <button onClick={handleClose}>Close</button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default ReviewFormForActor;
