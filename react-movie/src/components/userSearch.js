@@ -35,7 +35,7 @@ const UserSearch = ({ onUserSelect }) => {
       <div className="search">
         <input
           type="text"
-          placeholder="Search users"
+          placeholder="Search profiles"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onKeyDown={handleKeyDown}

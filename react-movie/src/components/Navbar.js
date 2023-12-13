@@ -37,17 +37,18 @@ function Navbar({ setTheme }) {
                 <Link to="/actors" onClick={() => handleTabClick()}>
                     Actors
                 </Link>
-                <Link to="/user" onClick={() => handleTabClick()}>
-                    User
-                </Link>
+
                 <Link to="/getUser" onClick={() => handleTabClick()}>
-                    Profile
+                    Profiles
                 </Link>
                 <Link to="/group" onClick={() => handleTabClick()}>
                     Groups
                 </Link>
                 <Link to="/review" onClick={() => handleTabClick()}>
                     Reviews
+                </Link>
+                <Link to="/user" onClick={() => handleTabClick()}>
+                    User
                 </Link>
                 {jwtToken.value.length === 0 && (
                     <Link to="/auth" onClick={() => handleTabClick()}>
@@ -60,9 +61,9 @@ function Navbar({ setTheme }) {
                     </Link>
                 )}
 
+
                 <a onClick={handleToggleTheme}>Toggle Theme
                 </a>
-
 
                 <button className="nav-btn nav-close-btn" onClick={showNavbar}>
                     <FaTimes />

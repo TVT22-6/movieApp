@@ -96,7 +96,7 @@ const ReviewForm = ({ selectedMovie, onSubmit, onClose }) => {
             <div className='review-form-container'>
                 <form onSubmit={handleSubmit} className="ReviewForm">
                     <label htmlFor="review">Review</label>
-                    <input
+                    <textarea
                         id="review"
                         type="text"
                         value={localReview}
