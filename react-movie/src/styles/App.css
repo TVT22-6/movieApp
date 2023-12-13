@@ -341,14 +341,14 @@ nav {
   width: 200px;
   margin: 1rem;
   padding: 1rem;
-  background-color: #282828;
+  background-color: #242628;
   border-radius: 8px;
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
 
 .actor-card h3 {
-  color: #f9d3b4;
+  color: #faddc6;
 }
 
 .actor input {
