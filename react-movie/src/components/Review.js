@@ -12,7 +12,7 @@ const Review = () => {
   const [TopRatedActors, setTopRatedActors] = useState([]);
   const [resetActors, setResetActors] = useState([]);
   const [showTopRatedActors, setShowTopRatedActors] = useState(false);
-  
+
 
   const fetchReviews = async () => {
     try {
@@ -157,98 +157,102 @@ const Review = () => {
   return (
     <div className="reviews-container">
       <div className="reviews-left">
-      <h2>Reviews</h2>
-      <label>
-        Order By:
-        <select value={orderBy} onChange={handleOrderByChange}>
-          <option value="dateposted">Date Posted</option>
-          <option value="alphabetical">Alphabetical</option>
-          <option value="genre">Genre</option>
-          <option value="uservotescore">User Vote Score</option>
-        </select>
-      </label>
+        <div className="component-container">
+          <h2>Reviews</h2>
+          <label>
+            Order By:
+            <select value={orderBy} onChange={handleOrderByChange}>
+              <option value="dateposted">Date Posted</option>
+              <option value="alphabetical">Alphabetical</option>
+              <option value="genre">Genre</option>
+              <option value="uservotescore">User Vote Score</option>
+            </select>
+          </label>
 
-      {reviews.length > 0 ? (
-        <table>
-          <tbody>
-            {sortedReviews().map((review) => (
-              <ReviewCard key={review.reviewid} review={review}>
-                <td>{review.moviename || "N/A"}</td>
-                <td>{review.genre || "N/A"}</td>
-                <td>{review.dateposted || "N/A"}</td>
-                <td>{review.content || "N/A"}</td>
-                <td>{review.uservotescore || "N/A"}</td>
-                <td>{review.userid || "N/A"}</td>
-                {console.log("review review id", review.reviewid)}
-              </ReviewCard>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>
-          {console.log("13", reviews)}</p>
-      )}
-      {console.log("12", reviews)}
+          {reviews.length > 0 ? (
+            <table>
+              <tbody>
+                {sortedReviews().map((review) => (
+                  <ReviewCard key={review.reviewid} review={review}>
+                    <td>{review.moviename || "N/A"}</td>
+                    <td>{review.genre || "N/A"}</td>
+                    <td>{review.dateposted || "N/A"}</td>
+                    <td>{review.content || "N/A"}</td>
+                    <td>{review.uservotescore || "N/A"}</td>
+                    <td>{review.userid || "N/A"}</td>
+                    {console.log("review review id", review.reviewid)}
+                  </ReviewCard>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>
+              {console.log("13", reviews)}</p>
+          )}
+          {console.log("12", reviews)}
+        </div>
       </div>
 
       <div className="reviews-right">
-        <h2>Actor Reviews</h2>
-        <div>
-        <label>
-            Order By:
-            <select value={orderByActor} onChange={handleOrderByActorChange}>
-              <option value="date">Date Posted</option>
-              <option value="alphabetical">Alphabetical</option>
-              <option value="votescore">User Vote Score</option>
-            </select>
-          </label>
-          <button onClick={handleFetchTopRatedActors}>Fetch Top Rated Actors</button>
-          <button onClick={handleresetActors}>Reset Actor reviews</button>
-          <label>
-            Search Actor Reviews:
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <button onClick={handleSearchActorReviews}>Search</button>
-          </label>
+        <div className="component-container">
+          <h2>Actor Reviews</h2>
+          <div>
+            <label>
+              Order By:
+              <select value={orderByActor} onChange={handleOrderByActorChange}>
+                <option value="date">Date Posted</option>
+                <option value="alphabetical">Alphabetical</option>
+                <option value="votescore">User Vote Score</option>
+              </select>
+            </label>
+            <button onClick={handleFetchTopRatedActors}>Fetch Top Rated Actors</button>
+            <button onClick={handleresetActors}>Reset Actor reviews</button>
+            <label>
+              Search Actor Reviews:
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button onClick={handleSearchActorReviews}>Search</button>
+            </label>
+          </div>
+
+          {actorReviews && actorReviews.length > 0 ? (
+            <table>
+              <tbody>
+                {sortedActorReviews().map((actorReview, index) => (
+                  <ActorReviewCard key={`${actorReview.actorname}-${index}`} actorReview={actorReview}>
+                    <td>{actorReview.movie || "N/A"}</td>
+                    <td>{actorReview.actorname || "N/A"}</td>
+                    <td>{actorReview.date || "N/A"}</td>
+                    <td>{actorReview.content || "N/A"}</td>
+                    <td>{actorReview.votescore || "N/A"}</td>
+                    <td>{actorReview.username || "N/A"}</td>
+                  </ActorReviewCard>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p></p>
+          )}
+
+
+          {TopRatedActors && TopRatedActors.length > 0 ? (
+            <div>
+              <div className="top-rated-actors-container">
+                {TopRatedActors.map((topRatedActor, index) => (
+                  <TopRatedActorCard
+                    key={`${topRatedActor.actorname}-${index}`}
+                    actorReview={topRatedActor}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p></p>
+          )}
         </div>
-
-        {actorReviews && actorReviews.length > 0 ? (
-          <table>
-            <tbody>
-            {sortedActorReviews().map((actorReview, index) => (
-                <ActorReviewCard key={`${actorReview.actorname}-${index}`} actorReview={actorReview}>
-                <td>{actorReview.movie || "N/A"}</td>
-                <td>{actorReview.actorname || "N/A"}</td>
-                <td>{actorReview.date || "N/A"}</td>
-                <td>{actorReview.content || "N/A"}</td>
-                <td>{actorReview.votescore || "N/A"}</td>
-                <td>{actorReview.username || "N/A"}</td>
-                </ActorReviewCard>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p></p>
-        )}
-
-
-{TopRatedActors && TopRatedActors.length > 0 ? (
-  <div>
-    <div className="top-rated-actors-container">
-      {TopRatedActors.map((topRatedActor, index) => (
-        <TopRatedActorCard
-          key={`${topRatedActor.actorname}-${index}`}
-          actorReview={topRatedActor}
-        />
-      ))}
-    </div>
-  </div>
-) : (
-  <p></p>
-)}
       </div>
     </div>
   );

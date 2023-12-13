@@ -596,6 +596,14 @@ nav {
   flex: 1;
 }
 
+.reviews-left {
+  margin-right: 2rem;
+}
+
+.reviews-right {
+  margin-left: 2rem;
+}
+
 /* Review table styles */
 table {
   width: 100%;
@@ -603,7 +611,8 @@ table {
   margin-top: 1rem;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #343739;
   padding: 0.75rem;
   text-align: left;
@@ -733,6 +742,7 @@ label[for="searchTerm"] {
 #resetButton:hover {
   background-color: #282828;
 }
+
 .search {
   width: 71%;
   margin: 0 auto;
@@ -774,7 +784,8 @@ label[for="searchTerm"] {
   justify-content: center;
   padding: 1.5rem 1.75rem;
   border-radius: 3rem;
-  background: #282828; /* Updated color to a grey shade */
+  background: #282828;
+  /* Updated color to a grey shade */
   -webkit-box-shadow: 5px 5px 7px #1c1d1f, -5px -5px 7px #222527;
   box-shadow: 5px 5px 7px #1c1d1f, -5px -5px 7px #222527;
 }
@@ -788,7 +799,8 @@ label[for="searchTerm"] {
   padding-right: 1rem;
   outline: none;
   color: #a1a1a1;
-  background: #282828; /* Match the background color */
+  background: #282828;
+  /* Match the background color */
 }
 
 .search img {
@@ -800,7 +812,8 @@ label[for="searchTerm"] {
 
 /* Additional styles for the search button */
 .search button {
-  background: #282828; /* Match the background color */
+  background: #282828;
+  /* Match the background color */
   border: none;
   padding: 0.75rem 1.5rem;
   margin-left: 1rem;
@@ -814,7 +827,8 @@ label[for="searchTerm"] {
 }
 
 .search button:hover {
-  background: #333333; /* Darker background color on hover */
+  background: #333333;
+  /* Darker background color on hover */
 }
 
 
@@ -962,3 +976,11 @@ label[for="searchTerm"] {
   background-color: #2980b9;
 }
 
+.custom-container {
+  background-color: #282828;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  margin: 20px;
+  color: #eee;
+}
