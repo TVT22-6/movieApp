@@ -11,10 +11,12 @@ const RecommendMovie = () => {
 
   const handleGenreChange = (event) => {
     setSelectedGenre(event.target.value);
+    console.log("Genre change", event.target.value);
   };
 
   const handleReleaseYearChange = (event) => {
     setSelectedReleaseYear(event.target.value);
+    console.log("Release year", event.target.value);
   };
 
   const handleRecommendation = async () => {
@@ -22,16 +24,21 @@ const RecommendMovie = () => {
       alert("Please select both genre and release year.");
       return;
     }
+    
+    const startYear = selectedReleaseYear.split('-')[0];
 
     const API_KEY = "d4f64de4"; // Replace with your actual API key
-    const API_URL = `https://www.omdbapi.com?apikey=${API_KEY}&s=${selectedGenre}&y=${selectedReleaseYear}&type=movie`;
+    //const API_URL = `https://www.omdbapi.com?apikey=${API_KEY}&s=${selectedGenre}&y=${selectedReleaseYear}&type=movie`;
+    const API_URL = `https://www.omdbapi.com?apikey=${API_KEY}&s=${selectedGenre}&y=${startYear}&type=movie`;
 
     try {
       const response = await fetch(API_URL);
+      console.log(API_URL);
       const data = await response.json();
+      console.log(data);
 
       if (data.Response === "True" && data.Search && data.Search.length > 0) {
-        // Handle recommended movie data as needed
+        
         setRecommendedMovies(data.Search);
         console.log("Recommended Movie:", data.Search[0]);
       } else {
@@ -44,7 +51,11 @@ const RecommendMovie = () => {
 
   return (
     <div>
+      <div className="component-recommend">
       <h2>Recommend a Movie</h2>
+      <div className="manage-buttons">
+      
+      
       <div>
         <label>Genre:</label>
         <select value={selectedGenre} onChange={handleGenreChange}>
@@ -56,26 +67,29 @@ const RecommendMovie = () => {
           ))}
         </select>
       </div>
+      </div>
 
       <div>
         <label>Release Year:</label>
-        <select value={selectedReleaseYear} onChange={handleReleaseYearChange}>
-          <option value="" disabled>Select a release year</option>
-          {releaseYears.map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
+        <input
+          type="text"
+          value={selectedReleaseYear}
+          onChange={handleReleaseYearChange}
+          placeholder="Enter release year"
+        />
       </div>
+      
+
+      <button onClick={handleRecommendation}>Get Recommendation</button>
+      
 
       <div className="container">
         {recommendedMovies.map((movie, index) => (
           <RecommendationCard key={index} movie={movie} />
         ))}
       </div>
-
-      <button onClick={handleRecommendation}>Get Recommendation</button>
+      </div>
+    
     </div>
   );
 };
