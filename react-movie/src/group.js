@@ -235,6 +235,7 @@ const Group = () => {
 
   const handleViewJoinRequests = async (groupid) => {
     const token = jwtToken.value;
+    console.log("handleViewJoinRequests called", token);
 
     if (!token) {
       return;
@@ -244,30 +245,33 @@ const Group = () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     };
+    console.log("handleViewJoinRequests called", token, "tässä tämä", headers);
 
     try {
+      console.log("jwtToken:", token);
       const response = await axios.get(
         `http://localhost:3001/user/getRequest/${groupid}`,
         { headers }
       );
 
+      console.log("Join requests:", response.data);
 
+      // Check if the response data is an array and not empty
       if (Array.isArray(response.data) && response.data.length > 0) {
-        const firstItem = response.data[0];
+        // Filter the join requests based on the expected groupid
+        const filteredJoinRequests = response.data.filter(item => item.groupid === groupid);
 
-        if (firstItem.groupid === groupid) {
-
-          const joinRequestsData = response.data;
+        if (filteredJoinRequests.length > 0) {
+          // Extract the data from the filtered response
+          const joinRequestsData = filteredJoinRequests;
 
           setJoinRequests(joinRequestsData);
 
-          if (joinRequestsData) {
-            setShowJoinRequestWindow(true);
-          } else {
-            setShowJoinRequestWindow(false);
-          }
+          // Show join request window
+          setShowJoinRequestWindow(true);
         } else {
-          console.log("Received data does not match the expected groupid.");
+          setShowJoinRequestWindow(false);
+          console.log("No join requests found for the specified groupid.");
         }
       } else {
         console.log("No data or empty array received.");
