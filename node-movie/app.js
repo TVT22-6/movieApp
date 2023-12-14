@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.static('public'));
 
 // Setting routes
-app.use('/user', userRoute);
+app.use('/', userRoute);
 
 // Export the app for testing
 module.exports = app;
