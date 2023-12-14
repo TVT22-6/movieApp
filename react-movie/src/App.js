@@ -12,6 +12,7 @@ import UserProfile from "./components/showUserPage";
 import UserSearch from "./components/userSearch";
 import { jwtToken, userData } from "./components/Signals";
 import Home from "./components/Home";
+import RecommendMovie from "./components/recommendMovie";
 
 const App = () => {
   const [theme, setTheme] = useState("light");
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/actors" element={<Actor />} />
           <Route path="/review" element={<Review />} />
+          <Route path="/recommend" element={<RecommendMovie />} />
           <Route path="/user" element={<UserPage />} />
           <Route path="/group" element={<Group />} />
           <Route path="/profile" element={<UserProfile />} />

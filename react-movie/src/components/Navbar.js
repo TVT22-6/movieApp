@@ -50,6 +50,9 @@ function Navbar({ setTheme }) {
                 <Link to="/user" onClick={() => handleTabClick()}>
                     User
                 </Link>
+                <Link to="/recommend" onClick={() => handleTabClick()}>
+                    Recommend
+                </Link>
                 {jwtToken.value.length === 0 && (
                     <Link to="/auth" onClick={() => handleTabClick()}>
                         Log In

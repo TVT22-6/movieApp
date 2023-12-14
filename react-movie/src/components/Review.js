@@ -104,7 +104,7 @@ const Review = () => {
     if (orderByActor === "date") {
       sortedActorReviewsAll.sort((a, b) => b.date.localeCompare(a.date));
     } else if (orderByActor === "alphabetical") {
-      sortedActorReviewsAll.sort((a, b) => a.movie.localeCompare(b.movie));
+      sortedActorReviewsAll.sort((a, b) => a.actorname.localeCompare(b.actorname));
     } else if (orderByActor === "votescore") {
       sortedActorReviewsAll.sort((a, b) => b.votescore - a.votescore);
     }
@@ -114,16 +114,19 @@ const Review = () => {
   const handleOrderByChange = (event) => {
     // Update the order and fetch reviews again
     setOrderBy(event.target.value);
+    setShowTopRatedActors(false);
   };
 
   const handleOrderByActorChange = (event) => {
     // Update the order for actor reviews
     setOrderByActor(event.target.value);
+    setShowTopRatedActors(false);
   };
 
   const handleSearchActorReviews = () => {
     // Trigger search for actor reviews by actor name
     searchActorReviews();
+    setShowTopRatedActors(false);
   };
 
 
@@ -132,19 +135,20 @@ const Review = () => {
   };
 
   const handleresetActors = () => {
-    // Reset actor reviews and hide top-rated actors
     fetchActorReviews(); // Fetch actor reviews again
     setSearchTerm("");
-    setShowTopRatedActors(false); // Reset the state to hide top-rated actors
+    setShowTopRatedActors(false);
+    setResetActors();
   };
 
   useEffect(() => {
     // Fetch reviews when the component mounts
     fetchReviews();
     fetchActorReviews();
+    setShowTopRatedActors(false);
   }, []);
-
-  /*useEffect(() => {
+/*
+  useEffect(() => {
     // Fetch top-rated actors when TopRatedActors state changes
     if (showTopRatedActors) {
       fetchActorReviewsTop();
