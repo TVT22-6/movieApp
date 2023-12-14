@@ -606,7 +606,7 @@ nav {
   margin-left: 2rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .reviews-container {
     flex-direction: column;
   }
@@ -819,6 +819,9 @@ label[for="searchTerm"] {
   outline: none;
   color: #a1a1a1;
   background: #282828;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   /* Match the background color */
 }
 
@@ -849,6 +852,8 @@ label[for="searchTerm"] {
   background: #333333;
   /* Darker background color on hover */
 }
+
+
 
 
 .moviecard {
@@ -1046,5 +1051,33 @@ label[for="searchTerm"] {
 
 .component-recommend button:hover {
   opacity: 0.8;
+}
+
+.user-list {
+  padding: 0;
+  margin: 0;
+  width: 71%;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-list li {
+  margin: 1rem 0;
+  display: flex; /* Add this line to make it a flex container */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+}
+
+.user-list a {
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-raleway);
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.user-list a:hover {
+  color:var(--secondaryColor);
 }
 

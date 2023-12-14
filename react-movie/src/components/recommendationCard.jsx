@@ -13,7 +13,7 @@ const RecommendationCard = ({ movie }) => {
 
   const handleWatchClick = () => {
     // Replace 'YOUR_YOUTUBE_VIDEO_URL' with the actual YouTube video URL
-    window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley';
+    window.location.href = 'https://www.youtube.com/watch?v=xvFZjo5PgG0&ab_channel=Duran';
   };
 
   return (
