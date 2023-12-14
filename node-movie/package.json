@@ -2,7 +2,7 @@
   "name": "movie",
   "version": "1.0.0",
   "description": "",
-  "main": "src/app.js",
+  "main": "node-movie/app.js",
   "scripts": {
     "start": "nodemon index.js",
     "test": "mocha"
