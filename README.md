@@ -184,7 +184,6 @@ Minun vastuullani projektissa oli “Actor”- ja “Recommendation” -välileh
 
 Lisäksi loin pohjan “Toggle Theme” -ominaisuudelle, joka on navigointilaatikossa toimiva nappi sovelluksen taustavärin vaihtamiseksi. Toiminnallisuus on toteutettu “Navbar.js” - kansiossa, minne loin pohjan ja Henri muokkasi ominaisuuden sopivaksi navigointilaatikossa käytettäväksi. 
 
-**Linkki sovellukseen:** 
 
 **Tiivistelmä ja Kokemuksia:** 
 
