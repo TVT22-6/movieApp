@@ -90,7 +90,7 @@ Database on luotu postgreSQL-ympäristöön. Database on ladattu Render palvelim
 
 ![](Aspose.Words.04291181-ef17-454d-be13-ccff95cecaaf.002.png)
 
-*Kuva 1Kuvassa postgreSQL-komento jota käytetään ryhmään liittymispyynnössä.* 
+*Kuva 1.Kuvassa postgreSQL-komento jota käytetään ryhmään liittymispyynnössä.* 
 
 **Henkka:** 
 
