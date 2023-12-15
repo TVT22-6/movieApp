@@ -2,15 +2,15 @@
 
 **Elokuvaharrastelijan sovellus made by NWA** 
 
-Youtube: https://youtu.be/vqPHRC3u-tI
-Nettisivu: https://nwadb.onrender.com/
+- Youtube: https://youtu.be/vqPHRC3u-tI
+- Nettisivu: https://nwadb.onrender.com/
 
 **Tekijät:**
-Toni Isopoussu: Rivi 52,
-Jyri Karhu: Rivi 96,
-Henri Mustakangas: Rivi 106,
-Niko Matilainen: Rivi 116,
-Eelis Keränen: Rivi 174.
+- Toni Isopoussu: Rivi 52,
+- Jyri Karhu: Rivi 96,
+- Henri Mustakangas: Rivi 106,
+- Niko Matilainen: Rivi 116,
+- Eelis Keränen: Rivi 174.
 
 **Esittely:**
 
