@@ -84,7 +84,7 @@ Olen ylpeä siitä, mitä olemme saavuttaneet projektin aikana ryhmänä, ja toi
 
 **Jyri:** 
 
-Vastasin sovelluksen Profiilisivun luonnista ja database pohjan luonnista renderiin. Lisäksi tein myös osioita mm. Review- ja Groupsivuille. Koodi on jaettu kahteen tiedostoon, *UserSearch.js* ja *UserProfile.js*, jotka muodostavat kaksi erillistä React-komponenttia. Koodissa on käytetty mm. State-koukkuja, asykronista hakua, tapahtumakäsittelijöitä, router/link-komponenttia, apufunktioita aikaleimojen muotiluun ja *loading ja fetching*-tiloja kertomaan, onko tietoja haettu tai ladataan.  Lisäksi sivun muotoiluun käytetään mm. *ProfileCard.js* - korttia. Käyttöliittymä on jaettu useisiin komponentteihin selkeyden vuoksi. 
+Vastasin sovelluksen Profiilisivun luonnista, database pohjan luonnista renderiin ja sivuston julkaisusta palvelimelle. Lisäksi tein myös osioita mm. Review- ja Groupsivuille. Näiden kaikkien sivujen muotoiluun ja tyyliin tein myös useita komponentteja kuten *ActorCard*. Profiilisivun koodi on jaettu kahteen tiedostoon, *UserSearch.js* ja *UserProfile.js*, jotka muodostavat kaksi erillistä React-komponenttia. Koodissa on käytetty mm. State-koukkuja, asykronista hakua, tapahtumakäsittelijöitä, router/link-komponenttia, apufunktioita aikaleimojen muotiluun ja *loading ja fetching*-tiloja kertomaan, onko tietoja haettu tai ladataan.  Lisäksi sivun muotoiluun käytetään mm. *ProfileCard.js* - korttia. Käyttöliittymä on jaettu useisiin komponentteihin selkeyden vuoksi. 
 
 Database on luotu postgreSQL-ympäristöön. Database on ladattu Render palvelimelle. Databasesta löytyy *Review, Actor, Customer, Groups, Groupusers, Joinrequests* ja *Personalpage-*taulukot.  
 
