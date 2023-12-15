@@ -51,7 +51,8 @@ Tämä on Movie Database by Nerds With Attitude-web-sovellus, joka mahdollistaa 
 
 **Toni:**
 
-` `Projektissa toimin projektipäällikkönä ja olen suorittanut seuraavat tehtävät: 
+Projektissa toimin projektipäällikkönä ja olen suorittanut seuraavat tehtävät: 
+
  **Projektin Suunnittelu**:
 
 - Laadin projektisuunnitelman, johon sisältyi visuaalinen mock-up Figmalla, tietokannan ER-kaavio Draw Io:lla sekä REST-rajapinnan suunnitelma README- kansiossa. 
