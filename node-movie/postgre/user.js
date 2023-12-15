@@ -21,18 +21,25 @@ async function delUser(uname) {
   try {
     await client.query("BEGIN");
 
-      // Delete any groups where the user is the admin
-      const delGroupsQuery = "DELETE FROM groups WHERE admin = $1";
-      await client.query(delGroupsQuery, [uname]);
+   // Get the list of groups where the user is an admin
+   const adminGroupsResult = await client.query("SELECT groupid FROM groups WHERE admin = $1", [uname]);
+   const adminGroups = adminGroupsResult.rows;
+
+   // Kick the user from all groups where they are an admin
+   for (const group of adminGroups) {
+     await client.query("DELETE FROM groupusers WHERE groupid_usergroups = $1", [group.groupid]);
+     await client.query("DELETE FROM groups WHERE groupid = $1", [group.groupid]);
+   }
+
 
     // Delete personal links
     const delPersonalLinksQuery =
       "DELETE FROM personalpage WHERE username = $1";
     await client.query(delPersonalLinksQuery, [uname]);
 
-    // Remove user from groups
-    const delUserGroupsQuery = "DELETE FROM groupusers WHERE username = $1";
-    await client.query(delUserGroupsQuery, [uname]);
+    // Delete the user's reviews
+    const delReviewsQuery = 'DELETE FROM "Review" WHERE username = $1';
+    await client.query(delReviewsQuery, [uname]);
 
     // Delete user's actor reviews
     const delActorReviewsQuery = "DELETE FROM actor WHERE username = $1";

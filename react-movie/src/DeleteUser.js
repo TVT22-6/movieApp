@@ -46,7 +46,7 @@ const DeleteUser = () => {
             .catch(error => {
                 const errorMessage = error.response?.data || error.message;
                 console.error("Error during user deletion:", errorMessage);
-                setDeleteStatus('Failed to delete account: You are not logged in. ');
+                setDeleteStatus('Failed to delete account: ' + errorMessage);
             });
     };
 

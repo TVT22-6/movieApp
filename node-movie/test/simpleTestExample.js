@@ -202,22 +202,44 @@ describe('User Management Tests', () => {
     describe('/POST to addActorReview (table 3)', () => {
     it('it should add an actor review for the user', (done) => {
         let actorReviewData = {
-            date: '2023-01-01',
+        date: '2023-01-01',
             actorname: 'Keanu Reeves',
             movie: 'John Wick',
             content: 'Great performance!',
-            votescore: 5
+           votescore: 5
         };
         chai.request(server)
             .post('/user/addActorReview')
             .set('Authorization', `Bearer ${jwtToken}`) // Käytä saamaasi JWT-tokenia
             .send(actorReviewData)
             .end((err, res) => {
-                res.should.have.status(201); // Odottaa onnistunutta luomisen tilakoodia
-                // Tässä voit lisätä lisää väittämiä varmistaaksesi, että arvostelu on tallennettu oikein
+              res.should.have.status(201); // Odottaa onnistunutta luomisen tilakoodia
+                 //Tässä voit lisätä lisää väittämiä varmistaaksesi, että arvostelu on tallennettu oikein
                 done();
-            });
+           });
     });
+    });
+
+    // Test for adding data to Review
+    describe('/POST to addMovieReview', () => {
+        it('it should add a movie review for the user', (done) => {
+            let reviewData = {
+                userVS: 9,
+                mname: 'The Matrix',
+                date: '2023-01-01',
+                content: 'Mind-blowing special effects and an intriguing storyline.',
+                genre: 'Action'
+            };
+            chai.request(server)
+                .post('/user/addReview') // Olettaen, että endpoint on muotoiltu näin
+                .set('Authorization', `Bearer ${jwtToken}`) // Käytä JWT-tokenia autentikointiin
+                .send(reviewData)
+                .end((err, res) => {
+                    res.should.have.status(201); // Odota onnistuneen luontipyyntövastauksen tilakoodia
+                    res.body.should.have.property('message', 'Review successfully posted to the database in user routes');
+                    done();
+                });
+        });
     });
 
     // Test for adding data to groups & groupusers
