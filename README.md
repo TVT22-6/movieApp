@@ -2,6 +2,16 @@
 
 **Elokuvaharrastelijan sovellus made by NWA** 
 
+Youtube: https://youtu.be/vqPHRC3u-tI
+Nettisivu: https://nwadb.onrender.com/
+
+**Tekijät:**
+Toni Isopoussu: Rivi 52,
+Jyri Karhu: Rivi 96,
+Henri Mustakangas: Rivi 106,
+Niko Matilainen: Rivi 116,
+Eelis Keränen: Rivi 174.
+
 **Esittely:**
 
 Tämä on Movie Database by Nerds With Attitude-web-sovellus, joka mahdollistaa elokuvien ja näyttelijöiden arvostelun. Lisäksi sovelluksessa on edistynyt käyttäjien hallinta, voi luoda, liittyä ja poistaa ryhmiä, tarkastella muiden käyttäjien profiileja, jakaa niitä sekä nähdä heidän antamansa arvostelut ja lisäämät linkit. 
@@ -21,9 +31,9 @@ Tämä on Movie Database by Nerds With Attitude-web-sovellus, joka mahdollistaa 
 4. **Linkkien jakaminen:** 
 - Käyttäjät voivat lisätä linkkejä, kuten YouTube-videoita tai artikkeleita, sivustolle jakamista varten. 
 5. **Käyttäjän hallinta:** 
-- Käyttäjät voivat rekisteröityä sivulle luomalla oman tunnuksen.** 
-- Käyttäjä voi hallita omaa salasanaa.** 
-- Käyttäjä voi poistaa oman tunnuksen.** 
+- Käyttäjät voivat rekisteröityä sivulle luomalla oman tunnuksen. 
+- Käyttäjä voi hallita omaa salasanaa. 
+- Käyttäjä voi poistaa oman tunnuksen. 
 
 **Tekninen toteutus Frontend (React)** 
 
@@ -41,7 +51,8 @@ Tämä on Movie Database by Nerds With Attitude-web-sovellus, joka mahdollistaa 
 
 **Toni:**
 
-` `Projektissa toimin projektipäällikkönä ja olen suorittanut seuraavat tehtävät:  **Projektin Suunnittelu**:
+` `Projektissa toimin projektipäällikkönä ja olen suorittanut seuraavat tehtävät: 
+ **Projektin Suunnittelu**:
 
 - Laadin projektisuunnitelman, johon sisältyi visuaalinen mock-up Figmalla, tietokannan ER-kaavio Draw Io:lla sekä REST-rajapinnan suunnitelma README- kansiossa. 
 - Olin vastuussa GitHub-kanban-taulukon perustamisesta ja ylläpidosta sekä projektin alustamisesta Node.js:llä ja Reactilla. 
