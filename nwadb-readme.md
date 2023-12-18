@@ -199,4 +199,3 @@ Tiivistelmä ja Kokemuksia
 
 Projekti oli mielestämme mukavan haastava ja ryhmän yhteistyö sujui hyvin kuten aina. Kaikille riitti tasaisesti haastetta, kun jokainen joutui vuorollaan kirjoittamaan niin Node- kuin Postgre-koodia. Alussa Reactin kirjoittaminen tuntui kaikille haastavalta, mutta mitä pidemmälle projekti eteni sitä enemmän ryhmä oppi Reactin käyttöä. 
 
-testi
