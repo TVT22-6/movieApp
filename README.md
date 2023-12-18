@@ -4,6 +4,7 @@
 
 - Youtube: https://youtu.be/vqPHRC3u-tI
 - Nettisivu: https://nwadb.onrender.com/
+- Nettisivu: https://youtu.be/RMH5vb1cAJQ    --- Julkaisu 15/12, Tämä video näyttää kohdassa 12:58 käyttäjän kaiken datan poistamisen. Tämä readMe commit tulee myöhässä, mutta videon julkaisu 15/12, joka löytyy myös yhdestä jäsenen palautuksesta sekä itse koodi on puskettu ennen palautus deadlinee. 
 
 **Tekijät:**
 - Toni Isopoussu: Rivi 52,
